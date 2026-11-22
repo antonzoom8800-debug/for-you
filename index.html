@@ -311,6 +311,40 @@
       opacity: 1;
       pointer-events: auto;
     }
+
+    /* Fullscreen Flying Sparkling Glove & Moonwalk Overlay */
+    @keyframes gloveFlyArc {
+      0% {
+        opacity: 0;
+        transform: translate(-36vw, 18vh) rotate(-28deg) scale(0.82);
+      }
+      18% {
+        opacity: 1;
+        transform: translate(-14vw, -8vh) rotate(12deg) scale(1.06);
+      }
+      50% {
+        opacity: 1;
+        transform: translate(10vw, -16vh) rotate(-14deg) scale(1.14);
+      }
+      82% {
+        opacity: 1;
+        transform: translate(32vw, 4vh) rotate(22deg) scale(0.98);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(48vw, 24vh) rotate(36deg) scale(0.8);
+      }
+    }
+    @keyframes gloveTwinkle {
+      0%, 100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 12px rgba(255, 232, 160, 0.9)); }
+      50% { transform: scale(1.12) rotate(8deg); filter: drop-shadow(0 0 24px rgba(103, 232, 249, 0.95)); }
+    }
+    .glove-flight-anim {
+      animation: gloveFlyArc 2.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .glove-shimmer-anim {
+      animation: gloveTwinkle 0.55s ease-in-out infinite;
+    }
   </style>
 </head>
 <body>
@@ -319,47 +353,22 @@
   <div id="roomThemeLayer" class="fixed inset-0 z-[2] pointer-events-none"
     style="background: radial-gradient(circle at 50% 42%, rgba(244, 162, 97, 0.08), rgba(20, 14, 22, 0.14));"></div>
 
-  <!-- Animated MJ Moonwalk & Sparkling Glove Overlay -->
-  <div id="mjMoonwalkOverlay" class="fixed inset-0 z-[45] hidden flex-col items-center justify-end pb-24 sm:pb-28 pointer-events-none overflow-hidden px-4">
-    <div id="mjMoonwalkActor" class="mj-stage-glide flex flex-col items-center">
-      <!-- Spotlight beam -->
-      <div class="w-44 h-44 rounded-full -mb-28 blur-2xl opacity-45"
-        style="background: radial-gradient(circle, rgba(255,214,165,0.75), rgba(103,232,249,0.22), transparent 72%);"></div>
-
-      <svg class="w-28 h-28 sm:w-32 sm:h-32 overflow-visible" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Back leg gliding -->
-        <g class="mj-leg-back">
-          <path d="M30 40L21 53L13 54" stroke="#f8fafc" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
-          <ellipse cx="14" cy="54.5" rx="5.5" ry="2" fill="#e2e8f0"/>
-        </g>
-        <!-- Front leg moonwalking -->
-        <g class="mj-leg-front">
-          <path d="M34 40L42 52L50 52" stroke="#ffd6a5" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
-          <ellipse cx="49" cy="52.5" rx="5.5" ry="2" fill="#ffd6a5"/>
-        </g>
-        <!-- Torso & Jacket -->
-        <path d="M26 26L38 27L36 41H27L26 26Z" fill="#fff7ed"/>
-        <path d="M29 27L32 40" stroke="#e11d48" stroke-width="1.8"/>
-        <!-- Left arm -->
-        <path d="M27 28L19 35L23 38" stroke="#fff7ed" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-        <!-- Right arm with sparkling glove -->
-        <g class="mj-sparkle-glove">
-          <path d="M37 28L46 21" stroke="#fff7ed" stroke-width="2.8" stroke-linecap="round"/>
-          <circle cx="47.5" cy="19.5" r="3.6" fill="#fffbeb"/>
-          <circle cx="52" cy="15" r="1.4" fill="#67e8f9"/>
-          <circle cx="43" cy="14" r="1.2" fill="#fbbf24"/>
-          <circle cx="53" cy="22" r="1.2" fill="#f472b6"/>
-        </g>
-        <!-- Head & Fedora -->
-        <circle cx="32" cy="20.5" r="4.6" fill="#fff7ed"/>
-        <ellipse cx="32" cy="14.5" rx="15" ry="3.2" fill="#fff7ed"/>
-        <path d="M21.5 14C21.5 8.8 26.2 6.2 32 6.2C37.8 6.2 42.5 8.8 42.5 14H21.5Z" fill="#fff7ed"/>
-        <rect x="21.5" y="12.2" width="21" height="2.2" fill="#f4a261"/>
-      </svg>
-
-      <div class="glass-panel rounded-2xl px-4 py-1.5 border border-amber-300/40 text-center mt-1">
-        <div id="mjEasterTitle" class="text-xs font-extrabold text-amber-100">Лунная походка MJ ✨</div>
-        <div id="mjEasterSub" class="text-[10px] text-amber-200/75">Серебристая перчатка сияет в темноте</div>
+  <!-- Flying Sparkling Glove + Canvas Moonwalk Overlay -->
+  <div id="mjMoonwalkOverlay" class="fixed inset-0 z-[45] hidden items-center justify-center pointer-events-none overflow-hidden px-4">
+    <div id="mjMoonwalkActor" class="glove-flight-anim flex flex-col items-center">
+      <div class="glove-shimmer-anim w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-white/20 via-amber-300/20 to-cyan-300/15 border border-amber-200/45 flex items-center justify-center relative">
+        <svg class="w-16 h-16 sm:w-20 sm:h-20" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22 36L20 15C20 12.8 24 12.8 24 15V29M25 28V11C25 8.8 29.5 8.8 29.5 11V28M30.5 28V13C30.5 10.8 35 10.8 35 13V29M36 30V18C36 16 40 16 40 18V38C40 46 34 52 26 52C19 52 14 47 13 40L11 32C10.5 29.8 14 28.8 15 31L18 37"
+            fill="#fffbeb" stroke="#fde68a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="48" cy="14" r="2.2" fill="#67e8f9"/>
+          <circle cx="12" cy="12" r="1.8" fill="#fbbf24"/>
+          <circle cx="51" cy="34" r="1.8" fill="#f472b6"/>
+          <circle cx="44" cy="48" r="1.5" fill="#fff7ed"/>
+        </svg>
+      </div>
+      <div class="glass-panel rounded-2xl px-4 py-1.5 border border-amber-300/40 text-center mt-2">
+        <div id="mjEasterTitle" class="text-xs font-extrabold text-amber-100">Лунная походка и перчатка MJ ✨</div>
+        <div id="mjEasterSub" class="text-[10px] text-amber-200/75">Король поп-музыки скользит по комнате</div>
       </div>
     </div>
   </div>
@@ -379,25 +388,41 @@
       </div>
 
       <div class="cozy-scroll flex-1 overflow-y-auto p-4 space-y-4">
-        <!-- Outfits -->
+        <!-- Outfits (8 options) -->
         <div class="space-y-2">
-          <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">Свитер / наряд</div>
-          <div class="grid grid-cols-2 gap-2">
-            <button data-outfit="beige" type="button" class="outfit-btn rounded-2xl p-3 text-left border border-amber-300/45 bg-amber-400/20 transition">
+          <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">Наряды и свитеры (8 вариантов)</div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button data-outfit="beige" type="button" class="outfit-btn rounded-2xl p-2.5 text-left border border-amber-300/45 bg-amber-400/20 transition">
               <div class="text-xs font-bold text-amber-50">🧸 Бежевый свитер</div>
-              <div class="text-[10px] text-amber-200/70 mt-0.5">Тёплая классика с кулоном-сердечком</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Тёплая вязка</div>
             </button>
-            <button data-outfit="rose" type="button" class="outfit-btn rounded-2xl p-3 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
-              <div class="text-xs font-bold text-amber-50">🌸 Пудровый кардиган</div>
-              <div class="text-[10px] text-amber-200/70 mt-0.5">Нежно-розовый уют для вечера</div>
+            <button data-outfit="rose" type="button" class="outfit-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">🌸 Пудровый</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Нежный кардиган</div>
             </button>
-            <button data-outfit="mjJacket" type="button" class="outfit-btn rounded-2xl p-3 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
-              <div class="text-xs font-bold text-amber-50">👑 Красный «Thriller»</div>
-              <div class="text-[10px] text-amber-200/70 mt-0.5">Куртка в духе короля поп-музыки</div>
+            <button data-outfit="mjJacket" type="button" class="outfit-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">👑 Thriller</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Куртка в стиле MJ</div>
             </button>
-            <button data-outfit="midnight" type="button" class="outfit-btn rounded-2xl p-3 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
-              <div class="text-xs font-bold text-amber-50">🌙 Ночной лавандовый</div>
-              <div class="text-[10px] text-amber-200/70 mt-0.5">Глубокий вечерний тон для сна</div>
+            <button data-outfit="midnight" type="button" class="outfit-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">🌙 Лаванда</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Ночной трикотаж</div>
+            </button>
+            <button data-outfit="sage" type="button" class="outfit-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">🌿 Оливковый</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Спокойный лесной</div>
+            </button>
+            <button data-outfit="berry" type="button" class="outfit-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">🍒 Ягодный</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Тёплый винный</div>
+            </button>
+            <button data-outfit="creamHoodie" type="button" class="outfit-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">☁️ Облачное худи</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Мягкий оверсайз</div>
+            </button>
+            <button data-outfit="skyBlue" type="button" class="outfit-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">🩵 Небесный</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Светлый утренний</div>
             </button>
           </div>
         </div>
@@ -504,8 +529,7 @@
       <!-- Sub-tab 2: English ЕГЭ Vocabulary Booster -->
       <div id="drawer-panel-english" class="drawer-panel hidden flex-1 flex flex-col overflow-hidden px-4 pb-4">
         <div class="flex items-center justify-between gap-2 mb-2.5 shrink-0">
-          <input id="engSearch" type="text" placeholder="Поиск слова или перевода..."
-            class="flex-1 rounded-xl bg-black/35 border border-amber-200/15 px-3 py-1.5 text-xs text-amber-50 placeholder-amber-200/40 focus:outline-none focus:border-amber-400/60" />
+          <div class="text-xs text-amber-200/75">Слова для ЕГЭ по английскому</div>
           <button id="btnRandomEngWord" type="button"
             class="px-3 py-1.5 rounded-xl text-xs font-semibold text-[#23151e] bg-gradient-to-r from-[#ffd6a5] to-[#f4a261] hover:brightness-105 active:scale-95 transition shrink-0">
             🎲 Слово дня
@@ -985,19 +1009,15 @@
 
         <!-- TAB 4: ENGLISH ЕГЭ VOCABULARY BOOSTER -->
         <section id="tab-english" class="ipad-panel hidden flex-1 flex flex-col overflow-hidden px-3 sm:px-4 pb-3">
-          <div class="rounded-2xl p-3 mb-2.5 bg-gradient-to-r from-amber-500/15 to-rose-500/10 border border-amber-300/20 shrink-0">
-            <div class="flex items-center justify-between gap-2">
-              <div>
-                <div class="text-xs sm:text-sm font-bold text-amber-100">Словарь для ЕГЭ (уровень B2–C1)</div>
-                <div class="text-[10px] sm:text-[11px] text-amber-200/70">Выразительные слова, коллокации и фразовые глаголы для эссе и письма</div>
-              </div>
-              <button id="btnIpadRandomEng" type="button"
-                class="px-3 py-1.5 rounded-xl text-xs font-semibold text-[#23151e] bg-gradient-to-r from-[#ffd6a5] to-[#f4a261] hover:brightness-105 active:scale-95 transition shrink-0">
-                🎲 Случайное
-              </button>
+          <div class="rounded-2xl p-3 mb-2.5 bg-gradient-to-r from-amber-500/15 to-rose-500/10 border border-amber-300/20 shrink-0 flex items-center justify-between gap-2">
+            <div>
+              <div class="text-xs sm:text-sm font-bold text-amber-100">Словарь для ЕГЭ (уровень B2–C1)</div>
+              <div class="text-[10px] sm:text-[11px] text-amber-200/70">Необычные и сильные слова для эссе и письма</div>
             </div>
-            <input id="ipadEngSearch" type="text" placeholder="Найти слово, перевод или пример..."
-              class="mt-2.5 w-full rounded-xl bg-black/35 border border-amber-200/15 px-3 py-1.5 text-xs text-amber-50 placeholder-amber-200/40 focus:outline-none focus:border-amber-400/60" />
+            <button id="btnIpadRandomEng" type="button"
+              class="px-3 py-1.5 rounded-xl text-xs font-semibold text-[#23151e] bg-gradient-to-r from-[#ffd6a5] to-[#f4a261] hover:brightness-105 active:scale-95 transition shrink-0">
+              🎲 Слово дня
+            </button>
           </div>
           <div id="ipadEngWordsList" class="cozy-scroll flex-1 overflow-y-auto space-y-2 pr-1"></div>
         </section>
@@ -1126,38 +1146,34 @@
     const SCENE_H = 900;
 
     const ENGLISH_EGE_WORDS = [
-      { word: 'ubiquitous', pos: 'adj · C1', tr: 'вездесущий, повсеместный',
-        ex: 'Smartphones have become ubiquitous in modern teenage life.', exRu: 'Смартфоны стали повсеместными в жизни современных подростков.' },
-      { word: 'alleviate', pos: 'v · C1', tr: 'облегчать, смягчать (стресс/проблему)',
-        ex: 'Listening to calm music helps alleviate exam anxiety.', exRu: 'Спокойная музыка помогает снизить тревогу перед экзаменом.' },
-      { word: 'resilient', pos: 'adj · C1', tr: 'стойкий, жизнестойкий, умеющий восстанавливаться',
-        ex: 'She stayed resilient even during the hardest study weeks.', exRu: 'Она оставалась стойкой даже в самые сложные учебные недели.' },
-      { word: 'serendipity', pos: 'n · C1', tr: 'счастливая случайность, приятная находка',
-        ex: 'Finding each other felt like pure serendipity.', exRu: 'Встретить друг друга оказалось чистой счастливой случайностью.' },
-      { word: 'mitigate', pos: 'v · C1', tr: 'смягчать последствия, уменьшать риск',
-        ex: 'Good planning mitigates stress before deadlines.', exRu: 'Грамотное планирование снижает стресс перед дедлайнами.' },
-      { word: 'pivotal', pos: 'adj · C1', tr: 'ключевой, поворотный, решающий',
-        ex: 'This year is a pivotal moment for your future plans.', exRu: 'Этот год — ключевой этап для твоих будущих планов.' },
-      { word: 'eloquent', pos: 'adj · B2/C1', tr: 'красноречивый, выразительный',
-        ex: 'Her essay was clear, structured, and eloquent.', exRu: 'Её эссе было чётким, логичным и выразительным.' },
-      { word: 'daunting', pos: 'adj · B2/C1', tr: 'пугающий своей сложностью, непростой',
-        ex: 'The exam syllabus looks daunting at first, yet it is manageable.', exRu: 'Программа экзамена поначалу кажется сложной, но с ней реально справиться.' },
-      { word: 'culminate in', pos: 'phr v · C1', tr: 'увенчаться чем-то, привести к итогу',
-        ex: 'Months of steady practice culminated in a high score.', exRu: 'Месяцы регулярной практики привели к высокому результату.' },
-      { word: 'quintessential', pos: 'adj · C1', tr: 'идеально воплощающий суть, эталонный',
-        ex: 'Rain, warm lights, and lo-fi beats are the quintessential cozy evening.', exRu: 'Дождь, тёплый свет и lo-fi — эталон уютного вечера.' },
-      { word: 'exacerbate', pos: 'v · C1', tr: 'усугублять (проблему, усталость)',
-        ex: 'Staying up too late can exacerbate tiredness.', exRu: 'Слишком поздний отход ко сну может усилить усталость.' },
-      { word: 'pragmatic', pos: 'adj · B2/C1', tr: 'прагматичный, практичный',
-        ex: 'We took a pragmatic approach and weighed every option.', exRu: 'Мы выбрали практичный подход и взвесили все варианты.' },
-      { word: 'nostalgic', pos: 'adj · B2', tr: 'ностальгический, навевающий тёплые воспоминания',
-        ex: 'Classic tracks give the room a warm, nostalgic vibe.', exRu: 'Классические треки придают комнате тёплый ностальгический вайб.' },
-      { word: 'unprecedented', pos: 'adj · C1', tr: 'беспрецедентный, небывалый',
-        ex: 'Access to online courses offers unprecedented opportunities.', exRu: 'Доступ к онлайн-курсам открывает невиданные ранее возможности.' },
-      { word: 'concur with', pos: 'phr v · C1', tr: 'соглашаться с чьим-то мнением',
-        ex: 'I wholeheartedly concur with the first point in the graph.', exRu: 'Я полностью согласен с первым пунктом на графике.' },
-      { word: 'foster', pos: 'v · B2/C1', tr: 'способствовать развитию, взращивать',
-        ex: 'Supportive friends foster confidence and creativity.', exRu: 'Поддерживающие друзья помогают расти уверенности и творчеству.' }
+      { word: 'ubiquitous', pos: 'C1', tr: 'вездесущий, повсеместный' },
+      { word: 'alleviate', pos: 'C1', tr: 'облегчать, смягчать (тревогу, боль)' },
+      { word: 'resilient', pos: 'C1', tr: 'стойкий, жизнестойкий' },
+      { word: 'serendipity', pos: 'C1', tr: 'счастливая случайность' },
+      { word: 'mitigate', pos: 'C1', tr: 'смягчать последствия, снижать риск' },
+      { word: 'pivotal', pos: 'C1', tr: 'ключевой, поворотный' },
+      { word: 'eloquent', pos: 'B2/C1', tr: 'красноречивый, выразительный' },
+      { word: 'daunting', pos: 'B2/C1', tr: 'пугающий сложностью, непростой' },
+      { word: 'culminate in', pos: 'C1', tr: 'увенчаться чем-то, привести к итогу' },
+      { word: 'quintessential', pos: 'C1', tr: 'эталонный, идеально воплощающий суть' },
+      { word: 'exacerbate', pos: 'C1', tr: 'усугублять (проблему, усталость)' },
+      { word: 'pragmatic', pos: 'B2/C1', tr: 'прагматичный, практичный' },
+      { word: 'nostalgic', pos: 'B2', tr: 'ностальгический, навевающий воспоминания' },
+      { word: 'unprecedented', pos: 'C1', tr: 'беспрецедентный, небывалый' },
+      { word: 'concur with', pos: 'C1', tr: 'соглашаться с мнением' },
+      { word: 'foster', pos: 'B2/C1', tr: 'способствовать развитию, взращивать' },
+      { word: 'tangible', pos: 'C1', tr: 'осязаемый, вполне реальный' },
+      { word: 'ambiguous', pos: 'B2/C1', tr: 'двусмысленный, неясный' },
+      { word: 'indispensable', pos: 'B2/C1', tr: 'незаменимый' },
+      { word: 'lucrative', pos: 'C1', tr: 'прибыльный, выгодный' },
+      { word: 'scrutinize', pos: 'C1', tr: 'пристально изучать, проверять' },
+      { word: 'tenacious', pos: 'C1', tr: 'упорный, цепкий, настойчивый' },
+      { word: 'conducive to', pos: 'C1', tr: 'благоприятствующий чему-то' },
+      { word: 'detrimental', pos: 'C1', tr: 'пагубный, наносящий вред' },
+      { word: 'undermine', pos: 'C1', tr: 'подрывать, ослаблять' },
+      { word: 'ephemeral', pos: 'C1', tr: 'мимолётный, недолговечный' },
+      { word: 'candor', pos: 'C1', tr: 'искренность, прямота' },
+      { word: 'perseverance', pos: 'B2', tr: 'настойчивость, упорство' }
     ];
 
     const EGE_LUCKY_WISHES = [
@@ -1170,12 +1186,15 @@
     const roomState = {
       weather: 'sunset',       // 'sunset' | 'night' | 'rain' | 'snow'
       roomTheme: 'sunset',     // 'sunset' | 'amber' | 'velvet'
-      outfit: 'beige',         // 'beige' | 'rose' | 'mjJacket' | 'midnight'
-      hairStyle: 'loose',      // 'loose' | 'halfUp' | 'ponytail'
+      outfit: 'beige',         // 'beige' | 'rose' | 'mjJacket' | 'midnight' | 'sage' | 'berry' | 'creamHoodie' | 'skyBlue'
+      hairStyle: 'loose',      // 'loose' | 'curly' | 'halfUp' | 'ponytail'
       girlMood: 'smile',       // 'smile' | 'dreamy' | 'wink'
       headphones: false,
       glasses: false,
       pendant: true,
+      blanketTapCount: 0,
+      boyfriendState: 'none',  // 'none' | 'lyingBack' | 'betweenLegs'
+      brianMapsClicks: 0,
       catPetCount: 0,
       mjEasterTimer: 0,
       mjNightClicks: 0,
@@ -2420,6 +2439,36 @@
       if (cHisSub) cHisSub.textContent = `2 дек · исполн. ${his.turning}`;
     }
 
+    // Wall MJ Posters loader (photos/4, photos/5, photos/6 with .jpg/.jpeg/.png/.webp)
+    const wallPostersStore = {
+      items: [
+        { id: 4, base: 'photos/4', img: null, loadedUrl: null },
+        { id: 5, base: 'photos/5', img: null, loadedUrl: null },
+        { id: 6, base: 'photos/6', img: null, loadedUrl: null }
+      ],
+      init() {
+        const exts = ['.jpg', '.jpeg', '.png', '.webp'];
+        this.items.forEach((item) => {
+          let extIdx = 0;
+          const tryLoad = () => {
+            if (extIdx >= exts.length) return;
+            const url = `./${item.base}${exts[extIdx]}`;
+            const img = new Image();
+            img.onload = () => {
+              item.img = img;
+              item.loadedUrl = url;
+            };
+            img.onerror = () => {
+              extIdx++;
+              tryLoad();
+            };
+            img.src = url;
+          };
+          tryLoad();
+        });
+      }
+    };
+
     // Polaroids loader (automatically tries .jpg, .jpeg, .png, .webp from photos/)
     const polaroidsStore = {
       items: POLAROIDS_CONFIG.map((p) => ({ ...p, img: null, loadedUrl: null })),
@@ -2782,17 +2831,18 @@
     const ctx = canvas.getContext('2d', { alpha: false });
 
     const HOTSPOTS = [
-      { id: 'window',      label: 'Окно · Погода',      x: 82,   y: 112, w: 296, h: 368 },
-      { id: 'corkboard',   label: 'Полароиды · Записки',            x: 405,  y: 165, w: 120, h: 155 },
-      { id: 'fairyLights', label: 'Гирлянда',           x: 520,  y: 235, w: 430, h: 85  },
-      { id: 'lamp',        label: 'Тумбочка · Секреты',             x: 382,  y: 445, w: 96,  h: 130 },
-      { id: 'cocoa',       label: 'Какао · Комплимент', x: 465,  y: 525, w: 58,  h: 64  },
-      { id: 'tablet',      label: 'Планшет iPad',       x: 648,  y: 488, w: 108, h: 84  },
-      { id: 'cat',         label: 'Котик',              x: 805,  y: 562, w: 132, h: 86  },
-      { id: 'neonMJ',      label: 'Неон MJ',            x: 1090, y: 290, w: 170, h: 95  },
-      { id: 'candles',     label: 'Свечи',              x: 1005, y: 452, w: 72,  h: 72  },
-      { id: 'turntable',   label: 'Винил',              x: 1088, y: 450, w: 160, h: 92  },
-      { id: 'speaker',     label: 'Колонка',            x: 1262, y: 398, w: 116, h: 175 }
+      { id: 'window',      label: 'Окно · Погода',         x: 82,   y: 112, w: 296, h: 368 },
+      { id: 'corkboard',   label: 'Полароиды · Записки',   x: 405,  y: 165, w: 120, h: 155 },
+      { id: 'fairyLights', label: 'Гирлянда',              x: 520,  y: 235, w: 430, h: 85  },
+      { id: 'lamp',        label: 'Тумбочка · Секреты',    x: 376,  y: 562, w: 132, h: 164 },
+      { id: 'cocoa',       label: 'Какао · Комплимент',    x: 465,  y: 525, w: 58,  h: 64  },
+      { id: 'tablet',      label: 'Планшет iPad',          x: 648,  y: 488, w: 108, h: 84  },
+      { id: 'blanket',     label: 'Одеяло · Секрет',       x: 510,  y: 565, w: 280, h: 130 },
+      { id: 'cat',         label: 'Котик',                 x: 805,  y: 562, w: 132, h: 86  },
+      { id: 'neonMJ',      label: 'Неон MJ · Перчатка',    x: 1090, y: 290, w: 170, h: 95  },
+      { id: 'candles',     label: 'Свечи',                 x: 1005, y: 452, w: 72,  h: 72  },
+      { id: 'turntable',   label: 'Винил',                 x: 1088, y: 450, w: 160, h: 92  },
+      { id: 'speaker',     label: 'Колонка · Брайан Мапс', x: 1262, y: 398, w: 116, h: 175 }
     ];
 
     function initParticles() {
@@ -3353,103 +3403,59 @@
       ctx.fill();
       ctx.restore();
 
-      // 2) Michael Jackson Framed Posters
+      // 2) Michael Jackson Framed Posters (photos/4, photos/5, photos/6 with fallback art)
+      const p4 = wallPostersStore.items[0];
       drawPosterFrame(1002, 118, 96, 132, '#1f1016', '#f59e0b', (px, py, pw, ph) => {
-        const bg = ctx.createLinearGradient(px, py, px, py + ph);
-        bg.addColorStop(0, '#5a121b');
-        bg.addColorStop(1, '#1e0b11');
-        ctx.fillStyle = bg;
-        ctx.fillRect(px, py, pw, ph);
-        ctx.fillStyle = 'rgba(251, 191, 36, 0.25)';
-        ctx.beginPath();
-        ctx.arc(px + pw / 2, py + 58, 28, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#dc2626';
-        ctx.beginPath();
-        ctx.moveTo(px + 22, py + 106);
-        ctx.lineTo(px + 34, py + 56);
-        ctx.lineTo(px + 62, py + 56);
-        ctx.lineTo(px + 74, py + 106);
-        ctx.closePath();
-        ctx.fill();
-        ctx.strokeStyle = '#18181b';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(px + 35, py + 58); ctx.lineTo(px + 48, py + 95); ctx.lineTo(px + 61, py + 58);
-        ctx.stroke();
-        ctx.fillStyle = '#fde68a';
-        ctx.font = 'bold 11px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('THRILLER', px + pw / 2, py + 24);
+        if (p4 && p4.img) {
+          const sc = Math.max(pw / p4.img.width, ph / p4.img.height);
+          const dw = p4.img.width * sc, dh = p4.img.height * sc;
+          ctx.drawImage(p4.img, px + (pw - dw) / 2, py + (ph - dh) / 2, dw, dh);
+        } else {
+          const bg = ctx.createLinearGradient(px, py, px, py + ph);
+          bg.addColorStop(0, '#5a121b');
+          bg.addColorStop(1, '#1e0b11');
+          ctx.fillStyle = bg;
+          ctx.fillRect(px, py, pw, ph);
+          ctx.fillStyle = '#fde68a';
+          ctx.font = 'bold 11px Inter, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('MJ #4', px + pw / 2, py + ph / 2);
+        }
       });
 
+      const p5 = wallPostersStore.items[1];
       drawPosterFrame(1122, 95, 112, 154, '#13101a', '#e2c2a2', (px, py, pw, ph) => {
-        const bg = ctx.createLinearGradient(px, py, px, py + ph);
-        bg.addColorStop(0, '#1e1b33');
-        bg.addColorStop(0.65, '#3b2442');
-        bg.addColorStop(1, '#16111f');
-        ctx.fillStyle = bg;
-        ctx.fillRect(px, py, pw, ph);
-        const spot = ctx.createLinearGradient(px + pw / 2, py, px + pw / 2, py + ph);
-        spot.addColorStop(0, 'rgba(255, 232, 190, 0.42)');
-        spot.addColorStop(1, 'rgba(255, 232, 190, 0.03)');
-        ctx.fillStyle = spot;
-        ctx.beginPath();
-        ctx.moveTo(px + pw / 2 - 10, py);
-        ctx.lineTo(px + pw / 2 + 10, py);
-        ctx.lineTo(px + pw - 8, py + ph);
-        ctx.lineTo(px + 8, py + ph);
-        ctx.closePath();
-        ctx.fill();
-
-        ctx.fillStyle = '#0d0912';
-        ctx.beginPath();
-        ctx.ellipse(px + 54, py + 43, 18, 4.5, -0.22, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(px + 56, py + 38, 10, Math.PI, 0);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(px + 52, py + 48);
-        ctx.lineTo(px + 65, py + 52);
-        ctx.lineTo(px + 60, py + 88);
-        ctx.lineTo(px + 44, py + 88);
-        ctx.closePath();
-        ctx.fill();
-        ctx.strokeStyle = '#0d0912';
-        ctx.lineWidth = 4.5;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(px + 48, py + 55); ctx.lineTo(px + 34, py + 50); ctx.lineTo(px + 44, py + 43);
-        ctx.stroke();
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        ctx.moveTo(px + 49, py + 88); ctx.lineTo(px + 46, py + 124);
-        ctx.moveTo(px + 57, py + 88); ctx.lineTo(px + 65, py + 112); ctx.lineTo(px + 58, py + 125);
-        ctx.stroke();
-        ctx.fillStyle = '#f8fafc';
-        ctx.fillRect(px + 44, py + 118, 4, 6);
-        ctx.fillRect(px + 56, py + 119, 4, 6);
+        if (p5 && p5.img) {
+          const sc = Math.max(pw / p5.img.width, ph / p5.img.height);
+          const dw = p5.img.width * sc, dh = p5.img.height * sc;
+          ctx.drawImage(p5.img, px + (pw - dw) / 2, py + (ph - dh) / 2, dw, dh);
+        } else {
+          const bg = ctx.createLinearGradient(px, py, px, py + ph);
+          bg.addColorStop(0, '#1e1b33');
+          bg.addColorStop(1, '#16111f');
+          ctx.fillStyle = bg;
+          ctx.fillRect(px, py, pw, ph);
+          ctx.fillStyle = '#f8fafc';
+          ctx.font = 'bold 12px Inter, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('MJ #5', px + pw / 2, py + ph / 2);
+        }
       });
 
+      const p6 = wallPostersStore.items[2];
       drawPosterFrame(1258, 126, 94, 126, '#141418', '#94a3b8', (px, py, pw, ph) => {
-        ctx.fillStyle = '#e7e5e4';
-        ctx.fillRect(px, py, pw, ph);
-        ctx.fillStyle = '#1c1917';
-        ctx.beginPath();
-        ctx.ellipse(px + pw / 2, py + 52, 16, 19, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(px + 18, py + ph);
-        ctx.lineTo(px + 28, py + 68);
-        ctx.lineTo(px + pw - 28, py + 68);
-        ctx.lineTo(px + pw - 18, py + ph);
-        ctx.closePath();
-        ctx.fill();
-        ctx.fillStyle = '#dc2626';
-        ctx.font = '900 26px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('BAD', px + pw / 2, py + 108);
+        if (p6 && p6.img) {
+          const sc = Math.max(pw / p6.img.width, ph / p6.img.height);
+          const dw = p6.img.width * sc, dh = p6.img.height * sc;
+          ctx.drawImage(p6.img, px + (pw - dw) / 2, py + (ph - dh) / 2, dw, dh);
+        } else {
+          ctx.fillStyle = '#e7e5e4';
+          ctx.fillRect(px, py, pw, ph);
+          ctx.fillStyle = '#dc2626';
+          ctx.font = '900 22px Inter, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('MJ #6', px + pw / 2, py + ph / 2);
+        }
       });
 
       // 3) Glowing Pink & Cyan Neon Sign "MJ"
@@ -3949,70 +3955,104 @@
 
     function drawGirlCharacter(t) {
       const musicActive = roomState.audioPlaying || roomState.beatPlaying;
-      const breath = Math.sin(t * 1.75) * 2.2;
-      const swayAmp = musicActive ? 3.5 : 0.85;
-      const swayFreq = musicActive ? 2.9 : 0.9;
+      const breath = Math.sin(t * 1.75) * 2.0;
+      const swayAmp = musicActive ? 3.2 : 0.8;
+      const swayFreq = musicActive ? 2.8 : 0.9;
       const sway = Math.sin(t * swayFreq) * swayAmp;
-      const headTilt = sway * 0.013;
+      const headTilt = sway * 0.012;
 
       const gx = 716;
-      const gy = 486 + breath * 0.55;
+      const gy = 488 + breath * 0.5;
 
       ctx.save();
 
-      // 1) Long wavy chestnut back hair
+      // 1) Back hair (varies cleanly by hairStyle: loose / curly / halfUp / ponytail)
       ctx.save();
       ctx.translate(gx + sway * 0.4, gy - 82);
       ctx.rotate(headTilt * 0.6);
-      const backHair = ctx.createLinearGradient(0, -45, 0, 155);
+      const backHair = ctx.createLinearGradient(0, -45, 0, 150);
       backHair.addColorStop(0, '#3e2318');
       backHair.addColorStop(0.55, '#543020');
       backHair.addColorStop(1, '#2d1710');
       ctx.fillStyle = backHair;
-      ctx.beginPath();
-      ctx.moveTo(-48, -16);
-      ctx.bezierCurveTo(-76, 18, -82, 74, -68, 126);
-      ctx.bezierCurveTo(-58, 148, -30, 148, -18, 134);
-      ctx.lineTo(24, 136);
-      ctx.bezierCurveTo(46, 150, 74, 140, 78, 114);
-      ctx.bezierCurveTo(86, 68, 76, 16, 48, -18);
-      ctx.bezierCurveTo(32, -52, -32, -52, -48, -16);
-      ctx.closePath();
-      ctx.fill();
 
-      ctx.strokeStyle = 'rgba(155, 100, 68, 0.35)';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(-58, 22); ctx.bezierCurveTo(-72, 58, -50, 90, -60, 125);
-      ctx.moveTo(56, 20);  ctx.bezierCurveTo(72, 55, 52, 86, 64, 120);
-      ctx.stroke();
+      if (roomState.hairStyle === 'ponytail') {
+        // High ponytail flowing down back
+        ctx.beginPath();
+        ctx.moveTo(-14, -36);
+        ctx.bezierCurveTo(18, -44, 48, -16, 46, 36);
+        ctx.bezierCurveTo(44, 76, 34, 105, 22, 116);
+        ctx.bezierCurveTo(12, 95, 16, 52, 6, 12);
+        ctx.bezierCurveTo(-4, -14, -18, -24, -14, -36);
+        ctx.closePath();
+        ctx.fill();
+      } else if (roomState.hairStyle === 'curly') {
+        // Bouncy curly volume cloud
+        ctx.beginPath();
+        ctx.moveTo(-42, -16);
+        ctx.bezierCurveTo(-68, 8, -72, 62, -56, 108);
+        ctx.bezierCurveTo(-42, 126, -22, 122, -14, 112);
+        ctx.lineTo(18, 112);
+        ctx.bezierCurveTo(36, 124, 56, 118, 62, 98);
+        ctx.bezierCurveTo(74, 52, 66, 6, 42, -18);
+        ctx.closePath();
+        ctx.fill();
+
+        const curlPoints = [
+          [-52, 8], [-58, 34], [-54, 60], [-46, 86], [-34, 106],
+          [52, 6],  [58, 32],  [54, 58],  [46, 84],  [34, 104],
+          [-26, -34], [0, -39], [26, -34]
+        ];
+        curlPoints.forEach(([cpx, cpy], idx) => {
+          ctx.fillStyle = idx % 2 === 0 ? '#5c3624' : '#432518';
+          ctx.beginPath();
+          ctx.arc(cpx + Math.sin(t * 2 + idx) * 1.4, cpy, 11.5, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      } else {
+        // Sleek/wavy loose or half-up back hair
+        const hLen = roomState.hairStyle === 'halfUp' ? 92 : 124;
+        ctx.beginPath();
+        ctx.moveTo(-38, -16);
+        ctx.bezierCurveTo(-56, 16, -60, 62, -50, hLen);
+        ctx.bezierCurveTo(-40, hLen + 14, -22, hLen + 10, -14, hLen);
+        ctx.lineTo(18, hLen);
+        ctx.bezierCurveTo(32, hLen + 12, 48, hLen + 6, 52, hLen - 12);
+        ctx.bezierCurveTo(60, 58, 54, 14, 38, -18);
+        ctx.closePath();
+        ctx.fill();
+      }
       ctx.restore();
 
-      // 2) Wardrobe Outfit (Beige sweater / Rose cardigan / MJ Thriller jacket / Midnight knit)
+      // 2) Slimmer Wardrobe Outfit (8 options)
       ctx.save();
       ctx.translate(gx + sway * 0.25, gy);
 
       const outfitPalettes = {
-        beige:    ['#e3ceb5', '#cfb497', '#a98c70', '#dfcab1'],
-        rose:     ['#f4c2c2', '#e29fa8', '#b8727c', '#ecc0c6'],
-        mjJacket: ['#dc2626', '#991b1b', '#5c1118', '#f59e0b'],
-        midnight: ['#5c6bc0', '#3f51b5', '#283593', '#7986cb']
+        beige:       ['#e3ceb5', '#cfb497', '#a98c70', '#dfcab1'],
+        rose:        ['#f6c9cf', '#e4a4ae', '#b87682', '#f0b8c0'],
+        mjJacket:    ['#dc2626', '#991b1b', '#5c1118', '#f59e0b'],
+        midnight:    ['#6374d4', '#4656b8', '#2b3785', '#8292e8'],
+        sage:        ['#a7c4b5', '#7ea390', '#587868', '#95b5a5'],
+        berry:       ['#c95b7a', '#9e3b58', '#6b2038', '#dc7996'],
+        creamHoodie: ['#faf2e6', '#e4d5c3', '#bba893', '#efe2d2'],
+        skyBlue:     ['#a8d5f2', '#78b5de', '#4d87b0', '#96c8ea']
       };
       const pal = outfitPalettes[roomState.outfit] || outfitPalettes.beige;
 
-      const swGrad = ctx.createLinearGradient(-78, -24, 78, 110);
+      const swGrad = ctx.createLinearGradient(-58, -24, 58, 110);
       swGrad.addColorStop(0, pal[0]);
       swGrad.addColorStop(0.52, pal[1]);
       swGrad.addColorStop(1, pal[2]);
       ctx.fillStyle = swGrad;
       ctx.beginPath();
-      ctx.moveTo(-48, -28);
-      ctx.bezierCurveTo(-76, -16, -86, 24, -84, 76);
-      ctx.lineTo(-52, 112);
-      ctx.lineTo(54, 112);
-      ctx.lineTo(84, 74);
-      ctx.bezierCurveTo(86, 22, 74, -16, 46, -28);
-      ctx.quadraticCurveTo(0, -18, -48, -28);
+      ctx.moveTo(-34, -26);
+      ctx.bezierCurveTo(-54, -15, -60, 22, -58, 74);
+      ctx.lineTo(-38, 112);
+      ctx.lineTo(38, 112);
+      ctx.lineTo(58, 72);
+      ctx.bezierCurveTo(60, 20, 52, -15, 34, -26);
+      ctx.quadraticCurveTo(0, -18, -34, -26);
       ctx.closePath();
       ctx.fill();
 
@@ -4242,7 +4282,7 @@
         ctx.stroke();
       }
 
-      // Front chestnut hair with curtain bangs
+      // Front hair with curtain bangs (or curls)
       const hairGrad = ctx.createLinearGradient(-35, -45, 35, 95);
       hairGrad.addColorStop(0, '#5e3725');
       hairGrad.addColorStop(0.45, '#47281b');
@@ -4250,24 +4290,37 @@
       ctx.fillStyle = hairGrad;
 
       ctx.beginPath();
-      ctx.moveTo(0, -39);
-      ctx.bezierCurveTo(-28, -42, -45, -18, -42, 16);
-      ctx.bezierCurveTo(-50, 56, -40, 88, -50, 122);
-      ctx.bezierCurveTo(-36, 128, -24, 112, -26, 86);
-      ctx.bezierCurveTo(-28, 56, -24, 28, -26, 8);
-      ctx.bezierCurveTo(-24, -10, -10, -18, -2, -26);
+      ctx.moveTo(0, -38);
+      ctx.bezierCurveTo(-26, -41, -40, -18, -37, 14);
+      ctx.bezierCurveTo(-42, 48, -34, 76, -40, 106);
+      ctx.bezierCurveTo(-28, 112, -20, 98, -22, 74);
+      ctx.bezierCurveTo(-24, 48, -21, 24, -22, 6);
+      ctx.bezierCurveTo(-20, -10, -9, -18, -2, -25);
       ctx.closePath();
       ctx.fill();
 
       ctx.beginPath();
-      ctx.moveTo(0, -39);
-      ctx.bezierCurveTo(28, -42, 46, -18, 43, 16);
-      ctx.bezierCurveTo(54, 54, 44, 86, 54, 120);
-      ctx.bezierCurveTo(38, 126, 26, 110, 28, 84);
-      ctx.bezierCurveTo(30, 54, 24, 28, 26, 8);
-      ctx.bezierCurveTo(24, -10, 10, -18, 2, -26);
+      ctx.moveTo(0, -38);
+      ctx.bezierCurveTo(26, -41, 41, -18, 38, 14);
+      ctx.bezierCurveTo(44, 48, 36, 76, 42, 104);
+      ctx.bezierCurveTo(30, 110, 22, 96, 24, 72);
+      ctx.bezierCurveTo(26, 48, 21, 24, 22, 6);
+      ctx.bezierCurveTo(20, -10, 9, -18, 2, -25);
       ctx.closePath();
       ctx.fill();
+
+      if (roomState.hairStyle === 'curly') {
+        const frontCurls = [
+          [-34, -16], [-37, 4], [-38, 24], [-35, 44], [-33, 64],
+          [34, -16],  [37, 4],  [38, 24],  [35, 44],  [33, 64]
+        ];
+        frontCurls.forEach(([fcx, fcy], idx) => {
+          ctx.fillStyle = idx % 2 === 0 ? '#683e2a' : '#4a291b';
+          ctx.beginPath();
+          ctx.arc(fcx, fcy, 8.5, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
 
       ctx.strokeStyle = 'rgba(195, 134, 94, 0.42)';
       ctx.lineWidth = 3.5;
@@ -4542,6 +4595,72 @@
       ctx.ellipse(-44, 18, 9, 5.5, 0.2, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
+
+      // Boyfriend Easter Egg (lying on stomach facing away with curly hair, or between girl's legs on next tap)
+      if (roomState.boyfriendState !== 'none') {
+        ctx.save();
+        if (roomState.boyfriendState === 'lyingBack') {
+          const bx = 618, by = 648;
+          ctx.translate(bx, by + Math.sin(t * 1.8) * 1.5);
+          // Back / shoulders lying on stomach facing away
+          ctx.fillStyle = '#2d3748';
+          drawRoundRect(ctx, -44, -12, 88, 26, 12);
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(255,255,255,0.14)';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          // Curly hair head facing away
+          ctx.fillStyle = '#3b2419';
+          ctx.beginPath();
+          ctx.arc(38, -2, 16, 0, Math.PI * 2);
+          ctx.fill();
+          [
+            [26, -10], [34, -16], [44, -15], [51, -8],
+            [25, 2],   [32, 9],   [43, 10],  [51, 3]
+          ].forEach(([hcx, hcy], idx) => {
+            ctx.fillStyle = idx % 2 === 0 ? '#4e3022' : '#2e1b13';
+            ctx.beginPath();
+            ctx.arc(hcx, hcy, 6.2, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        } else if (roomState.boyfriendState === 'betweenLegs') {
+          const bx = 716, by = 618;
+          ctx.translate(bx, by + Math.sin(t * 2.2) * 1.4);
+          // Cozy curly-haired guy nestled right between girl's legs on the bed
+          ctx.fillStyle = '#2b3545';
+          drawRoundRect(ctx, -32, 8, 64, 34, 14);
+          ctx.fill();
+          ctx.fillStyle = '#f2c6ad';
+          ctx.beginPath();
+          ctx.arc(0, -2, 16, 0, Math.PI * 2);
+          ctx.fill();
+          // Curly hair crown
+          const bCurls = [
+            [-15, -8], [-11, -16], [-3, -19], [6, -18], [14, -13], [16, -5]
+          ];
+          bCurls.forEach(([ccx, ccy], idx) => {
+            ctx.fillStyle = idx % 2 === 0 ? '#4a2e20' : '#2d1b12';
+            ctx.beginPath();
+            ctx.arc(ccx, ccy, 6.5, 0, Math.PI * 2);
+            ctx.fill();
+          });
+          // Soft eyes & smile
+          ctx.strokeStyle = '#331b13';
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.arc(-5.5, -1, 3, 0.15 * Math.PI, 0.85 * Math.PI);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(5.5, -1, 3, 0.15 * Math.PI, 0.85 * Math.PI);
+          ctx.stroke();
+          ctx.strokeStyle = '#9e5652';
+          ctx.beginPath();
+          ctx.moveTo(-4, 6);
+          ctx.quadraticCurveTo(0, 9.5, 4, 6);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
     }
 
     /* ----- LAYER 6: VOLUMETRIC LIGHT, DUST, PARTICLES, HINTS ----- */
@@ -4947,7 +5066,7 @@
       applyRoomTheme(next, true);
     }
 
-    function triggerMjMoonwalkEaster(reasonTitle = 'Лунная походка MJ ✨', reasonSub = 'Серебристая перчатка сияет в темноте') {
+    function triggerMjMoonwalkEaster(reasonTitle = 'Лунная походка и перчатка MJ ✨', reasonSub = 'Король поп-музыки скользит по комнате') {
       const layer = document.getElementById('mjMoonwalkOverlay');
       const actor = document.getElementById('mjMoonwalkActor');
       const tEl = document.getElementById('mjEasterTitle');
@@ -4957,22 +5076,23 @@
       if (tEl) tEl.textContent = reasonTitle;
       if (sEl) sEl.textContent = reasonSub;
 
-      spawnSparkles(1175, 345, 20);
-      spawnSparkles(1135, 488, 14);
+      roomState.mjEasterTimer = 2.8;
+      spawnSparkles(1175, 345, 22);
+      spawnSparkles(1135, 488, 16);
       vibeEngine.playSoftChime(783.99);
 
       layer.classList.remove('hidden');
       layer.classList.add('flex');
 
-      actor.classList.remove('mj-stage-glide');
+      actor.classList.remove('glove-flight-anim');
       void actor.offsetWidth;
-      actor.classList.add('mj-stage-glide');
+      actor.classList.add('glove-flight-anim');
 
       if (roomState.mjEasterTimeout) clearTimeout(roomState.mjEasterTimeout);
       roomState.mjEasterTimeout = setTimeout(() => {
         layer.classList.add('hidden');
         layer.classList.remove('flex');
-      }, 4450);
+      }, 2750);
     }
 
     function applyRandomCozyVibe() {
@@ -5083,6 +5203,27 @@
         case 'corkboard':
           openIpad('notes');
           break;
+        case 'blanket':
+          if (roomState.boyfriendState === 'none') {
+            roomState.blanketTapCount++;
+            if (roomState.blanketTapCount >= 2) {
+              roomState.blanketTapCount = 0;
+              roomState.boyfriendState = 'lyingBack';
+              vibeEngine.playSoftChime(587.33);
+              showToast('Под одеялом кто-то устроился на животе спиной — кудряшки узнаёшь? 😉 Нажми на него ещё раз!', '🧸');
+            } else {
+              showToast('Одеяло мягко шевельнулось… нажми ещё раз', '🛏️');
+            }
+          } else if (roomState.boyfriendState === 'lyingBack') {
+            roomState.boyfriendState = 'betweenLegs';
+            vibeEngine.playSoftChime(659.25);
+            showToast('Он перебрался поближе и устроился прямо между твоих ног 💛✨ (нажми ещё раз, чтобы спрятался)', '🥰');
+          } else {
+            roomState.boyfriendState = 'none';
+            vibeEngine.playSoftChime(493.88);
+            showToast('Снова спрятался под пледом', '🌙');
+          }
+          break;
         case 'cat':
           roomState.catPurrTimer = 3.2;
           roomState.catPetCount++;
@@ -5150,6 +5291,14 @@
           break;
         case 'speaker':
           musicPlayer.togglePlayPause();
+          roomState.brianMapsClicks = (roomState.brianMapsClicks || 0) + 1;
+          if (roomState.brianMapsClicks % 2 === 0) {
+            const brianQuotes = [
+              'Пасхалка на Брайана Мапса: «И всем привет, с вами Брайн!» 🎙️✨',
+              'Отсылка к Брайану Мапсу: тёплый ламповый вайб старых добрых видео и уютного вечера 🎧💛'
+            ];
+            showToast(brianQuotes[(roomState.brianMapsClicks / 2 - 1) % brianQuotes.length], '🎬', null, 5500);
+          }
           break;
       }
     }
@@ -5337,7 +5486,7 @@
         vibeEngine.playSoftChime(587.33);
       },
       cycleHair() {
-        const order = ['loose', 'halfUp', 'ponytail'];
+        const order = ['loose', 'curly', 'halfUp', 'ponytail'];
         roomState.hairStyle = order[(order.indexOf(roomState.hairStyle) + 1) % order.length];
         this.syncUI();
         vibeEngine.playSoftChime(659.25);
@@ -5351,13 +5500,13 @@
       syncUI() {
         document.querySelectorAll('.outfit-btn').forEach((b) => {
           const active = b.getAttribute('data-outfit') === roomState.outfit;
-          b.className = `outfit-btn rounded-2xl p-3 text-left transition border ${
+          b.className = `outfit-btn rounded-2xl p-2.5 text-left transition border ${
             active
               ? 'border-amber-300/45 bg-amber-400/20'
               : 'border-white/10 bg-white/[0.04] hover:bg-white/[0.08]'
           }`;
         });
-        const hMap = { loose: 'Распущенные', halfUp: 'Мальвинка', ponytail: 'Высокий хвост' };
+        const hMap = { loose: 'Распущенные', curly: 'Кудрявые', halfUp: 'Мальвинка', ponytail: 'Высокий хвост' };
         const mMap = { smile: 'Нежная улыбка', dreamy: 'Мечтательный', wink: 'Подмигивает' };
         const hEl = document.getElementById('hairStyleLabel');
         const mEl = document.getElementById('girlMoodLabel');
@@ -5405,46 +5554,31 @@
 
     function renderEnglishCardHtml(item) {
       return `
-        <div class="rounded-2xl p-3 bg-white/[0.04] border border-amber-200/12 space-y-1">
-          <div class="flex items-baseline justify-between gap-2">
-            <span class="text-sm font-extrabold text-amber-200">${escapeHtml(item.word)}</span>
-            <span class="text-[10px] font-mono text-amber-300/75 shrink-0">${escapeHtml(item.pos)}</span>
+        <div class="rounded-2xl p-3 bg-white/[0.04] border border-amber-200/12 flex items-center justify-between gap-3">
+          <div class="min-w-0">
+            <div class="text-sm font-extrabold text-amber-200 truncate">${escapeHtml(item.word)}</div>
+            <div class="text-xs font-medium text-amber-50/90 mt-0.5">${escapeHtml(item.tr)}</div>
           </div>
-          <div class="text-xs font-semibold text-amber-50">${escapeHtml(item.tr)}</div>
-          <div class="text-[11px] italic text-amber-100/80 pt-0.5">“${escapeHtml(item.ex)}”</div>
-          <div class="text-[10px] text-amber-200/60">${escapeHtml(item.exRu)}</div>
+          <span class="px-2 py-0.5 rounded-lg bg-amber-400/15 border border-amber-300/25 text-[10px] font-mono text-amber-200 shrink-0">${escapeHtml(item.pos)}</span>
         </div>
       `;
     }
 
     function renderEnglishLists() {
-      const qDrawer = (document.getElementById('engSearch')?.value || '').trim().toLowerCase();
-      const qIpad = (document.getElementById('ipadEngSearch')?.value || '').trim().toLowerCase();
-
-      const filterFn = (q) => ENGLISH_EGE_WORDS.filter((w) =>
-        !q || w.word.toLowerCase().includes(q) || w.tr.toLowerCase().includes(q) || w.ex.toLowerCase().includes(q) || w.exRu.toLowerCase().includes(q)
-      );
-
+      const htmlCards = ENGLISH_EGE_WORDS.map(renderEnglishCardHtml).join('');
       const dList = document.getElementById('engWordsList');
-      if (dList) {
-        const arr = filterFn(qDrawer);
-        dList.innerHTML = arr.length ? arr.map(renderEnglishCardHtml).join('') : '<div class="text-xs text-amber-200/60 py-4 text-center">Ничего не найдено</div>';
-      }
-
+      if (dList) dList.innerHTML = htmlCards;
       const iList = document.getElementById('ipadEngWordsList');
-      if (iList) {
-        const arr = filterFn(qIpad);
-        iList.innerHTML = arr.length ? arr.map(renderEnglishCardHtml).join('') : '<div class="text-xs text-amber-200/60 py-4 text-center">Ничего не найдено</div>';
-      }
+      if (iList) iList.innerHTML = htmlCards;
     }
 
     function pickRandomEnglishToast() {
       const pick = ENGLISH_EGE_WORDS[Math.floor(Math.random() * ENGLISH_EGE_WORDS.length)];
       vibeEngine.playSoftChime(659.25);
-      showToast(`${pick.word} (${pick.pos}) — ${pick.tr}. «${pick.ex}»`, '📚', {
+      showToast(`${pick.word} (${pick.pos}) — ${pick.tr}`, '📚', {
         label: 'Открыть словарь',
         onClick: () => openIpad('english')
-      }, 6500);
+      }, 5500);
     }
 
     function wireUIEvents() {
@@ -5503,8 +5637,6 @@
           }
         });
       });
-      document.getElementById('engSearch')?.addEventListener('input', renderEnglishLists);
-      document.getElementById('ipadEngSearch')?.addEventListener('input', renderEnglishLists);
       document.getElementById('btnRandomEngWord')?.addEventListener('click', pickRandomEnglishToast);
       document.getElementById('btnIpadRandomEng')?.addEventListener('click', pickRandomEnglishToast);
 
@@ -5658,6 +5790,7 @@
       setupCanvasPointerControls();
       wireUIEvents();
       notesStore.init();
+      wallPostersStore.init();
       polaroidsStore.init();
       secretLetter.init();
       updateRelationshipCounters();
