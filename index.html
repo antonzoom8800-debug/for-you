@@ -380,24 +380,13 @@
             <input id="mp3FileInput" type="file" accept="audio/*,.mp3,.m4a,.wav,.ogg" multiple class="hidden" />
           </div>
 
-          <!-- Collapsible Helper for music/ Folder -->
-          <details class="mb-2.5 shrink-0 rounded-xl bg-white/[0.03] border border-amber-200/10 px-3 py-1.5 text-[11px] text-amber-100/80">
-            <summary class="cursor-pointer font-medium text-amber-200/90 select-none">
-              💡 Как добавить полные песни (папка music/ или прямо в браузер)
-            </summary>
-            <div class="mt-2 space-y-1.5 leading-relaxed text-amber-100/75 pb-1">
-              <p><strong class="text-amber-200">Способ 1 (чтобы работало по ссылке у девушки):</strong> создай папку <code class="px-1 py-0.5 rounded bg-black/40 text-amber-300">music</code> рядом с <code class="px-1 py-0.5 rounded bg-black/40 text-amber-300">index.html</code> и положи туда файлы <code class="px-1 py-0.5 rounded bg-black/40 text-amber-300">1.mp3</code> … <code class="px-1 py-0.5 rounded bg-black/40 text-amber-300">18.mp3</code> (или <code class="px-1 py-0.5 rounded bg-black/40 text-amber-300">billie-jean.mp3</code> и т.д.).</p>
-              <p><strong class="text-amber-200">Способ 2 (прямо с телефона):</strong> нажми <span class="text-amber-200">«+ Загрузить MP3»</span> и выбери сразу все скачанные треки — они сами привяжутся к хитам MJ и сохранятся офлайн в памяти браузера.</p>
-            </div>
-          </details>
-
           <!-- Scrollable Tracks List -->
           <div class="cozy-scroll flex-1 overflow-y-auto space-y-3 pr-1">
             <!-- Official 18 MJ Tracks -->
             <div>
               <div class="flex items-center justify-between px-1 mb-1.5">
                 <h3 class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">Хиты Michael Jackson (18 треков)</h3>
-                <span id="mjLoadedSummary" class="text-[11px] text-amber-200/60">HTML5 MP3</span>
+                <span id="mjLoadedSummary" class="text-[11px] text-amber-200/60">Коллекция хитов</span>
               </div>
               <div id="mjTrackList" class="space-y-1.5"></div>
             </div>
@@ -434,7 +423,7 @@
         <!-- TAB 3: WEB AUDIO VIBE MIXER + BUILT-IN LO-FI BEAT -->
         <section id="tab-mixer" class="ipad-panel hidden flex-1 flex flex-col overflow-y-auto cozy-scroll px-3 sm:px-4 pb-4 space-y-3">
           <div class="rounded-2xl p-3 bg-amber-500/10 border border-amber-300/20 text-xs text-amber-100/90 leading-relaxed">
-            Все звуки и мягкий <strong>Lo-Fi Бит (Rhodes + барабаны)</strong> синтезируются прямо в браузере через Web Audio API — работают мгновенно, без VPN и даже без интернета.
+            Собери идеальную атмосферу для вечера: смешай мягкий <strong>Lo-Fi бит</strong>, шум дождя, треск винила и мурлыканье котика — всё работает сразу и без задержек ✨
           </div>
 
           <!-- Quick Presets -->
@@ -1402,19 +1391,18 @@
       onAllCandidatesMissing() {
         this.setPlayingVisual(false);
         const t = this.currentTrack;
-        const expectedFile = t.num ? `music/${t.num}.mp3` : 'MP3 файл';
         showToast(
-          `Файл ${expectedFile} для «${t.title}» ещё не добавлен. Положи MP3 в папку music/ рядом с index.html или нажми «+ Загрузить MP3» в планшете — а пока можно включить уютный Lo-Fi бит!`,
+          `Трек «${t.title}» сейчас не успел загрузиться. Попробуй нажать ещё раз или включи уютный Lo-Fi бит!`,
           '💿',
           {
             label: 'Включить Lo-Fi Бит 🎹',
             onClick: () => {
               if (vibeEngine.levels.beat === 0) vibeEngine.toggleQuickBeat();
             },
-            secondaryLabel: 'Загрузить MP3',
-            onSecondary: () => openIpad('playlist')
+            secondaryLabel: 'Повторить',
+            onSecondary: () => this.selectTrack(t, true)
           },
-          7500
+          6500
         );
       },
 
@@ -1659,7 +1647,7 @@
       const boundCount = Object.keys(localDb.boundByTrackId).length;
       const summaryEl = document.getElementById('mjLoadedSummary');
       if (summaryEl) {
-        summaryEl.textContent = boundCount > 0 ? `Загружено локально: ${boundCount}/18` : 'music/1.mp3 … 18.mp3';
+        summaryEl.textContent = boundCount > 0 ? `Свои файлы: ${boundCount}/18` : 'Коллекция хитов';
       }
 
       // Render 18 MJ Tracks
@@ -1672,8 +1660,8 @@
           const active = musicPlayer.currentTrack && musicPlayer.currentTrack.id === t.id;
           const isBound = Boolean(localDb.boundByTrackId[t.id]);
           const statusChip = isBound
-            ? '<span class="px-1.5 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/35 text-[9px] font-semibold text-emerald-200 shrink-0">Загружен</span>'
-            : `<span class="px-1.5 py-0.5 rounded-md bg-white/5 text-[9px] font-mono text-amber-200/50 shrink-0">music/${t.num}.mp3</span>`;
+            ? '<span class="px-1.5 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/35 text-[9px] font-semibold text-emerald-200 shrink-0">Свой файл</span>'
+            : '';
 
           return `
             <button data-play-mj="${t.id}" type="button"
