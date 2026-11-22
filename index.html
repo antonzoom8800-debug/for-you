@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#140e16" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Наша комната" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <title>Уютная комната · Michael Jackson Lo-Fi</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -273,11 +277,11 @@
   <div id="roomThemeLayer" class="fixed inset-0 z-[2] pointer-events-none"
     style="background: radial-gradient(circle at 50% 42%, rgba(244, 162, 97, 0.08), rgba(20, 14, 22, 0.14));"></div>
 
-  <!-- Flying Sparkling Glove + Canvas Moonwalk Overlay -->
+  <!-- Flying Sparkling Glove (photos/7 with SVG fallback) -->
   <div id="mjMoonwalkOverlay" class="fixed inset-0 z-[45] hidden items-center justify-center pointer-events-none overflow-hidden px-4">
     <div id="mjMoonwalkActor" class="glove-flight-anim flex flex-col items-center">
-      <div class="glove-shimmer-anim w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-white/20 via-amber-300/20 to-cyan-300/15 border border-amber-200/45 flex items-center justify-center relative">
-        <svg class="w-16 h-16 sm:w-20 sm:h-20" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <div id="mjGloveVisual" class="glove-shimmer-anim w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center relative">
+        <svg class="w-20 h-20 sm:w-24 sm:h-24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M22 36L20 15C20 12.8 24 12.8 24 15V29M25 28V11C25 8.8 29.5 8.8 29.5 11V28M30.5 28V13C30.5 10.8 35 10.8 35 13V29M36 30V18C36 16 40 16 40 18V38C40 46 34 52 26 52C19 52 14 47 13 40L11 32C10.5 29.8 14 28.8 15 31L18 37"
             fill="#fffbeb" stroke="#fde68a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
           <circle cx="48" cy="14" r="2.2" fill="#67e8f9"/>
@@ -287,8 +291,8 @@
         </svg>
       </div>
       <div class="glass-panel rounded-2xl px-4 py-1.5 border border-amber-300/40 text-center mt-2">
-        <div id="mjEasterTitle" class="text-xs font-extrabold text-amber-100">Лунная походка и перчатка MJ ✨</div>
-        <div id="mjEasterSub" class="text-[10px] text-amber-200/75">Король поп-музыки скользит по комнате</div>
+        <div id="mjEasterTitle" class="text-xs font-extrabold text-amber-100">Перчатка короля поп-музыки ✨</div>
+        <div id="mjEasterSub" class="text-[10px] text-amber-200/75">Искры пролетают по комнате 👑</div>
       </div>
     </div>
   </div>
@@ -343,6 +347,37 @@
             <button data-outfit="skyBlue" type="button" class="outfit-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
               <div class="text-xs font-bold text-amber-50">🩵 Небесный</div>
               <div class="text-[10px] text-amber-200/70 mt-0.5">Светлый утренний</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Socks Picker (6 cozy options) -->
+        <div class="space-y-2">
+          <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">Носочки (6 вариантов)</div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <button data-socks="whiteHeart" type="button" class="socks-btn rounded-2xl p-2.5 text-left border border-amber-300/45 bg-amber-400/20 transition">
+              <div class="text-xs font-bold text-amber-50">🤍 С сердечками</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Белые уютные</div>
+            </button>
+            <button data-socks="pinkCozy" type="button" class="socks-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">🌸 Пудровые</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Мягкие розовые</div>
+            </button>
+            <button data-socks="striped" type="button" class="socks-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">🧦 Полосатые</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Тёплые домашние</div>
+            </button>
+            <button data-socks="beigeKnit" type="button" class="socks-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">🧸 Вязаные</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Бежевый кашемир</div>
+            </button>
+            <button data-socks="mjGlitter" type="button" class="socks-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">✨ Стиль MJ</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Белые со стразами</div>
+            </button>
+            <button data-socks="barefoot" type="button" class="socks-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">🦶 Босиком</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Без носочков</div>
             </button>
           </div>
         </div>
@@ -765,6 +800,24 @@
 
         <!-- TAB 2: COUNTERS, POLAROIDS, SECRET LETTER & ROMANTIC NOTES -->
         <section id="tab-notes" class="ipad-panel hidden flex-1 flex flex-col overflow-y-auto cozy-scroll px-3 sm:px-4 pb-4 space-y-3">
+          <!-- Dual Timezone Widget (Антон МСК & Даша +2) -->
+          <div class="grid grid-cols-2 gap-2 shrink-0">
+            <div class="rounded-2xl p-2.5 bg-gradient-to-br from-sky-500/15 to-indigo-500/10 border border-sky-300/25 flex items-center justify-between gap-2">
+              <div class="min-w-0">
+                <div class="text-[10px] uppercase tracking-wider text-sky-200/85 font-semibold truncate">🕒 У Антона (МСК)</div>
+                <div id="clockAntonDate" class="text-[10px] text-amber-200/70 truncate mt-0.5">—</div>
+              </div>
+              <div id="clockAntonTime" class="text-base sm:text-lg font-mono font-extrabold text-amber-50 shrink-0">--:--</div>
+            </div>
+            <div class="rounded-2xl p-2.5 bg-gradient-to-br from-rose-500/15 to-amber-500/10 border border-rose-300/25 flex items-center justify-between gap-2">
+              <div class="min-w-0">
+                <div class="text-[10px] uppercase tracking-wider text-rose-200/85 font-semibold truncate">🌸 У Даши (МСК+2)</div>
+                <div id="clockDashaDate" class="text-[10px] text-amber-200/70 truncate mt-0.5">—</div>
+              </div>
+              <div id="clockDashaTime" class="text-base sm:text-lg font-mono font-extrabold text-amber-50 shrink-0">--:--</div>
+            </div>
+          </div>
+
           <!-- Counters Widget: Together + Milestone + Both Birthdays -->
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 shrink-0">
             <div class="rounded-2xl p-2.5 bg-gradient-to-br from-rose-500/20 to-amber-500/10 border border-rose-300/25 text-center">
@@ -1114,6 +1167,7 @@
       weather: 'sunset',       // 'sunset' | 'night' | 'rain' | 'snow'
       roomTheme: 'sunset',     // 'sunset' | 'amber' | 'velvet'
       outfit: 'beige',         // 'beige' | 'rose' | 'mjJacket' | 'midnight' | 'sage' | 'berry' | 'creamHoodie' | 'skyBlue'
+      socks: 'whiteHeart',     // 'whiteHeart' | 'pinkCozy' | 'striped' | 'beigeKnit' | 'mjGlitter' | 'barefoot'
       hairStyle: 'loose',      // 'loose' | 'curly' | 'halfUp' | 'ponytail'
       girlMood: 'smile',       // 'smile' | 'dreamy' | 'wink'
       headphones: false,
@@ -1245,11 +1299,35 @@
       return `${m}:${r < 10 ? '0' : ''}${r}`;
     }
 
+    function formatZoneTimeDate(utcMs, offsetHours) {
+      const d = new Date(utcMs + offsetHours * 3600000);
+      const hh = String(d.getUTCHours()).padStart(2, '0');
+      const mm = String(d.getUTCMinutes()).padStart(2, '0');
+      const months = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+      const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+      const dateStr = `${days[d.getUTCDay()]}, ${d.getUTCDate()} ${months[d.getUTCMonth()]}`;
+      return { time: `${hh}:${mm}`, date: dateStr };
+    }
+
     function updateClock() {
-      const el = document.getElementById('ipadClock');
-      if (!el) return;
-      const d = new Date();
-      el.textContent = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+      const nowMs = Date.now();
+      const anton = formatZoneTimeDate(nowMs, 3); // МСК (UTC+3)
+      const dasha = formatZoneTimeDate(nowMs, 5); // МСК+2 (UTC+5)
+
+      const aTime = document.getElementById('clockAntonTime');
+      const aDate = document.getElementById('clockAntonDate');
+      const dTime = document.getElementById('clockDashaTime');
+      const dDate = document.getElementById('clockDashaDate');
+      if (aTime) aTime.textContent = anton.time;
+      if (aDate) aDate.textContent = anton.date;
+      if (dTime) dTime.textContent = dasha.time;
+      if (dDate) dDate.textContent = dasha.date;
+
+      const ipadClock = document.getElementById('ipadClock');
+      if (ipadClock) ipadClock.textContent = `МСК ${anton.time} · +2 ${dasha.time}`;
+
+      const sub = document.getElementById('statusSubtitle');
+      if (sub) sub.textContent = `Антон ${anton.time} · Даша ${dasha.time}`;
     }
 
     /* =========================================================================
@@ -2383,6 +2461,33 @@
       }
       if (cHisSub) cHisSub.textContent = `2 дек · исполн. ${his.turning}`;
     }
+
+    // MJ Glove image loader (photos/7 with .png/.jpg/.jpeg/.webp)
+    const mjGloveStore = {
+      loadedUrl: null,
+      init() {
+        const exts = ['.png', '.jpg', '.jpeg', '.webp'];
+        let extIdx = 0;
+        const tryLoad = () => {
+          if (extIdx >= exts.length) return;
+          const url = `./photos/7${exts[extIdx]}`;
+          const img = new Image();
+          img.onload = () => {
+            this.loadedUrl = url;
+            const box = document.getElementById('mjGloveVisual');
+            if (box) {
+              box.innerHTML = `<img src="${url}" alt="Перчатка MJ" class="w-full h-full object-contain drop-shadow-[0_0_22px_rgba(255,230,170,0.92)]" />`;
+            }
+          };
+          img.onerror = () => {
+            extIdx++;
+            tryLoad();
+          };
+          img.src = url;
+        };
+        tryLoad();
+      }
+    };
 
     // Wall MJ Posters loader (photos/4, photos/5, photos/6 with .jpg/.jpeg/.png/.webp)
     const wallPostersStore = {
@@ -3969,28 +4074,42 @@
         ctx.closePath();
         ctx.fill();
       } else if (roomState.hairStyle === 'curly') {
-        // Bouncy curly volume cloud
+        // Lush, soft wavy-curly chestnut volume with organic scalloped S-waves (no polka-dot circles)
+        const wv = Math.sin(t * 1.6) * 1.6;
         ctx.beginPath();
-        ctx.moveTo(-42, -16);
-        ctx.bezierCurveTo(-68, 8, -72, 62, -56, 108);
-        ctx.bezierCurveTo(-42, 126, -22, 122, -14, 112);
-        ctx.lineTo(18, 112);
-        ctx.bezierCurveTo(36, 124, 56, 118, 62, 98);
-        ctx.bezierCurveTo(74, 52, 66, 6, 42, -18);
+        ctx.moveTo(0, -45);
+        // Left cascading wavy silhouette
+        ctx.bezierCurveTo(-30, -46, -54, -30, -56, -8);
+        ctx.bezierCurveTo(-68, 6, -54, 24, -64, 42);
+        ctx.bezierCurveTo(-72, 60, -56, 78, -62, 98);
+        ctx.bezierCurveTo(-64, 116, -46, 130, -28, 124);
+        ctx.bezierCurveTo(-16, 132, 0, 124, 12, 126);
+        // Right cascading wavy silhouette
+        ctx.bezierCurveTo(32, 132, 54, 122, 60, 102);
+        ctx.bezierCurveTo(68, 82, 54, 64, 64, 46);
+        ctx.bezierCurveTo(72, 26, 56, 8, 56, -8);
+        ctx.bezierCurveTo(54, -30, 30, -46, 0, -45);
         ctx.closePath();
         ctx.fill();
 
-        const curlPoints = [
-          [-52, 8], [-58, 34], [-54, 60], [-46, 86], [-34, 106],
-          [52, 6],  [58, 32],  [54, 58],  [46, 84],  [34, 104],
-          [-26, -34], [0, -39], [26, -34]
-        ];
-        curlPoints.forEach(([cpx, cpy], idx) => {
-          ctx.fillStyle = idx % 2 === 0 ? '#5c3624' : '#432518';
-          ctx.beginPath();
-          ctx.arc(cpx + Math.sin(t * 2 + idx) * 1.4, cpy, 11.5, 0, Math.PI * 2);
-          ctx.fill();
-        });
+        // Deep shadow wave ribbons inside back hair
+        ctx.strokeStyle = 'rgba(32, 14, 9, 0.55)';
+        ctx.lineWidth = 4.2;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(-46, 6);  ctx.bezierCurveTo(-60, 26, -38, 46, -52, 70); ctx.bezierCurveTo(-60, 86, -44, 104, -38, 118);
+        ctx.moveTo(46, 6);   ctx.bezierCurveTo(60, 26, 38, 46, 52, 70);    ctx.bezierCurveTo(60, 86, 44, 104, 38, 118);
+        ctx.stroke();
+
+        // Warm chestnut-caramel highlight ringlets
+        ctx.strokeStyle = 'rgba(182, 120, 80, 0.42)';
+        ctx.lineWidth = 2.6;
+        ctx.beginPath();
+        ctx.moveTo(-50 + wv, 14); ctx.bezierCurveTo(-62 + wv, 32, -44 + wv, 50, -55 + wv, 74);
+        ctx.moveTo(50 - wv, 14);  ctx.bezierCurveTo(62 - wv, 32, 44 - wv, 50, 55 - wv, 74);
+        ctx.moveTo(-40, 86); ctx.quadraticCurveTo(-50, 102, -34, 114);
+        ctx.moveTo(40, 86);  ctx.quadraticCurveTo(50, 102, 34, 114);
+        ctx.stroke();
       } else {
         // Sleek/wavy loose or half-up back hair
         const hLen = roomState.hairStyle === 'halfUp' ? 92 : 124;
@@ -4249,20 +4368,7 @@
       ctx.ellipse(0, 26.2, 4.5, 1.8, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Optional cozy glasses
-      if (roomState.glasses) {
-        ctx.strokeStyle = 'rgba(245, 220, 195, 0.85)';
-        ctx.lineWidth = 1.6;
-        ctx.beginPath();
-        drawRoundRect(ctx, -22, -3, 16.5, 11, 4);
-        ctx.stroke();
-        ctx.beginPath();
-        drawRoundRect(ctx, 5.5, -3, 16.5, 11, 4);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(-5.5, 2); ctx.lineTo(5.5, 2);
-        ctx.stroke();
-      }
+
 
       // Front hair with curtain bangs (or curls)
       const hairGrad = ctx.createLinearGradient(-35, -45, 35, 95);
@@ -4292,16 +4398,47 @@
       ctx.fill();
 
       if (roomState.hairStyle === 'curly') {
-        const frontCurls = [
-          [-34, -16], [-37, 4], [-38, 24], [-35, 44], [-33, 64],
-          [34, -16],  [37, 4],  [38, 24],  [35, 44],  [33, 64]
-        ];
-        frontCurls.forEach(([fcx, fcy], idx) => {
-          ctx.fillStyle = idx % 2 === 0 ? '#683e2a' : '#4a291b';
-          ctx.beginPath();
-          ctx.arc(fcx, fcy, 8.5, 0, Math.PI * 2);
-          ctx.fill();
-        });
+        // Soft spiral S-wave ringlets framing both sides of the face
+        ctx.save();
+        ctx.lineCap = 'round';
+        // Left & right sculpted curly side strands
+        ctx.fillStyle = '#4e2c1d';
+        ctx.beginPath();
+        ctx.moveTo(-36, -12);
+        ctx.bezierCurveTo(-48, 2, -34, 16, -45, 32);
+        ctx.bezierCurveTo(-52, 48, -36, 62, -44, 80);
+        ctx.bezierCurveTo(-48, 94, -36, 108, -28, 102);
+        ctx.bezierCurveTo(-22, 88, -32, 74, -26, 56);
+        ctx.bezierCurveTo(-22, 38, -32, 22, -26, 6);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(36, -12);
+        ctx.bezierCurveTo(48, 2, 34, 16, 45, 32);
+        ctx.bezierCurveTo(52, 48, 36, 62, 44, 80);
+        ctx.bezierCurveTo(48, 94, 36, 108, 28, 102);
+        ctx.bezierCurveTo(22, 88, 32, 74, 26, 56);
+        ctx.bezierCurveTo(22, 38, 32, 22, 26, 6);
+        ctx.closePath();
+        ctx.fill();
+
+        // Delicate wavy highlights along the ringlets
+        ctx.strokeStyle = 'rgba(204, 142, 98, 0.48)';
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(-35, -4); ctx.bezierCurveTo(-44, 10, -30, 22, -40, 38); ctx.bezierCurveTo(-46, 52, -32, 66, -38, 84);
+        ctx.moveTo(35, -4);  ctx.bezierCurveTo(44, 10, 30, 22, 40, 38);   ctx.bezierCurveTo(46, 52, 32, 66, 38, 84);
+        ctx.stroke();
+
+        // Soft wispy curly tendrils near forehead
+        ctx.strokeStyle = '#5a3423';
+        ctx.lineWidth = 2.6;
+        ctx.beginPath();
+        ctx.moveTo(-16, -24); ctx.quadraticCurveTo(-24, -14, -18, -6);
+        ctx.moveTo(16, -24);  ctx.quadraticCurveTo(24, -14, 18, -6);
+        ctx.stroke();
+        ctx.restore();
       }
 
       ctx.strokeStyle = 'rgba(195, 134, 94, 0.42)';
@@ -4324,6 +4461,55 @@
         ctx.ellipse(-5, -24, 5, 3, -0.3, 0, Math.PI * 2);
         ctx.ellipse(5, -24, 5, 3, 0.3, 0, Math.PI * 2);
         ctx.fill();
+      }
+
+      // Optional cozy glasses (clear dark-bronze frames + soft lens tint + white glint)
+      if (roomState.glasses) {
+        ctx.save();
+        // Temples going back to ears
+        ctx.strokeStyle = '#3a2219';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(-24, 1.5); ctx.lineTo(-31, -0.5);
+        ctx.moveTo(24, 1.5);  ctx.lineTo(31, -0.5);
+        ctx.stroke();
+
+        // Soft translucent lens fill
+        ctx.fillStyle = 'rgba(215, 238, 255, 0.18)';
+        ctx.beginPath();
+        ctx.ellipse(-13.5, 3, 10.2, 8.2, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(13.5, 3, 10.2, 8.2, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Crisp dark-espresso rims with subtle warm gold inner highlight
+        ctx.strokeStyle = '#2d1a14';
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.ellipse(-13.5, 3, 10.2, 8.2, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(13.5, 3, 10.2, 8.2, 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Nose bridge
+        ctx.strokeStyle = '#b08968';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(-3.3, 1.8);
+        ctx.quadraticCurveTo(0, -0.2, 3.3, 1.8);
+        ctx.stroke();
+
+        // Diagonal lens specular reflection glints
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.52)';
+        ctx.lineWidth = 1.5;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(-18.5, -1); ctx.lineTo(-14.5, 2.5);
+        ctx.moveTo(8.5, -1);   ctx.lineTo(12.5, 2.5);
+        ctx.stroke();
+        ctx.restore();
       }
 
       // Optional headphones
@@ -4448,45 +4634,250 @@
       ctx.restore();
     }
 
-    function drawBlanketAndCat(t) {
-      const duvGrad = ctx.createLinearGradient(500, 540, 960, 730);
-      duvGrad.addColorStop(0, '#c78c84');
-      duvGrad.addColorStop(0.45, '#a86b6c');
-      duvGrad.addColorStop(1, '#6e3f49');
-      ctx.fillStyle = duvGrad;
+    function drawGirlFoot(x, y, side, socksStyle) {
+      // side: -1 (left foot) or +1 (right foot), nicely sculpted ankle, heel, arch, and toes
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(side, 1);
+
+      const drawFootPath = () => {
+        ctx.beginPath();
+        ctx.moveTo(-11, -24);
+        ctx.bezierCurveTo(-13, -8, -14, 6, -12, 16);
+        ctx.bezierCurveTo(-10, 24, -2, 27, 8, 25);
+        ctx.bezierCurveTo(18, 23, 24, 15, 21, 7);
+        ctx.bezierCurveTo(18, 0, 12, -5, 10, -24);
+        ctx.closePath();
+      };
+
+      // Subtle shadow on sheet/blanket
+      ctx.fillStyle = 'rgba(32, 14, 22, 0.28)';
       ctx.beginPath();
-      ctx.moveTo(504, 578);
-      ctx.bezierCurveTo(605, 538, 770, 540, 956, 578);
+      ctx.ellipse(4, 22, 18, 6, 0.1, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (socksStyle === 'barefoot') {
+        const skinGrad = ctx.createLinearGradient(-10, -22, 20, 24);
+        skinGrad.addColorStop(0, '#f6ccb3');
+        skinGrad.addColorStop(0.6, '#ecc0a5');
+        skinGrad.addColorStop(1, '#dba488');
+        ctx.fillStyle = skinGrad;
+        drawFootPath();
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(165, 104, 82, 0.28)';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        // Soft sculpted toes along the outer curved edge
+        const toes = [
+          [16, 10, 4.2, 3.0],
+          [14, 15.5, 3.3, 2.4],
+          [10.5, 19.5, 2.8, 2.1],
+          [6.5, 21.8, 2.4, 1.8],
+          [2.5, 22.8, 2.0, 1.6]
+        ];
+        toes.forEach(([tx, ty, rx, ry]) => {
+          ctx.fillStyle = '#f4c7ae';
+          ctx.beginPath();
+          ctx.ellipse(tx, ty, rx, ry, 0.25, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(165, 104, 82, 0.24)';
+          ctx.lineWidth = 0.9;
+          ctx.stroke();
+        });
+      } else {
+        const sockPalettes = {
+          whiteHeart: { main: '#faf5ef', shade: '#e2d7cd', cuff: '#f4c2c2', accent: '#e11d48' },
+          pinkCozy:   { main: '#f7cad0', shade: '#dda0aa', cuff: '#ffe5ec', accent: '#ffffff' },
+          striped:    { main: '#f6eadc', shade: '#d8c5b3', cuff: '#b56576', accent: '#b56576' },
+          beigeKnit:  { main: '#e6d3bd', shade: '#bfa68b', cuff: '#f3e5d4', accent: '#9c7f62' },
+          mjGlitter:  { main: '#ffffff', shade: '#dbe4f0', cuff: '#e2e8f0', accent: '#67e8f9' }
+        };
+        const sp = sockPalettes[socksStyle] || sockPalettes.whiteHeart;
+
+        const sGrad = ctx.createLinearGradient(-12, -24, 22, 24);
+        sGrad.addColorStop(0, sp.main);
+        sGrad.addColorStop(1, sp.shade);
+        ctx.fillStyle = sGrad;
+        drawFootPath();
+        ctx.fill();
+
+        // Clip sock pattern inside foot silhouette
+        ctx.save();
+        drawFootPath();
+        ctx.clip();
+
+        // Ribbed top cuff
+        ctx.fillStyle = sp.cuff;
+        ctx.fillRect(-16, -26, 36, 9);
+        ctx.strokeStyle = 'rgba(0,0,0,0.12)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(-16, -17); ctx.lineTo(20, -17);
+        ctx.stroke();
+
+        // Toe & heel patch
+        ctx.fillStyle = 'rgba(255,255,255,0.22)';
+        ctx.beginPath();
+        ctx.arc(17, 13, 9, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (socksStyle === 'striped') {
+          ctx.fillStyle = sp.accent;
+          ctx.fillRect(-16, -10, 42, 4.5);
+          ctx.fillRect(-16, 1, 42, 4.5);
+          ctx.fillRect(-16, 12, 42, 4.5);
+        } else if (socksStyle === 'whiteHeart') {
+          ctx.fillStyle = sp.accent;
+          drawHeart(ctx, 2, -2, 4.6);
+          ctx.fill();
+        } else if (socksStyle === 'beigeKnit') {
+          ctx.strokeStyle = 'rgba(130, 98, 70, 0.25)';
+          ctx.lineWidth = 1.4;
+          for (let rx = -10; rx <= 14; rx += 5) {
+            ctx.beginPath();
+            ctx.moveTo(rx, -24); ctx.lineTo(rx + 2, 26);
+            ctx.stroke();
+          }
+        } else if (socksStyle === 'mjGlitter') {
+          // Sparkling rhinestones on white MJ socks
+          [[-4, -8], [4, -4], [-2, 4], [8, 7], [1, 14], [12, 13]].forEach(([gx, gy], idx) => {
+            ctx.fillStyle = idx % 2 === 0 ? '#67e8f9' : '#fbbf24';
+            ctx.beginPath();
+            ctx.arc(gx, gy, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+        ctx.restore();
+
+        // Crisp subtle outline
+        ctx.strokeStyle = 'rgba(65, 42, 45, 0.22)';
+        ctx.lineWidth = 1.2;
+        drawFootPath();
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    function drawGirlLegsAndFeet(t, revealBlend) {
+      const socks = roomState.socks || 'whiteHeart';
+      const legBreath = Math.sin(t * 1.75) * 1.2;
+
+      ctx.save();
+      if (revealBlend > 0.02) {
+        // Legs comfortably parted on the bedsheet when duvet shifts back for boyfriend's head
+        ctx.save();
+        ctx.globalAlpha = Math.min(1, revealBlend * 1.25);
+
+        const drawLeg = (side) => {
+          // side = -1 (left leg), +1 (right leg)
+          const hipX = 716 + side * 34;
+          const kneeX = 716 + side * 88;
+          const ankleX = 716 + side * 74;
+
+          // Cozy thigh & knee in soft home shorts/skin
+          const legGrad = ctx.createLinearGradient(hipX, 558, kneeX, 668);
+          legGrad.addColorStop(0, '#f3c7ad');
+          legGrad.addColorStop(0.65, '#e8b79b');
+          legGrad.addColorStop(1, '#d9a487');
+          ctx.fillStyle = legGrad;
+
+          ctx.beginPath();
+          ctx.moveTo(hipX - side * 14, 562);
+          ctx.bezierCurveTo(hipX + side * 26, 566, kneeX + side * 22, 608, kneeX + side * 10, 646);
+          ctx.bezierCurveTo(ankleX + side * 16, 668, ankleX + side * 10, 682, ankleX - side * 10, 682);
+          ctx.bezierCurveTo(ankleX - side * 14, 666, kneeX - side * 22, 636, hipX - side * 20, 594);
+          ctx.closePath();
+          ctx.fill();
+
+          // Soft shadow along inner thigh
+          ctx.strokeStyle = 'rgba(148, 86, 68, 0.22)';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        };
+
+        drawLeg(-1);
+        drawLeg(1);
+        ctx.restore();
+      }
+
+      // Feet always visible at the lower part of the bed (slightly wider apart when boyfriend is between her legs)
+      const spread = revealBlend * 22;
+      const footY = 678 + legBreath * 0.4 + (1 - revealBlend) * 6;
+      drawGirlFoot(650 - spread, footY, -1, socks);
+      drawGirlFoot(782 + spread, footY, 1, socks);
+      ctx.restore();
+    }
+
+    function drawBlanketAndCat(t) {
+      const p = roomState.boyfriendPoseBlend || 0; // 0 = normal duvet, 1 = shifted open showing her legs & him between them
+      const a = roomState.boyfriendAlpha || 0;
+
+      // 0) Soft bedsheet underneath the duvet (becomes visible as duvet shifts back)
+      const sheetGrad = ctx.createLinearGradient(500, 540, 960, 720);
+      sheetGrad.addColorStop(0, '#f4e6dc');
+      sheetGrad.addColorStop(0.55, '#dec9bc');
+      sheetGrad.addColorStop(1, '#b89f93');
+      ctx.fillStyle = sheetGrad;
+      ctx.beginPath();
+      ctx.moveTo(504, 574);
+      ctx.bezierCurveTo(610, 542, 770, 544, 956, 574);
       ctx.lineTo(966, 706);
       ctx.quadraticCurveTo(732, 728, 494, 706);
       ctx.closePath();
       ctx.fill();
 
-      ctx.strokeStyle = 'rgba(255, 225, 210, 0.2)';
+      // 1) Girl's legs (revealed smoothly when p > 0) + cute feet in chosen socks
+      drawGirlLegsAndFeet(t, p);
+
+      // 2) Main Duvet (smoothly shifts & parts open when p -> 1 so her legs & his head between them are clearly visible)
+      const topDrop = p * 98; // shifts top edge down when boyfriend is between her legs
+      const duvGrad = ctx.createLinearGradient(500, 540 + topDrop, 960, 730);
+      duvGrad.addColorStop(0, '#c78c84');
+      duvGrad.addColorStop(0.45, '#a86b6c');
+      duvGrad.addColorStop(1, '#6e3f49');
+      ctx.fillStyle = duvGrad;
+      ctx.beginPath();
+      ctx.moveTo(504, 578 + topDrop * 0.45);
+      ctx.bezierCurveTo(605, 538 + topDrop * 1.15, 770, 540 + topDrop * 1.15, 956, 578 + topDrop * 0.25);
+      ctx.lineTo(966, 706);
+      ctx.quadraticCurveTo(732, 728, 494, 706);
+      ctx.closePath();
+      ctx.fill();
+
+      // Cozy duvet fold rim along the shifted edge
+      ctx.strokeStyle = 'rgba(255, 225, 210, 0.24)';
       ctx.lineWidth = 4;
       ctx.beginPath();
-      ctx.moveTo(540, 595); ctx.quadraticCurveTo(655, 570, 755, 610);
-      ctx.moveTo(640, 645); ctx.quadraticCurveTo(780, 620, 920, 650);
+      ctx.moveTo(516, 586 + topDrop * 0.5);
+      ctx.bezierCurveTo(620, 554 + topDrop * 1.1, 775, 558 + topDrop * 1.1, 944, 586 + topDrop * 0.25);
       ctx.stroke();
 
-      ctx.strokeStyle = 'rgba(58, 25, 36, 0.28)';
-      ctx.lineWidth = 5;
-      ctx.beginPath();
-      ctx.moveTo(525, 628); ctx.quadraticCurveTo(665, 608, 790, 655);
-      ctx.stroke();
+      if (p < 0.7) {
+        ctx.save();
+        ctx.globalAlpha = 1 - p / 0.7;
+        ctx.strokeStyle = 'rgba(58, 25, 36, 0.26)';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(525, 628); ctx.quadraticCurveTo(665, 608, 790, 655);
+        ctx.stroke();
+        ctx.restore();
+      }
 
-      // Chunky cream knitted throw
-      const throwGrad = ctx.createLinearGradient(740, 575, 965, 725);
+      // Chunky cream knitted throw on right side (slides slightly right when open)
+      const throwShift = p * 42;
+      const throwGrad = ctx.createLinearGradient(740 + throwShift, 575, 965, 725);
       throwGrad.addColorStop(0, '#ecd8c4');
       throwGrad.addColorStop(0.6, '#cfb39b');
       throwGrad.addColorStop(1, '#9d7f6c');
       ctx.fillStyle = throwGrad;
       ctx.beginPath();
-      ctx.moveTo(748, 588);
-      ctx.quadraticCurveTo(855, 566, 960, 588);
+      ctx.moveTo(748 + throwShift, 588);
+      ctx.quadraticCurveTo(855 + throwShift * 0.4, 566, 960, 588);
       ctx.lineTo(966, 710);
-      ctx.quadraticCurveTo(852, 728, 728, 712);
-      ctx.quadraticCurveTo(722, 648, 748, 588);
+      ctx.quadraticCurveTo(852 + throwShift * 0.3, 728, 728 + throwShift, 712);
+      ctx.quadraticCurveTo(722 + throwShift, 648, 748 + throwShift, 588);
       ctx.closePath();
       ctx.fill();
 
@@ -4494,12 +4885,244 @@
       ctx.lineWidth = 2.5;
       for (let ky = 606; ky < 706; ky += 18) {
         ctx.beginPath();
-        ctx.moveTo(742, ky);
-        ctx.quadraticCurveTo(852, ky - 8, 956, ky + 2);
+        ctx.moveTo(742 + throwShift, ky);
+        ctx.quadraticCurveTo(852 + throwShift * 0.4, ky - 8, 956, ky + 2);
         ctx.stroke();
       }
 
-      // Bed footboard rail & legs
+      // Re-draw feet over the bottom duvet rim so socks stay crisp and visible!
+      const spread = p * 22;
+      const footY = 678 + Math.sin(t * 1.75) * 0.5 + (1 - p) * 6;
+      drawGirlFoot(650 - spread, footY, -1, roomState.socks || 'whiteHeart');
+      drawGirlFoot(782 + spread, footY, 1, roomState.socks || 'whiteHeart');
+
+      // 3) Full-Sized Boyfriend Easter Egg (normal human proportions matching the girl!)
+      if (a > 0.01) {
+        const bfBreath = Math.sin(t * 1.65) * 2.0;
+
+        // Pose 1: Lying on stomach facing away on left/center blanket (normal full human scale)
+        if (p < 0.99) {
+          ctx.save();
+          ctx.globalAlpha = a * (1 - p);
+          const bx = 608 + p * 75;
+          const by = 636 - p * 20 + bfBreath * 0.6;
+          ctx.translate(bx, by);
+
+          // Soft blanket contact shadow
+          ctx.fillStyle = 'rgba(30, 12, 22, 0.44)';
+          ctx.beginPath();
+          ctx.ellipse(2, 28, 108, 24, 0.03, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Relaxed arms resting forward toward pillows
+          ctx.fillStyle = '#343952';
+          ctx.beginPath();
+          ctx.moveTo(32, -26);
+          ctx.quadraticCurveTo(78, -42, 98, -20);
+          ctx.quadraticCurveTo(84, -4, 48, -4);
+          ctx.closePath();
+          ctx.fill();
+          ctx.beginPath();
+          ctx.moveTo(22, 20);
+          ctx.quadraticCurveTo(70, 34, 92, 18);
+          ctx.quadraticCurveTo(76, 6, 38, 4);
+          ctx.closePath();
+          ctx.fill();
+
+          // Broad oversized dark hoodie back (realistic human torso scale)
+          const backGrad = ctx.createLinearGradient(-98, -36, 56, 36);
+          backGrad.addColorStop(0, '#24283b');
+          backGrad.addColorStop(0.42, '#3a405a');
+          backGrad.addColorStop(0.82, '#4c516e');
+          backGrad.addColorStop(1, '#292d42');
+          ctx.fillStyle = backGrad;
+          ctx.beginPath();
+          ctx.moveTo(-96, 6);
+          ctx.bezierCurveTo(-84, -26, -34, -36, 26, -32);
+          ctx.bezierCurveTo(54, -30, 62, -16, 62, 3);
+          ctx.bezierCurveTo(62, 22, 44, 34, 16, 34);
+          ctx.bezierCurveTo(-36, 36, -88, 30, -96, 6);
+          ctx.closePath();
+          ctx.fill();
+
+          // Rim highlight & natural fabric folds
+          ctx.strokeStyle = 'rgba(255, 224, 195, 0.2)';
+          ctx.lineWidth = 2.6;
+          ctx.beginPath();
+          ctx.moveTo(-64, -19); ctx.quadraticCurveTo(-12, -30, 38, -22);
+          ctx.stroke();
+
+          ctx.strokeStyle = 'rgba(18, 16, 28, 0.36)';
+          ctx.lineWidth = 2.4;
+          ctx.beginPath();
+          ctx.moveTo(-54, 6); ctx.quadraticCurveTo(-12, 13, 28, 5);
+          ctx.moveTo(-26, -12); ctx.quadraticCurveTo(-2, -4, 14, -16);
+          ctx.stroke();
+
+          // Relaxed hood folded at nape
+          ctx.fillStyle = '#30354c';
+          ctx.beginPath();
+          ctx.ellipse(42, 0, 16, 26, 0.08, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(255, 224, 195, 0.14)';
+          ctx.lineWidth = 1.6;
+          ctx.stroke();
+
+          // Blanket corner draped over his waist/legs
+          const drapeGrad = ctx.createLinearGradient(-108, -14, -60, 38);
+          drapeGrad.addColorStop(0, '#ba7c78');
+          drapeGrad.addColorStop(1, '#7a454f');
+          ctx.fillStyle = drapeGrad;
+          ctx.beginPath();
+          ctx.moveTo(-108, 22);
+          ctx.quadraticCurveTo(-84, -22, -54, -8);
+          ctx.quadraticCurveTo(-72, 14, -62, 34);
+          ctx.closePath();
+          ctx.fill();
+
+          // Full-sized head (r ~ 27px) facing away with rich layered dark-brown curls
+          const hx = 74, hy = -2;
+          ctx.fillStyle = '#291710';
+          ctx.beginPath();
+          ctx.ellipse(hx, hy, 28, 26, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          const backCurls = [
+            [-18, -16, 10.5], [-4, -22, 11.2], [11, -20, 10.5], [21, -10, 10.0],
+            [-21, -1, 10.4],  [-7, -6, 11.6],  [8, -4, 11.2],   [22, 4, 10.0],
+            [-16, 15, 10.2],  [-1, 18, 11.0],  [14, 16, 10.4],  [4, 6, 10.8]
+          ];
+          backCurls.forEach(([cxo, cyo, cr], idx) => {
+            const cg = ctx.createRadialGradient(hx + cxo - 3, hy + cyo - 3, 1.5, hx + cxo, hy + cyo, cr);
+            cg.addColorStop(0, idx % 3 === 0 ? '#6e4733' : '#543323');
+            cg.addColorStop(1, '#24140d');
+            ctx.fillStyle = cg;
+            ctx.beginPath();
+            ctx.arc(hx + cxo, hy + cyo, cr, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          ctx.strokeStyle = 'rgba(255, 224, 185, 0.24)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(hx + 2, hy - 12, 14, Math.PI * 1.15, Math.PI * 1.85);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // Pose 2: Full-sized boyfriend nestled right between her legs (head clearly resting between her thighs/knees)
+        if (p > 0.01) {
+          ctx.save();
+          ctx.globalAlpha = a * p;
+          const bx = 716;
+          const by = 616 + (1 - p) * 20 + bfBreath * 0.55;
+          ctx.translate(bx, by);
+
+          // Soft shadow on sheet between her legs
+          ctx.fillStyle = 'rgba(30, 12, 22, 0.38)';
+          ctx.beginPath();
+          ctx.ellipse(0, 34, 64, 28, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Broad hoodie shoulders & upper back extending down between her legs
+          const shGrad = ctx.createLinearGradient(-58, 12, 58, 86);
+          shGrad.addColorStop(0, '#454b68');
+          shGrad.addColorStop(0.55, '#333850');
+          shGrad.addColorStop(1, '#222536');
+          ctx.fillStyle = shGrad;
+          ctx.beginPath();
+          ctx.moveTo(-58, 72);
+          ctx.bezierCurveTo(-62, 32, -40, 14, 0, 14);
+          ctx.bezierCurveTo(40, 14, 62, 32, 58, 72);
+          ctx.quadraticCurveTo(0, 86, -58, 72);
+          ctx.closePath();
+          ctx.fill();
+
+          // Relaxed arms resting cozily along her thighs/blanket
+          ctx.fillStyle = '#393f59';
+          ctx.beginPath();
+          ctx.ellipse(-44, 40, 16, 26, 0.36, 0, Math.PI * 2);
+          ctx.ellipse(44, 40, 16, 26, -0.36, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Soft hoodie collar/hood folds
+          ctx.strokeStyle = 'rgba(255, 224, 195, 0.16)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(0, 18, 24, 0.15 * Math.PI, 0.85 * Math.PI);
+          ctx.stroke();
+
+          // Full-sized head (r ~ 26px) resting comfortably between her legs
+          ctx.fillStyle = '#ebbfa4';
+          ctx.beginPath();
+          ctx.ellipse(0, 4, 25, 22, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Soft warm blush on cheeks
+          ctx.fillStyle = 'rgba(242, 132, 130, 0.25)';
+          ctx.beginPath();
+          ctx.ellipse(-12, 8, 7, 4.2, 0, 0, Math.PI * 2);
+          ctx.ellipse(12, 8, 7, 4.2, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Peaceful happy closed eyes
+          ctx.strokeStyle = '#331c13';
+          ctx.lineWidth = 2.1;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.arc(-9, 6, 4.5, 0.15 * Math.PI, 0.85 * Math.PI);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(9, 6, 4.5, 0.15 * Math.PI, 0.85 * Math.PI);
+          ctx.stroke();
+
+          // Gentle content smile
+          ctx.strokeStyle = '#a35d58';
+          ctx.lineWidth = 2.0;
+          ctx.beginPath();
+          ctx.moveTo(-5.5, 15);
+          ctx.quadraticCurveTo(0, 19, 5.5, 15);
+          ctx.stroke();
+
+          // Full voluminous curly hair crown
+          const topCurls = [
+            [-24, -4, 10.2], [-20, -16, 11.2], [-9, -23, 12.0], [5, -24, 12.2],
+            [18, -18, 11.2], [24, -5, 10.2],   [-12, -11, 11.0], [1, -12, 11.6], [13, -10, 10.8]
+          ];
+          topCurls.forEach(([ccx, ccy, ccr], idx) => {
+            const cg = ctx.createRadialGradient(ccx - 2.5, ccy - 2.5, 1.5, ccx, ccy, ccr);
+            cg.addColorStop(0, idx % 2 === 0 ? '#69422e' : '#4f3020');
+            cg.addColorStop(1, '#24150e');
+            ctx.fillStyle = cg;
+            ctx.beginPath();
+            ctx.arc(ccx, ccy, ccr, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          // Soft screen glow from iPad on his curls
+          const padGlow = ctx.createRadialGradient(0, -18, 3, 0, -18, 34);
+          padGlow.addColorStop(0, 'rgba(215, 238, 255, 0.3)');
+          padGlow.addColorStop(1, 'rgba(215, 238, 255, 0)');
+          ctx.fillStyle = padGlow;
+          ctx.beginPath();
+          ctx.arc(0, -16, 34, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Shifted lower blanket edge gently covering his lower back
+          ctx.fillStyle = '#995c61';
+          ctx.beginPath();
+          ctx.moveTo(-66, 66);
+          ctx.quadraticCurveTo(0, 84, 66, 66);
+          ctx.lineTo(68, 86);
+          ctx.quadraticCurveTo(0, 96, -68, 86);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.restore();
+        }
+      }
+
+      // 4) Bed footboard rail & legs (always on top of lower blanket edge)
       ctx.fillStyle = '#4e2e2c';
       drawRoundRect(ctx, 492, 696, 478, 28, 7);
       ctx.fill();
@@ -4507,8 +5130,8 @@
       ctx.fillRect(508, 722, 16, 22);
       ctx.fillRect(938, 722, 16, 22);
 
-      // Sleeping Fluffy Cat
-      const cx = 868, cy = 612;
+      // 5) Sleeping Fluffy Cat (shifts gently aside slightly when throw opens)
+      const cx = 868 + p * 18, cy = 612;
       const happyWiggle = roomState.catPurrTimer > 0 ? Math.sin(t * 24) * 1.8 : 0;
       const catBreath = Math.sin(t * 2.1) * 2.4 + happyWiggle * 0.4;
       const tailWag = Math.sin(t * (roomState.catPurrTimer > 0 ? 4.5 : 1.4)) * 5.5;
@@ -4584,250 +5207,6 @@
       ctx.ellipse(-44, 18, 9, 5.5, 0.2, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
-
-      // Boyfriend Cozy Easter Egg (smooth fade & transition between lying on stomach & nestled between legs)
-      if (roomState.boyfriendAlpha > 0.01) {
-        const a = roomState.boyfriendAlpha;
-        const p = roomState.boyfriendPoseBlend; // 0 = lying on stomach facing away, 1 = nestled between legs
-        const bfBreath = Math.sin(t * 1.65) * 1.8;
-
-        ctx.save();
-        ctx.globalAlpha = a;
-
-        // Pose 1: Lying comfortably on stomach on the left/center blanket, facing away, curly hair
-        if (p < 0.99) {
-          ctx.save();
-          ctx.globalAlpha = a * (1 - p);
-          const bx = 612 + p * 68;
-          const by = 646 - p * 18 + bfBreath * 0.6;
-          ctx.translate(bx, by);
-
-          // Soft blanket contact shadow
-          ctx.fillStyle = 'rgba(32, 14, 22, 0.42)';
-          ctx.beginPath();
-          ctx.ellipse(2, 18, 72, 16, 0.04, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Relaxed resting arms tucked near pillow/blanket
-          ctx.fillStyle = '#363b52';
-          ctx.beginPath();
-          ctx.moveTo(22, -16);
-          ctx.quadraticCurveTo(54, -26, 66, -12);
-          ctx.quadraticCurveTo(58, -2, 34, -2);
-          ctx.closePath();
-          ctx.fill();
-          ctx.beginPath();
-          ctx.moveTo(16, 12);
-          ctx.quadraticCurveTo(48, 22, 62, 12);
-          ctx.quadraticCurveTo(52, 4, 26, 2);
-          ctx.closePath();
-          ctx.fill();
-
-          // Warm dark oversized hoodie back (sculpted shoulders & spine fold)
-          const backGrad = ctx.createLinearGradient(-64, -24, 34, 24);
-          backGrad.addColorStop(0, '#26293a');
-          backGrad.addColorStop(0.45, '#3b415a');
-          backGrad.addColorStop(0.85, '#4c4f6b');
-          backGrad.addColorStop(1, '#2b2e42');
-          ctx.fillStyle = backGrad;
-          ctx.beginPath();
-          ctx.moveTo(-64, 4);
-          ctx.bezierCurveTo(-56, -16, -24, -22, 16, -20);
-          ctx.bezierCurveTo(34, -19, 40, -10, 40, 2);
-          ctx.bezierCurveTo(40, 14, 28, 22, 10, 22);
-          ctx.bezierCurveTo(-24, 23, -58, 19, -64, 4);
-          ctx.closePath();
-          ctx.fill();
-
-          // Warm rim light on hoodie back + natural fabric folds
-          ctx.strokeStyle = 'rgba(255, 224, 195, 0.18)';
-          ctx.lineWidth = 2.2;
-          ctx.beginPath();
-          ctx.moveTo(-42, -12);
-          ctx.quadraticCurveTo(-8, -19, 24, -14);
-          ctx.stroke();
-
-          ctx.strokeStyle = 'rgba(18, 16, 28, 0.34)';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.moveTo(-36, 4); ctx.quadraticCurveTo(-8, 8, 18, 3);
-          ctx.moveTo(-18, -8); ctx.quadraticCurveTo(-2, -3, 8, -10);
-          ctx.stroke();
-
-          // Hood resting casually at the nape of the neck
-          ctx.fillStyle = '#31364c';
-          ctx.beginPath();
-          ctx.ellipse(26, 0, 11, 17, 0.08, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.strokeStyle = 'rgba(255, 224, 195, 0.14)';
-          ctx.lineWidth = 1.4;
-          ctx.stroke();
-
-          // Blanket edge gently draped over lower back/waist
-          const drapeGrad = ctx.createLinearGradient(-72, -10, -40, 24);
-          drapeGrad.addColorStop(0, '#b97b77');
-          drapeGrad.addColorStop(1, '#7c4850');
-          ctx.fillStyle = drapeGrad;
-          ctx.beginPath();
-          ctx.moveTo(-72, 14);
-          ctx.quadraticCurveTo(-56, -14, -36, -6);
-          ctx.quadraticCurveTo(-48, 8, -42, 22);
-          ctx.closePath();
-          ctx.fill();
-
-          // Back of head with voluminous soft dark-brown curls (facing away toward her)
-          const hx = 47, hy = -1;
-          ctx.fillStyle = '#2d1a12';
-          ctx.beginPath();
-          ctx.ellipse(hx, hy, 18, 17, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          const backCurls = [
-            [-12, -11, 7.2], [-3, -15, 7.6], [7, -14, 7.2], [14, -7, 6.8],
-            [-14, -1, 7.0],  [-5, -4, 7.8],  [5, -3, 7.6],  [15, 3, 6.8],
-            [-11, 10, 6.8],  [-1, 12, 7.4],  [9, 11, 7.0],  [3, 4, 7.2]
-          ];
-          backCurls.forEach(([cxo, cyo, cr], idx) => {
-            const cg = ctx.createRadialGradient(hx + cxo - 2, hy + cyo - 2, 1, hx + cxo, hy + cyo, cr);
-            cg.addColorStop(0, idx % 3 === 0 ? '#694330' : '#523223');
-            cg.addColorStop(1, '#26150e');
-            ctx.fillStyle = cg;
-            ctx.beginPath();
-            ctx.arc(hx + cxo, hy + cyo, cr, 0, Math.PI * 2);
-            ctx.fill();
-          });
-
-          // Subtle warm golden light glint on top curls
-          ctx.strokeStyle = 'rgba(255, 222, 182, 0.25)';
-          ctx.lineWidth = 1.6;
-          ctx.beginPath();
-          ctx.arc(hx + 1, hy - 8, 9, Math.PI * 1.15, Math.PI * 1.85);
-          ctx.stroke();
-          ctx.restore();
-        }
-
-        // Pose 2: Nestled cozily right between her legs on the blanket, head resting up, curly hair
-        if (p > 0.01) {
-          ctx.save();
-          ctx.globalAlpha = a * p;
-          const bx = 716;
-          const by = 626 + (1 - p) * 18 + bfBreath * 0.55;
-          ctx.translate(bx, by);
-
-          // Blanket contours cradling him on both sides (suggesting her cozy legs under the duvet)
-          const sideGradL = ctx.createLinearGradient(-92, -30, -34, 48);
-          sideGradL.addColorStop(0, '#c0827c');
-          sideGradL.addColorStop(1, '#7c4750');
-          ctx.fillStyle = sideGradL;
-          ctx.beginPath();
-          ctx.ellipse(-62, 12, 34, 42, 0.22, 0, Math.PI * 2);
-          ctx.fill();
-
-          const sideGradR = ctx.createLinearGradient(34, -30, 92, 48);
-          sideGradR.addColorStop(0, '#b97b76');
-          sideGradR.addColorStop(1, '#71404a');
-          ctx.fillStyle = sideGradR;
-          ctx.beginPath();
-          ctx.ellipse(62, 12, 34, 42, -0.22, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Soft shadow underneath him
-          ctx.fillStyle = 'rgba(30, 12, 22, 0.45)';
-          ctx.beginPath();
-          ctx.ellipse(0, 26, 46, 20, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Hoodie shoulders & upper back tucked under her blanket
-          const shGrad = ctx.createLinearGradient(-40, 4, 40, 50);
-          shGrad.addColorStop(0, '#444a66');
-          shGrad.addColorStop(0.55, '#33384f');
-          shGrad.addColorStop(1, '#232638');
-          ctx.fillStyle = shGrad;
-          ctx.beginPath();
-          ctx.moveTo(-40, 40);
-          ctx.bezierCurveTo(-44, 16, -28, 6, 0, 6);
-          ctx.bezierCurveTo(28, 6, 44, 16, 40, 40);
-          ctx.quadraticCurveTo(0, 50, -40, 40);
-          ctx.closePath();
-          ctx.fill();
-
-          // Cozy arms resting forward along the blanket
-          ctx.fillStyle = '#393e57';
-          ctx.beginPath();
-          ctx.ellipse(-30, 22, 12, 18, 0.45, 0, Math.PI * 2);
-          ctx.ellipse(30, 22, 12, 18, -0.45, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Warm neckline & soft cheek resting comfortably
-          ctx.fillStyle = '#e5b89d';
-          ctx.beginPath();
-          ctx.ellipse(0, 4, 17, 14, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Soft rosy warmth on cheek
-          ctx.fillStyle = 'rgba(242, 132, 130, 0.25)';
-          ctx.beginPath();
-          ctx.ellipse(-8, 7, 5, 3, 0, 0, Math.PI * 2);
-          ctx.ellipse(8, 7, 5, 3, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Peaceful closed smiling eyes
-          ctx.strokeStyle = '#331c13';
-          ctx.lineWidth = 1.7;
-          ctx.lineCap = 'round';
-          ctx.beginPath();
-          ctx.arc(-6, 5, 3.2, 0.15 * Math.PI, 0.85 * Math.PI);
-          ctx.stroke();
-          ctx.beginPath();
-          ctx.arc(6, 5, 3.2, 0.15 * Math.PI, 0.85 * Math.PI);
-          ctx.stroke();
-
-          // Gentle content smile
-          ctx.strokeStyle = '#a35d58';
-          ctx.lineWidth = 1.6;
-          ctx.beginPath();
-          ctx.moveTo(-3.5, 11.5);
-          ctx.quadraticCurveTo(0, 14, 3.5, 11.5);
-          ctx.stroke();
-
-          // Voluminous curly hair crown resting upward
-          const topCurls = [
-            [-17, -2, 7.0], [-14, -10, 7.6], [-6, -15, 8.0], [3, -16, 8.2],
-            [12, -12, 7.6], [17, -3, 7.0],   [-8, -7, 7.4],  [1, -8, 7.8], [9, -6, 7.2]
-          ];
-          topCurls.forEach(([ccx, ccy, ccr], idx) => {
-            const cg = ctx.createRadialGradient(ccx - 2, ccy - 2, 1, ccx, ccy, ccr);
-            cg.addColorStop(0, idx % 2 === 0 ? '#66402d' : '#4e2f20');
-            cg.addColorStop(1, '#26160f');
-            ctx.fillStyle = cg;
-            ctx.beginPath();
-            ctx.arc(ccx, ccy, ccr, 0, Math.PI * 2);
-            ctx.fill();
-          });
-
-          // Soft blue-warm bounce light from iPad screen onto his curls
-          const padGlow = ctx.createRadialGradient(0, -14, 2, 0, -14, 24);
-          padGlow.addColorStop(0, 'rgba(215, 238, 255, 0.28)');
-          padGlow.addColorStop(1, 'rgba(215, 238, 255, 0)');
-          ctx.fillStyle = padGlow;
-          ctx.beginPath();
-          ctx.arc(0, -12, 24, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Draped throw blanket fold gently overlapping lower hoodie edge
-          ctx.fillStyle = '#a86b6c';
-          ctx.beginPath();
-          ctx.moveTo(-46, 36);
-          ctx.quadraticCurveTo(0, 52, 46, 36);
-          ctx.lineTo(48, 52);
-          ctx.quadraticCurveTo(0, 62, -48, 52);
-          ctx.closePath();
-          ctx.fill();
-
-          ctx.restore();
-        }
-        ctx.restore();
-      }
     }
 
     /* ----- LAYER 6: VOLUMETRIC LIGHT, DUST, PARTICLES, HINTS ----- */
@@ -5666,6 +6045,7 @@
           if (!raw) return;
           const d = JSON.parse(raw);
           if (d.outfit) roomState.outfit = d.outfit;
+          if (d.socks) roomState.socks = d.socks;
           if (d.hairStyle) roomState.hairStyle = d.hairStyle;
           if (d.girlMood) roomState.girlMood = d.girlMood;
           if (typeof d.headphones === 'boolean') roomState.headphones = d.headphones;
@@ -5677,6 +6057,7 @@
         try {
           localStorage.setItem(this.KEY, JSON.stringify({
             outfit: roomState.outfit,
+            socks: roomState.socks,
             hairStyle: roomState.hairStyle,
             girlMood: roomState.girlMood,
             headphones: roomState.headphones,
@@ -5704,6 +6085,12 @@
         this.syncUI();
         vibeEngine.playSoftChime(587.33);
       },
+      setSocks(val) {
+        roomState.socks = val;
+        this.save();
+        this.syncUI();
+        vibeEngine.playSoftChime(622.25);
+      },
       cycleHair() {
         const order = ['loose', 'curly', 'halfUp', 'ponytail'];
         roomState.hairStyle = order[(order.indexOf(roomState.hairStyle) + 1) % order.length];
@@ -5722,6 +6109,14 @@
         document.querySelectorAll('.outfit-btn').forEach((b) => {
           const active = b.getAttribute('data-outfit') === roomState.outfit;
           b.className = `outfit-btn rounded-2xl p-2.5 text-left transition border ${
+            active
+              ? 'border-amber-300/45 bg-amber-400/20'
+              : 'border-white/10 bg-white/[0.04] hover:bg-white/[0.08]'
+          }`;
+        });
+        document.querySelectorAll('.socks-btn').forEach((b) => {
+          const active = b.getAttribute('data-socks') === roomState.socks;
+          b.className = `socks-btn rounded-2xl p-2.5 text-left transition border ${
             active
               ? 'border-amber-300/45 bg-amber-400/20'
               : 'border-white/10 bg-white/[0.04] hover:bg-white/[0.08]'
@@ -5811,6 +6206,9 @@
       });
       document.querySelectorAll('.outfit-btn').forEach((b) => {
         b.addEventListener('click', () => wardrobeStore.setOutfit(b.getAttribute('data-outfit')));
+      });
+      document.querySelectorAll('.socks-btn').forEach((b) => {
+        b.addEventListener('click', () => wardrobeStore.setSocks(b.getAttribute('data-socks')));
       });
       document.getElementById('toggleHeadphones')?.addEventListener('change', (e) => {
         roomState.headphones = e.target.checked;
@@ -6011,6 +6409,7 @@
       setupCanvasPointerControls();
       wireUIEvents();
       notesStore.init();
+      mjGloveStore.init();
       wallPostersStore.init();
       polaroidsStore.init();
       secretLetter.init();
