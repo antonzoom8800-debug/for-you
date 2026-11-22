@@ -281,6 +281,35 @@
     .hug-glow-anim {
       animation: hugGlowPulse 2.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
+
+    /* Clean Screen / Nightlight Mode */
+    header, footer, #panControls {
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    body.clean-mode header {
+      opacity: 0 !important;
+      transform: translateY(-14px);
+      pointer-events: none !important;
+    }
+    body.clean-mode footer {
+      opacity: 0 !important;
+      transform: translateY(14px);
+      pointer-events: none !important;
+    }
+    body.clean-mode #panControls {
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    /* Horizontal filter chips clean scroll */
+    .chips-scroll {
+      touch-action: pan-x;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .chips-scroll::-webkit-scrollbar {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -777,6 +806,11 @@
           ?
         </button>
 
+        <button id="btnCleanMode" type="button" title="Чистый экран / Режим ночника"
+          class="glass-panel rounded-xl w-9 h-9 text-sm text-amber-200 hover:bg-amber-500/20 active:scale-95 transition flex items-center justify-center">
+          🌙
+        </button>
+
         <button id="btnOpenWardrobe" type="button" title="Гардероб и редактор комнаты"
           class="glass-panel rounded-xl px-2.5 h-9 text-xs font-semibold text-amber-100 hover:bg-amber-400/25 border-amber-300/30 active:scale-95 transition flex items-center gap-1">
           <span>👗</span><span class="hidden sm:inline">Дизайн</span>
@@ -927,6 +961,8 @@
                 </div>
               </div>
               <div class="flex items-center gap-1.5 shrink-0">
+                <button id="btnFavCurrent" type="button" title="Добавить в любимые"
+                  class="w-8 h-8 rounded-xl bg-white/5 hover:bg-rose-500/25 text-amber-200/80 text-sm flex items-center justify-center active:scale-90 transition">🤍</button>
                 <button id="btnIpadPlayPause" type="button" title="Пуск / Пауза"
                   class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#ffd6a5] to-[#f4a261] text-[#23151e] font-bold text-sm flex items-center justify-center active:scale-90 transition">
                   ▶
@@ -955,21 +991,43 @@
 
           <!-- Search + Upload Multi-MP3 Row -->
           <div class="flex flex-wrap items-center gap-2 mb-2 shrink-0">
-            <input id="trackSearch" type="text" placeholder="Поиск трека Майкла Джексона..."
-              class="flex-1 min-w-[150px] rounded-xl bg-black/35 border border-amber-200/15 px-3 py-2 text-xs sm:text-sm text-amber-50 placeholder-amber-200/40 focus:outline-none focus:border-amber-400/60" />
+            <input id="trackSearch" type="text" placeholder="Поиск среди 68 хитов MJ..."
+              class="flex-1 min-w-[140px] rounded-xl bg-black/35 border border-amber-200/15 px-3 py-1.5 text-xs sm:text-sm text-amber-50 placeholder-amber-200/40 focus:outline-none focus:border-amber-400/60" />
             <label for="mp3FileInput"
-              class="cursor-pointer rounded-xl px-3 py-2 text-xs font-semibold bg-gradient-to-r from-amber-500/30 to-rose-500/25 hover:brightness-110 text-amber-100 border border-amber-300/35 transition flex items-center gap-1.5 shrink-0">
-              <span>📂</span><span>+ Загрузить MP3</span>
+              class="cursor-pointer rounded-xl px-2.5 py-1.5 text-xs font-semibold bg-gradient-to-r from-amber-500/30 to-rose-500/25 hover:brightness-110 text-amber-100 border border-amber-300/35 transition flex items-center gap-1.5 shrink-0">
+              <span>📂</span><span>+ MP3</span>
             </label>
             <input id="mp3FileInput" type="file" accept="audio/*,.mp3,.m4a,.wav,.ogg" multiple class="hidden" />
           </div>
 
+          <!-- Mood & Favorites Filter Pills -->
+          <div class="grid grid-cols-4 gap-1 mb-1.5 shrink-0">
+            <button data-mood-filter="all" type="button" class="mood-filter-btn py-1.5 px-1 rounded-xl text-[10px] sm:text-[11px] font-semibold bg-amber-400/25 border border-amber-300/40 text-amber-100 transition truncate">✨ Все</button>
+            <button data-mood-filter="favorites" type="button" class="mood-filter-btn py-1.5 px-1 rounded-xl text-[10px] sm:text-[11px] font-medium bg-white/[0.04] border border-white/10 text-amber-200/80 hover:text-amber-100 transition truncate">❤️ Любимые <span id="favCountPill">0</span></button>
+            <button data-mood-filter="calm" type="button" class="mood-filter-btn py-1.5 px-1 rounded-xl text-[10px] sm:text-[11px] font-medium bg-white/[0.04] border border-white/10 text-amber-200/80 hover:text-amber-100 transition truncate">🌙 На ночь</button>
+            <button data-mood-filter="dance" type="button" class="mood-filter-btn py-1.5 px-1 rounded-xl text-[10px] sm:text-[11px] font-medium bg-white/[0.04] border border-white/10 text-amber-200/80 hover:text-amber-100 transition truncate">🕺 Драйв</button>
+          </div>
+
+          <!-- Horizontal Album Filter Bar -->
+          <div class="chips-scroll flex items-center gap-1.5 overflow-x-auto pb-1.5 mb-1 shrink-0">
+            <button data-album-filter="all" type="button" class="album-filter-btn px-2.5 py-1 rounded-full text-[10px] font-semibold bg-amber-400/25 border border-amber-300/40 text-amber-100 shrink-0 transition">Все альбомы</button>
+            <button data-album-filter="Thriller" type="button" class="album-filter-btn px-2.5 py-1 rounded-full text-[10px] font-medium bg-white/[0.05] border border-white/10 text-amber-200/75 hover:text-amber-100 shrink-0 transition">Thriller</button>
+            <button data-album-filter="Bad" type="button" class="album-filter-btn px-2.5 py-1 rounded-full text-[10px] font-medium bg-white/[0.05] border border-white/10 text-amber-200/75 hover:text-amber-100 shrink-0 transition">Bad</button>
+            <button data-album-filter="Dangerous" type="button" class="album-filter-btn px-2.5 py-1 rounded-full text-[10px] font-medium bg-white/[0.05] border border-white/10 text-amber-200/75 hover:text-amber-100 shrink-0 transition">Dangerous</button>
+            <button data-album-filter="Off the Wall" type="button" class="album-filter-btn px-2.5 py-1 rounded-full text-[10px] font-medium bg-white/[0.05] border border-white/10 text-amber-200/75 hover:text-amber-100 shrink-0 transition">Off the Wall</button>
+            <button data-album-filter="HIStory" type="button" class="album-filter-btn px-2.5 py-1 rounded-full text-[10px] font-medium bg-white/[0.05] border border-white/10 text-amber-200/75 hover:text-amber-100 shrink-0 transition">HIStory & Blood</button>
+            <button data-album-filter="Invincible" type="button" class="album-filter-btn px-2.5 py-1 rounded-full text-[10px] font-medium bg-white/[0.05] border border-white/10 text-amber-200/75 hover:text-amber-100 shrink-0 transition">Invincible</button>
+            <button data-album-filter="Xscape" type="button" class="album-filter-btn px-2.5 py-1 rounded-full text-[10px] font-medium bg-white/[0.05] border border-white/10 text-amber-200/75 hover:text-amber-100 shrink-0 transition">Xscape</button>
+            <button data-album-filter="Michael" type="button" class="album-filter-btn px-2.5 py-1 rounded-full text-[10px] font-medium bg-white/[0.05] border border-white/10 text-amber-200/75 hover:text-amber-100 shrink-0 transition">Michael</button>
+            <button data-album-filter="Classic" type="button" class="album-filter-btn px-2.5 py-1 rounded-full text-[10px] font-medium bg-white/[0.05] border border-white/10 text-amber-200/75 hover:text-amber-100 shrink-0 transition">Jackson 5 & Хиты</button>
+          </div>
+
           <!-- Scrollable Tracks List -->
           <div class="cozy-scroll flex-1 overflow-y-auto space-y-3 pr-1">
-            <!-- Official 18 MJ Tracks -->
+            <!-- Official 68 MJ Tracks -->
             <div>
               <div class="flex items-center justify-between px-1 mb-1.5">
-                <h3 class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">Хиты Michael Jackson (18 треков)</h3>
+                <h3 id="mjListHeading" class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">Хиты Michael Jackson (68 треков)</h3>
                 <span id="mjLoadedSummary" class="text-[11px] text-amber-200/60">Коллекция хитов</span>
               </div>
               <div id="mjTrackList" class="space-y-1.5"></div>
@@ -1326,42 +1384,147 @@
        1. MICHAEL JACKSON 18-TRACK PLAYLIST & ROMANTIC CONTENT
        ========================================================================= */
     const MJ_PLAYLIST = [
-      { id: 'mj-1',  num: 1,  slug: 'billie-jean',                 title: 'Billie Jean',                 album: 'Thriller',     year: 1982, grad: ['#8f1d2c', '#e09f3e'], badge: 'T82', keywords: ['billie', 'jean'],
+      // 1–18: Original Core Hits
+      { id: 'mj-1',  num: 1,  slug: 'billie-jean',                 title: 'Billie Jean',                 album: 'Thriller',     albumGroup: 'Thriller',     year: 1982, mood: 'dance', grad: ['#8f1d2c', '#e09f3e'], badge: 'T82', keywords: ['billie', 'jean'],
         quote: "People always told me: be careful of what you do.", quoteRu: "Люди всегда говорили мне: будь осторожен в своих поступках." },
-      { id: 'mj-2',  num: 2,  slug: 'smooth-criminal',             title: 'Smooth Criminal',             album: 'Bad',          year: 1987, grad: ['#22223b', '#9a8c98'], badge: 'BAD', keywords: ['smooth', 'criminal'],
+      { id: 'mj-2',  num: 2,  slug: 'smooth-criminal',             title: 'Smooth Criminal',             album: 'Bad',          albumGroup: 'Bad',          year: 1987, mood: 'dance', grad: ['#22223b', '#9a8c98'], badge: 'BAD', keywords: ['smooth', 'criminal'],
         quote: "Annie, are you okay? So, Annie, are you okay?", quoteRu: "Энни, ты в порядке? Скажи, Энни, с тобой всё хорошо?" },
-      { id: 'mj-3',  num: 3,  slug: 'thriller',                    title: 'Thriller',                    album: 'Thriller',     year: 1982, grad: ['#7f1d1d', '#d97706'], badge: 'T82', keywords: ['thriller'],
+      { id: 'mj-3',  num: 3,  slug: 'thriller',                    title: 'Thriller',                    album: 'Thriller',     albumGroup: 'Thriller',     year: 1982, mood: 'dance', grad: ['#7f1d1d', '#d97706'], badge: 'T82', keywords: ['thriller'],
         quote: "You try to scream, but terror takes the sound before you make it.", quoteRu: "Ночной триллер оживает — держись ко мне поближе." },
-      { id: 'mj-4',  num: 4,  slug: 'beat-it',                     title: 'Beat It',                     album: 'Thriller',     year: 1982, grad: ['#991b1b', '#f97316'], badge: 'T82', keywords: ['beat it', 'beat_it', 'beat-it'],
+      { id: 'mj-4',  num: 4,  slug: 'beat-it',                     title: 'Beat It',                     album: 'Thriller',     albumGroup: 'Thriller',     year: 1982, mood: 'dance', grad: ['#991b1b', '#f97316'], badge: 'T82', keywords: ['beat it', 'beat_it', 'beat-it'],
         quote: "Showin' how funky and strong is your fight.", quoteRu: "Покажи, насколько яркой и сильной бывает твоя смелость." },
-      { id: 'mj-5',  num: 5,  slug: 'rock-with-you',               title: 'Rock With You',               album: 'Off the Wall', year: 1979, grad: ['#4c1d95', '#ec4899'], badge: 'OTW', keywords: ['rock with you', 'rock_with'],
+      { id: 'mj-5',  num: 5,  slug: 'rock-with-you',               title: 'Rock With You',               album: 'Off the Wall', albumGroup: 'Off the Wall', year: 1979, mood: 'calm',  grad: ['#4c1d95', '#ec4899'], badge: 'OTW', keywords: ['rock with you', 'rock_with'],
         quote: "I wanna rock with you all night, dance you into day.", quoteRu: "Я хочу танцевать с тобой всю ночь — прямо до самого рассвета." },
-      { id: 'mj-6',  num: 6,  slug: 'bad',                         title: 'Bad',                         album: 'Bad',          year: 1987, grad: ['#1f2937', '#dc2626'], badge: 'BAD', keywords: ['bad'],
+      { id: 'mj-6',  num: 6,  slug: 'bad',                         title: 'Bad',                         album: 'Bad',          albumGroup: 'Bad',          year: 1987, mood: 'dance', grad: ['#1f2937', '#dc2626'], badge: 'BAD', keywords: ['bad'],
         quote: "The whole world has to answer right now just to tell you once again.", quoteRu: "Весь мир должен услышать это прямо сейчас — снова и снова." },
-      { id: 'mj-7',  num: 7,  slug: 'human-nature',                title: 'Human Nature',                album: 'Thriller',     year: 1982, grad: ['#312e81', '#f59e0b'], badge: 'T82', keywords: ['human', 'nature'],
+      { id: 'mj-7',  num: 7,  slug: 'human-nature',                title: 'Human Nature',                album: 'Thriller',     albumGroup: 'Thriller',     year: 1982, mood: 'calm',  grad: ['#312e81', '#f59e0b'], badge: 'T82', keywords: ['human', 'nature'],
         quote: "Looking out across the nighttime, the city winks a sleepless eye.", quoteRu: "Глядя в ночную даль, город подмигивает бессонным огоньком." },
-      { id: 'mj-8',  num: 8,  slug: 'the-way-you-make-me-feel',    title: 'The Way You Make Me Feel',    album: 'Bad',          year: 1987, grad: ['#1e3a8a', '#f43f5e'], badge: 'BAD', keywords: ['way you make', 'make me feel'],
+      { id: 'mj-8',  num: 8,  slug: 'the-way-you-make-me-feel',    title: 'The Way You Make Me Feel',    album: 'Bad',          albumGroup: 'Bad',          year: 1987, mood: 'dance', grad: ['#1e3a8a', '#f43f5e'], badge: 'BAD', keywords: ['way you make', 'make me feel'],
         quote: "The way you make me feel — you really turn me on, you knock me off of my feet.", quoteRu: "То, что ты заставляешь меня чувствовать — ты просто сбиваешь меня с ног." },
-      { id: 'mj-9',  num: 9,  slug: 'dirty-diana',                 title: 'Dirty Diana',                 album: 'Bad',          year: 1987, grad: ['#111827', '#b91c1c'], badge: 'BAD', keywords: ['dirty', 'diana'],
+      { id: 'mj-9',  num: 9,  slug: 'dirty-diana',                 title: 'Dirty Diana',                 album: 'Bad',          albumGroup: 'Bad',          year: 1987, mood: 'dance', grad: ['#111827', '#b91c1c'], badge: 'BAD', keywords: ['dirty', 'diana'],
         quote: "She likes the boys in the band, she knows when they come to town.", quoteRu: "Огни сцены, гитарный драйв и история, от которой бегут мурашки." },
-      { id: 'mj-10', num: 10, slug: 'dont-stop-til-you-get-enough',title: "Don't Stop 'Til You Get Enough", album: 'Off the Wall', year: 1979, grad: ['#6d28d9', '#f59e0b'], badge: 'OTW', keywords: ['dont stop', 'get enough', 'don\'t stop'],
+      { id: 'mj-10', num: 10, slug: 'dont-stop-til-you-get-enough',title: "Don't Stop 'Til You Get Enough", album: 'Off the Wall', albumGroup: 'Off the Wall', year: 1979, mood: 'dance', grad: ['#6d28d9', '#f59e0b'], badge: 'OTW', keywords: ['dont stop', 'get enough', "don't stop"],
         quote: "Keep on with the force, don't stop — don't stop 'til you get enough.", quoteRu: "Не останавливайся, лови этот ритм, пока не почувствуешь его до конца." },
-      { id: 'mj-11', num: 11, slug: 'remember-the-time',           title: 'Remember the Time',           album: 'Dangerous',    year: 1991, grad: ['#92400e', '#fbbf24'], badge: 'DNG', keywords: ['remember', 'time'],
+      { id: 'mj-11', num: 11, slug: 'remember-the-time',           title: 'Remember the Time',           album: 'Dangerous',    albumGroup: 'Dangerous',    year: 1991, mood: 'dance', grad: ['#92400e', '#fbbf24'], badge: 'DNG', keywords: ['remember', 'time'],
         quote: "Do you remember when we fell in love? We were young and innocent then.", quoteRu: "Помнишь то время, когда мы влюбились? Самое тёплое воспоминание." },
-      { id: 'mj-12', num: 12, slug: 'black-or-white',              title: 'Black or White',              album: 'Dangerous',    year: 1991, grad: ['#374151', '#d97706'], badge: 'DNG', keywords: ['black or white', 'black_or_white'],
+      { id: 'mj-12', num: 12, slug: 'black-or-white',              title: 'Black or White',              album: 'Dangerous',    albumGroup: 'Dangerous',    year: 1991, mood: 'dance', grad: ['#374151', '#d97706'], badge: 'DNG', keywords: ['black or white', 'black_or_white'],
         quote: "I'm not gonna spend my life being a color.", quoteRu: "Важно только то, что внутри — всё остальное не имеет значения." },
-      { id: 'mj-13', num: 13, slug: 'liberian-girl',               title: 'Liberian Girl',               album: 'Bad',          year: 1987, grad: ['#581c87', '#fb7185'], badge: 'BAD', keywords: ['liberian'],
+      { id: 'mj-13', num: 13, slug: 'liberian-girl',               title: 'Liberian Girl',               album: 'Bad',          albumGroup: 'Bad',          year: 1987, mood: 'calm',  grad: ['#581c87', '#fb7185'], badge: 'BAD', keywords: ['liberian'],
         quote: "You came and you changed my world, just like in the movies.", quoteRu: "Ты пришла и изменила мой мир — прямо как в самом красивом кино." },
-      { id: 'mj-14', num: 14, slug: 'you-rock-my-world',           title: 'You Rock My World',           album: 'Invincible',   year: 2001, grad: ['#1e293b', '#38bdf8'], badge: 'INV', keywords: ['rock my world', 'my world'],
+      { id: 'mj-14', num: 14, slug: 'you-rock-my-world',           title: 'You Rock My World',           album: 'Invincible',   albumGroup: 'Invincible',   year: 2001, mood: 'dance', grad: ['#1e293b', '#38bdf8'], badge: 'INV', keywords: ['rock my world', 'my world'],
         quote: "You rock my world, you know you did — and everything I own I give.", quoteRu: "Ты перевернула весь мой мир, и я готов отдать тебе всё на свете." },
-      { id: 'mj-15', num: 15, slug: 'man-in-the-mirror',           title: 'Man in the Mirror',           album: 'Bad',          year: 1987, grad: ['#1f2937', '#60a5fa'], badge: 'BAD', keywords: ['mirror', 'man in the'],
+      { id: 'mj-15', num: 15, slug: 'man-in-the-mirror',           title: 'Man in the Mirror',           album: 'Bad',          albumGroup: 'Bad',          year: 1987, mood: 'calm',  grad: ['#1f2937', '#60a5fa'], badge: 'BAD', keywords: ['mirror', 'man in the'],
         quote: "If you wanna make the world a better place, take a look at yourself and make a change.", quoteRu: "Если хочешь сделать мир лучше — начни с себя и подари тепло." },
-      { id: 'mj-16', num: 16, slug: 'earth-song',                  title: 'Earth Song',                  album: 'HIStory',      year: 1995, grad: ['#78350f', '#ca8a04'], badge: 'HIS', keywords: ['earth song', 'earth'],
+      { id: 'mj-16', num: 16, slug: 'earth-song',                  title: 'Earth Song',                  album: 'HIStory',      albumGroup: 'HIStory',      year: 1995, mood: 'calm',  grad: ['#78350f', '#ca8a04'], badge: 'HIS', keywords: ['earth song', 'earth'],
         quote: "What about sunrise? What about rain? What about all the things that you said we were to gain?", quoteRu: "А как же рассветы и тихий дождь? Береги всё самое светлое." },
-      { id: 'mj-17', num: 17, slug: 'they-dont-care-about-us',     title: "They Don't Care About Us",    album: 'HIStory',      year: 1995, grad: ['#7c2d12', '#eab308'], badge: 'HIS', keywords: ['care about us', 'dont care'],
+      { id: 'mj-17', num: 17, slug: 'they-dont-care-about-us',     title: "They Don't Care About Us",    album: 'HIStory',      albumGroup: 'HIStory',      year: 1995, mood: 'dance', grad: ['#7c2d12', '#eab308'], badge: 'HIS', keywords: ['care about us', 'dont care'],
         quote: "All I wanna say is that they don't really care about us.", quoteRu: "Пусть весь мир шумит — главное, что мы всегда на одной стороне." },
-      { id: 'mj-18', num: 18, slug: 'pyt-pretty-young-thing',      title: 'P.Y.T. (Pretty Young Thing)', album: 'Thriller',     year: 1982, grad: ['#9d174d', '#f59e0b'], badge: 'T82', keywords: ['pyt', 'p.y.t', 'pretty young'],
-        quote: "I wanna love you, P.Y.T. — pretty young thing, you make me sing.", quoteRu: "Я хочу любить тебя — рядом с тобой хочется петь и улыбаться." }
+      { id: 'mj-18', num: 18, slug: 'pyt-pretty-young-thing',      title: 'P.Y.T. (Pretty Young Thing)', album: 'Thriller',     albumGroup: 'Thriller',     year: 1982, mood: 'dance', grad: ['#9d174d', '#f59e0b'], badge: 'T82', keywords: ['pyt', 'p.y.t', 'pretty young'],
+        quote: "I wanna love you, P.Y.T. — pretty young thing, you make me sing.", quoteRu: "Я хочу любить тебя — рядом с тобой хочется петь и улыбаться." },
+
+      // 19–45: Extended Classics & Iconic Albums
+      { id: 'mj-19', num: 19, slug: 'heal-the-world',              title: 'Heal the World',              album: 'Dangerous',    albumGroup: 'Dangerous',    year: 1991, mood: 'calm',  grad: ['#92400e', '#f59e0b'], badge: 'DNG', keywords: ['heal the world', 'heal'],
+        quote: "Make a little space, make a better place.", quoteRu: "Создай немного места для добра — сделай этот мир светлее." },
+      { id: 'mj-20', num: 20, slug: 'give-in-to-me',               title: 'Give In to Me',               album: 'Dangerous',    albumGroup: 'Dangerous',    year: 1991, mood: 'dance', grad: ['#451a03', '#ea580c'], badge: 'DNG', keywords: ['give in to me', 'give in'],
+        quote: "Love is a feeling — give it when I want it.", quoteRu: "Любовь — это чувство, которому хочется отдаться целиком." },
+      { id: 'mj-21', num: 21, slug: 'in-the-closet',               title: 'In the Closet',               album: 'Dangerous',    albumGroup: 'Dangerous',    year: 1991, mood: 'dance', grad: ['#78350f', '#fbbf24'], badge: 'DNG', keywords: ['in the closet', 'closet'],
+        quote: "Just promise me whatever we say or whatever we do to each other — keep it in the closet.", quoteRu: "Обещай хранить наши маленькие секреты только между нами." },
+      { id: 'mj-22', num: 22, slug: 'who-is-it',                   title: 'Who Is It',                   album: 'Dangerous',    albumGroup: 'Dangerous',    year: 1991, mood: 'calm',  grad: ['#27272a', '#d97706'], badge: 'DNG', keywords: ['who is it'],
+        quote: "I gave her money, I gave her time, I gave her everything inside one heart could find.", quoteRu: "Я отдал ей всё, что только может вместить одно любящее сердце." },
+      { id: 'mj-23', num: 23, slug: 'jam',                         title: 'Jam',                         album: 'Dangerous',    albumGroup: 'Dangerous',    year: 1991, mood: 'dance', grad: ['#b45309', '#facc15'], badge: 'DNG', keywords: ['jam'],
+        quote: "It ain't too much stuff, it ain't too much for me to jam.", quoteRu: "Поймай ритм и просто двигайся в такт музыке." },
+      { id: 'mj-24', num: 24, slug: 'will-you-be-there',           title: 'Will You Be There',           album: 'Dangerous',    albumGroup: 'Dangerous',    year: 1991, mood: 'calm',  grad: ['#1e3a8a', '#fbbf24'], badge: 'DNG', keywords: ['will you be there', 'be there'],
+        quote: "Hold me like the River Jordan, and I will then say to thee: you are my friend.", quoteRu: "Обними меня крепко — и я всегда буду знать, что ты рядом." },
+      { id: 'mj-25', num: 25, slug: 'dangerous',                   title: 'Dangerous',                   album: 'Dangerous',    albumGroup: 'Dangerous',    year: 1991, mood: 'dance', grad: ['#1c1917', '#eab308'], badge: 'DNG', keywords: ['dangerous'],
+        quote: "The girl was persuasive, the girl I could not trust.", quoteRu: "Опасная, притягательная мелодия, от которой невозможно оторваться." },
+      { id: 'mj-26', num: 26, slug: 'leave-me-alone',              title: 'Leave Me Alone',              album: 'Bad',          albumGroup: 'Bad',          year: 1987, mood: 'dance', grad: ['#312e81', '#e11d48'], badge: 'BAD', keywords: ['leave me alone'],
+        quote: "Just stop doggin' me around — there was a time I used to say girl I need you.", quoteRu: "Пусть всё лишнее останется за дверью — здесь только тишина и музыка." },
+      { id: 'mj-27', num: 27, slug: 'i-just-cant-stop-loving-you', title: "I Just Can't Stop Loving You",album: 'Bad',          albumGroup: 'Bad',          year: 1987, mood: 'calm',  grad: ['#881337', '#fda4af'], badge: 'BAD', keywords: ['cant stop loving', "can't stop loving", 'stop loving you'],
+        quote: "And if I stop, then tell me just what will I do? I just can't stop loving you.", quoteRu: "Я просто не могу перестать любить тебя — ни на секунду." },
+      { id: 'mj-28', num: 28, slug: 'another-part-of-me',          title: 'Another Part of Me',          album: 'Bad',          albumGroup: 'Bad',          year: 1987, mood: 'dance', grad: ['#1e1b4b', '#38bdf8'], badge: 'BAD', keywords: ['another part of me', 'part of me'],
+        quote: "You're just another part of me!", quoteRu: "Ты — самая родная частичка меня самого." },
+      { id: 'mj-29', num: 29, slug: 'speed-demon',                 title: 'Speed Demon',                 album: 'Bad',          albumGroup: 'Bad',          year: 1987, mood: 'dance', grad: ['#18181b', '#f97316'], badge: 'BAD', keywords: ['speed demon'],
+        quote: "Pull over boy and get your ticket right!", quoteRu: "Скорость, ночной драйв и безудержный фанк 80-х." },
+      { id: 'mj-30', num: 30, slug: 'wanna-be-startin-somethin',   title: "Wanna Be Startin' Somethin'", album: 'Thriller',   albumGroup: 'Thriller',     year: 1982, mood: 'dance', grad: ['#991b1b', '#f59e0b'], badge: 'T82', keywords: ['wanna be startin', 'startin somethin'],
+        quote: "Lift your head up high and scream out to the world!", quoteRu: "Подними голову выше и не бойся сиять на весь мир!" },
+      { id: 'mj-31', num: 31, slug: 'the-girl-is-mine',            title: 'The Girl Is Mine',            album: 'Thriller',     albumGroup: 'Thriller',     year: 1982, mood: 'calm',  grad: ['#7c2d12', '#fb923c'], badge: 'T82', keywords: ['girl is mine'],
+        quote: "The doggone girl is mine — she told me that I'm her forever lover.", quoteRu: "Эта девушка — моя, и для меня нет никого прекраснее." },
+      { id: 'mj-32', num: 32, slug: 'baby-be-mine',                title: 'Baby Be Mine',                album: 'Thriller',     albumGroup: 'Thriller',     year: 1982, mood: 'dance', grad: ['#9f1239', '#fbbf24'], badge: 'T82', keywords: ['baby be mine'],
+        quote: "Baby, be mine, and girl I'll give you all I got to give.", quoteRu: "Будь моей, и я подарю тебе всё тепло, которое у меня есть." },
+      { id: 'mj-33', num: 33, slug: 'the-lady-in-my-life',         title: 'The Lady in My Life',         album: 'Thriller',     albumGroup: 'Thriller',     year: 1982, mood: 'calm',  grad: ['#4c0519', '#f472b6'], badge: 'T82', keywords: ['lady in my life'],
+        quote: "There'll be no darkness tonight — lady, our love will shine.", quoteRu: "Сегодня ночью не будет темноты — наша любовь осветит всё вокруг." },
+      { id: 'mj-34', num: 34, slug: 'off-the-wall',                title: 'Off the Wall',                album: 'Off the Wall', albumGroup: 'Off the Wall', year: 1979, mood: 'dance', grad: ['#5b21b6', '#f472b6'], badge: 'OTW', keywords: ['off the wall'],
+        quote: "So tonight gotta leave that nine to five upon the shelf and just enjoy yourself.", quoteRu: "Оставь все заботы на полке и просто наслаждайся этим вечером." },
+      { id: 'mj-35', num: 35, slug: 'shes-out-of-my-life',         title: "She's Out of My Life",        album: 'Off the Wall', albumGroup: 'Off the Wall', year: 1979, mood: 'calm',  grad: ['#3b0764', '#c084fc'], badge: 'OTW', keywords: ['out of my life'],
+        quote: "And I don't know whether to laugh or cry — one of the purest ballads ever sung.", quoteRu: "Самая искренняя и трогательная баллада под тихий вечерний свет." },
+      { id: 'mj-36', num: 36, slug: 'working-day-and-night',       title: 'Working Day and Night',       album: 'Off the Wall', albumGroup: 'Off the Wall', year: 1979, mood: 'dance', grad: ['#6d28d9', '#fb923c'], badge: 'OTW', keywords: ['working day', 'day and night'],
+        quote: "Ooh my honey, you got me workin' day and night!", quoteRu: "Зажигательный ритм, под который невозможно усидеть на месте." },
+      { id: 'mj-37', num: 37, slug: 'get-on-the-floor',            title: 'Get on the Floor',            album: 'Off the Wall', albumGroup: 'Off the Wall', year: 1979, mood: 'dance', grad: ['#4c1d95', '#38bdf8'], badge: 'OTW', keywords: ['get on the floor'],
+        quote: "Get on the floor and dance with me — I love the way you shake your thing.", quoteRu: "Танцуй со мной — музыка сама ведёт за собой." },
+      { id: 'mj-38', num: 38, slug: 'stranger-in-moscow',          title: 'Stranger in Moscow',          album: 'HIStory',      albumGroup: 'HIStory',      year: 1995, mood: 'calm',  grad: ['#1e293b', '#94a3b8'], badge: 'HIS', keywords: ['stranger in moscow', 'moscow'],
+        quote: "How does it feel when you're alone and you're cold inside?", quoteRu: "Дождь, тихий бит и самая атмосферная ночная композиция Майкла." },
+      { id: 'mj-39', num: 39, slug: 'you-are-not-alone',           title: 'You Are Not Alone',           album: 'HIStory',      albumGroup: 'HIStory',      year: 1995, mood: 'calm',  grad: ['#713f12', '#fde047'], badge: 'HIS', keywords: ['you are not alone', 'not alone'],
+        quote: "You are not alone, I am here with you — though we're far apart, you're always in my heart.", quoteRu: "Ты не одна, я рядом — даже на расстоянии ты всегда в моём сердце." },
+      { id: 'mj-40', num: 40, slug: 'scream',                      title: 'Scream',                      album: 'HIStory',      albumGroup: 'HIStory',      year: 1995, mood: 'dance', grad: ['#27272a', '#ef4444'], badge: 'HIS', keywords: ['scream'],
+        quote: "Stop pressurin' me — just stop pressurin' me!", quoteRu: "Мощный космический драйв, чтобы сбросить всё напряжение." },
+      { id: 'mj-41', num: 41, slug: 'blood-on-the-dance-floor',    title: 'Blood on the Dance Floor',    album: 'Blood on the Dance Floor', albumGroup: 'HIStory', year: 1997, mood: 'dance', grad: ['#7f1d1d', '#dc2626'], badge: 'BDF', keywords: ['blood on the dance floor', 'dance floor'],
+        quote: "Susie got your number and Susie ain't your friend.", quoteRu: "Огненный танцпол и дерзкий бит конца 90-х." },
+      { id: 'mj-42', num: 42, slug: 'ghosts',                      title: 'Ghosts',                      album: 'Blood on the Dance Floor', albumGroup: 'HIStory', year: 1997, mood: 'dance', grad: ['#3b0764', '#dc2626'], badge: 'BDF', keywords: ['ghosts'],
+        quote: "Tell me are you the ghost of jealousy?", quoteRu: "Таинственная готическая сказка в фирменном стиле MJ." },
+      { id: 'mj-43', num: 43, slug: 'butterflies',                 title: 'Butterflies',                 album: 'Invincible',   albumGroup: 'Invincible',   year: 2001, mood: 'calm',  grad: ['#0c4a6e', '#f472b6'], badge: 'INV', keywords: ['butterflies'],
+        quote: "All I gotta say is that I must be dreaming, can't be real — you give me butterflies.", quoteRu: "От тебя внутри порхают бабочки — будто самый нежный сон." },
+      { id: 'mj-44', num: 44, slug: 'break-of-dawn',               title: 'Break of Dawn',               album: 'Invincible',   albumGroup: 'Invincible',   year: 2001, mood: 'calm',  grad: ['#1e1b4b', '#fb923c'], badge: 'INV', keywords: ['break of dawn'],
+        quote: "Hold my hand, feel the sweat — yes, you've got me nervous yet. Let's stay until the break of dawn.", quoteRu: "Держи меня за руку — давай останемся вместе до самого рассвета." },
+      { id: 'mj-45', num: 45, slug: 'heaven-can-wait',             title: 'Heaven Can Wait',             album: 'Invincible',   albumGroup: 'Invincible',   year: 2001, mood: 'calm',  grad: ['#1e3a8a', '#93c5fd'], badge: 'INV', keywords: ['heaven can wait'],
+        quote: "Tell the angels no, I don't wanna leave my baby alone.", quoteRu: "Пусть весь мир подождёт — я не хочу оставлять тебя одну ни на миг." },
+
+      // 46–68: Late MJ, Romance & Legendary Jackson 5
+      { id: 'mj-46', num: 46, slug: 'unbreakable',                 title: 'Unbreakable',                 album: 'Invincible',   albumGroup: 'Invincible',   year: 2001, mood: 'dance', grad: ['#0f172a', '#0ea5e9'], badge: 'INV', keywords: ['unbreakable'],
+        quote: "You can't touch me 'cause I'm untouchable — and I hate to see you cry.", quoteRu: "Уверенный ритм о том, что нас ничто не сломит." },
+      { id: 'mj-47', num: 47, slug: 'whatever-happens',            title: 'Whatever Happens',            album: 'Invincible',   albumGroup: 'Invincible',   year: 2001, mood: 'calm',  grad: ['#451a03', '#f59e0b'], badge: 'INV', keywords: ['whatever happens'],
+        quote: "Whatever happens, don't let go of my hand.", quoteRu: "Что бы ни случилось — просто не отпускай мою руку." },
+      { id: 'mj-48', num: 48, slug: 'speechless',                  title: 'Speechless',                  album: 'Invincible',   albumGroup: 'Invincible',   year: 2001, mood: 'calm',  grad: ['#312e81', '#e879f9'], badge: 'INV', keywords: ['speechless'],
+        quote: "Your love is magical, that's how I feel — but I have not the words here to explain.", quoteRu: "Твоя любовь волшебна — рядом с тобой просто пропадают слова." },
+      { id: 'mj-49', num: 49, slug: 'love-never-felt-so-good',     title: 'Love Never Felt So Good',     album: 'Xscape',       albumGroup: 'Xscape',       year: 2014, mood: 'dance', grad: ['#78350f', '#fbbf24'], badge: 'XSC', keywords: ['love never felt', 'felt so good'],
+        quote: "Baby, love never felt so good — and I'd doubt if it ever could.", quoteRu: "Любовь ещё никогда не ощущалась так тепло и легко." },
+      { id: 'mj-50', num: 50, slug: 'chicago',                     title: 'Chicago',                     album: 'Xscape',       albumGroup: 'Xscape',       year: 2014, mood: 'calm',  grad: ['#3f3f46', '#f59e0b'], badge: 'XSC', keywords: ['chicago'],
+        quote: "I met her on the way to Chicago, where she was all alone.", quoteRu: "Ночной поезд, огни большого города и бархатный грув." },
+      { id: 'mj-51', num: 51, slug: 'a-place-with-no-name',        title: 'A Place with No Name',        album: 'Xscape',       albumGroup: 'Xscape',       year: 2014, mood: 'dance', grad: ['#52525b', '#fbbf24'], badge: 'XSC', keywords: ['place with no name', 'no name'],
+        quote: "Take me to a place without no name — where nobody has any fear.", quoteRu: "Уютное место вне времени, где нет тревог и всегда тепло." },
+      { id: 'mj-52', num: 52, slug: 'slave-to-the-rhythm',         title: 'Slave to the Rhythm',         album: 'Xscape',       albumGroup: 'Xscape',       year: 2014, mood: 'dance', grad: ['#713f12', '#f97316'], badge: 'XSC', keywords: ['slave to the rhythm'],
+        quote: "She dances through the night — slave to the rhythm of love.", quoteRu: "Энергичный бит, от которого моментально заряжаешься." },
+      { id: 'mj-53', num: 53, slug: 'loving-you',                  title: 'Loving You',                  album: 'Xscape',       albumGroup: 'Xscape',       year: 2014, mood: 'calm',  grad: ['#831843', '#fbbf24'], badge: 'XSC', keywords: ['loving you'],
+        quote: "I'll be loving you — that's what I want to do.", quoteRu: "Я хочу просто любить тебя каждый день." },
+      { id: 'mj-54', num: 54, slug: 'hold-my-hand',                title: 'Hold My Hand',                album: 'Michael',      albumGroup: 'Michael',      year: 2010, mood: 'calm',  grad: ['#854d0e', '#facc15'], badge: 'M10', keywords: ['hold my hand'],
+        quote: "This life don't last forever, so tell me what we're waiting for — hold my hand.", quoteRu: "Возьми меня за руку — вместе мы справимся со всем." },
+      { id: 'mj-55', num: 55, slug: 'hollywood-tonight',           title: 'Hollywood Tonight',           album: 'Michael',      albumGroup: 'Michael',      year: 2010, mood: 'dance', grad: ['#7c2d12', '#fb7185'], badge: 'M10', keywords: ['hollywood tonight', 'hollywood'],
+        quote: "She's going to Hollywood tonight — she's giving up her life to be a star.", quoteRu: "Яркий битбoкс и сияние вечерних огней." },
+      { id: 'mj-56', num: 56, slug: 'behind-the-mask',             title: 'Behind the Mask',             album: 'Michael',      albumGroup: 'Michael',      year: 2010, mood: 'dance', grad: ['#1e3a8a', '#f59e0b'], badge: 'M10', keywords: ['behind the mask'],
+        quote: "Who do you love, is it me? With you I'm always real.", quoteRu: "С тобой не нужны никакие маски — можно просто быть собой." },
+      { id: 'mj-57', num: 57, slug: 'best-of-joy',                 title: 'Best of Joy',                 album: 'Michael',      albumGroup: 'Michael',      year: 2010, mood: 'calm',  grad: ['#78350f', '#fde68a'], badge: 'M10', keywords: ['best of joy'],
+        quote: "I am forever — I am the one who came when you fell down.", quoteRu: "Я навсегда рядом, чтобы приносить тебе свет и радость." },
+      { id: 'mj-58', num: 58, slug: 'i-want-you-back',             title: 'I Want You Back',             album: 'Jackson 5',    albumGroup: 'Classic',      year: 1969, mood: 'dance', grad: ['#be185d', '#fbbf24'], badge: 'J5',  keywords: ['i want you back', 'want you back'],
+        quote: "Oh baby give me one more chance to show you that I love you!", quoteRu: "Солнечная классика Jackson 5, которая мгновенно поднимает настроение." },
+      { id: 'mj-59', num: 59, slug: 'abc',                         title: 'ABC',                         album: 'Jackson 5',    albumGroup: 'Classic',      year: 1970, mood: 'dance', grad: ['#d97706', '#ec4899'], badge: 'J5',  keywords: ['abc'],
+        quote: "A-B-C, it's easy as 1-2-3, as simple as do-re-mi!", quoteRu: "Любовь и радость просты, как раз-два-три!" },
+      { id: 'mj-60', num: 60, slug: 'ill-be-there',                title: "I'll Be There",               album: 'Jackson 5',    albumGroup: 'Classic',      year: 1970, mood: 'calm',  grad: ['#9d174d', '#fbcfe8'], badge: 'J5',  keywords: ['ill be there', "i'll be there"],
+        quote: "Just call my name and I'll be there.", quoteRu: "Просто позови меня по имени — и я всегда буду рядом." },
+      { id: 'mj-61', num: 61, slug: 'blame-it-on-the-boogie',      title: 'Blame It on the Boogie',      album: 'The Jacksons', albumGroup: 'Classic',      year: 1978, mood: 'dance', grad: ['#7e22ce', '#f59e0b'], badge: 'JKS', keywords: ['blame it on the boogie', 'boogie'],
+        quote: "Don't blame it on the sunshine, don't blame it on the moonlight — blame it on the boogie!", quoteRu: "Чистое диско-счастье — невозможно не улыбнуться." },
+      { id: 'mj-62', num: 62, slug: 'shake-your-body',             title: 'Shake Your Body (Down to the Ground)', album: 'The Jacksons', albumGroup: 'Classic', year: 1978, mood: 'dance', grad: ['#6b21a8', '#ec4899'], badge: 'JKS', keywords: ['shake your body'],
+        quote: "Let's dance, let's shout — shake your body down to the ground!", quoteRu: "Танцевальный гимн 70-х с бесконечной энергией." },
+      { id: 'mj-63', num: 63, slug: 'can-you-feel-it',             title: 'Can You Feel It',             album: 'The Jacksons', albumGroup: 'Classic',      year: 1980, mood: 'dance', grad: ['#0369a1', '#fbbf24'], badge: 'JKS', keywords: ['can you feel it'],
+        quote: "Can you feel it? All the colors of the world should be lovin' each other!", quoteRu: "Чувствуешь это тепло? Весь мир сияет яркими красками." },
+      { id: 'mj-64', num: 64, slug: 'ben',                         title: 'Ben',                         album: 'Ben',          albumGroup: 'Classic',      year: 1972, mood: 'calm',  grad: ['#374151', '#fbbf24'], badge: 'BEN', keywords: ['ben'],
+        quote: "With a friend to call my own, I'll never be alone.", quoteRu: "Когда рядом есть самый родной друг — ты никогда не одинок." },
+      { id: 'mj-65', num: 65, slug: 'rockin-robin',                title: "Rockin' Robin",               album: 'Got to Be There', albumGroup: 'Classic',   year: 1972, mood: 'dance', grad: ['#b91c1c', '#fbbf24'], badge: '72',  keywords: ['rockin robin', 'robin'],
+        quote: "Tweet, tweet, tweet — rockin' robin's really gonna rock tonight!", quoteRu: "Весёлый ретро-ролик для солнечного настроения." },
+      { id: 'mj-66', num: 66, slug: 'say-say-say',                 title: 'Say Say Say',                 album: 'feat. Paul McCartney', albumGroup: 'Classic', year: 1983, mood: 'dance', grad: ['#1d4ed8', '#f59e0b'], badge: '83', keywords: ['say say say'],
+        quote: "Say, say, say what you want, but don't play games with my affection.", quoteRu: "Легендарный дуэт Майкла и Пола Маккартни." },
+      { id: 'mj-67', num: 67, slug: 'we-are-the-world',            title: 'We Are the World',            album: 'USA for Africa', albumGroup: 'Classic',    year: 1985, mood: 'calm',  grad: ['#065f46', '#fbbf24'], badge: '85',  keywords: ['we are the world'],
+        quote: "We are the world, we are the children — we are the ones who make a brighter day.", quoteRu: "Песня, которая объединила весь мир добротой и надеждой." },
+      { id: 'mj-68', num: 68, slug: 'smile',                       title: 'Smile',                       album: 'HIStory',      albumGroup: 'HIStory',      year: 1995, mood: 'calm',  grad: ['#78350f', '#fde68a'], badge: 'HIS', keywords: ['smile'],
+        quote: "Smile, though your heart is aching — you'll see the sun come shining through.", quoteRu: "Улыбнись — и сквозь любые тучи обязательно выглянет солнце." }
     ];
 
     const IMPORTANT_DATES = {
@@ -1492,6 +1655,9 @@
       discoBallDrop: 0,         // smooth drop 0..1
       plantStage: 0,            // 0..4 growing from watering
       plantWaterCount: 0,
+      cleanMode: false,
+      snowGlobeSwirl: 0,        // 0..1 blizzard energy inside "Д + А" snow globe
+      snowGlobeShake: 0,        // shake wobble timer
       blanketTapCount: 0,
       boyfriendState: 'none',  // 'none' | 'lyingBack' | 'betweenLegs'
       boyfriendAlpha: 0,       // smooth fade in/out 0..1
@@ -1546,7 +1712,9 @@
       notes: [],
       sparkles: [],
       waterDrops: [],
-      projectorStars: []
+      projectorStars: [],
+      snowGlobeFlakes: [],
+      fireflies: []
     };
 
     /* =========================================================================
@@ -2543,7 +2711,7 @@
           if (t.keywords && t.keywords.some((kw) => {
             const k = kw.toLowerCase().replace(/[’'`]/g, '');
             // Avoid false positive for very short 'bad' inside 'badminton'
-            if (k === 'bad') return /(^|\s)bad(\s|$)/.test(clean);
+            if (k.length <= 3) return new RegExp(`(^|\\s)${k}(\\s|$)`).test(clean);
             return clean.includes(k);
           })) {
             return t;
@@ -2814,6 +2982,14 @@
       },
 
       getCombinedList() {
+        const filtered = getFilteredMJTracks();
+        const extra = playlistFilter.mood === 'favorites'
+          ? localDb.extraTracks.filter((t) => favoritesStore.has(t.id))
+          : localDb.extraTracks;
+        const pool = [...filtered, ...extra];
+        if (pool.length >= 1 && (playlistFilter.mood !== 'all' || playlistFilter.album !== 'all')) {
+          return pool;
+        }
         return [...MJ_PLAYLIST, ...localDb.extraTracks];
       },
 
@@ -2915,6 +3091,7 @@
         }
         const qEn = document.getElementById('lyricQuoteEn');
         const qRu = document.getElementById('lyricQuoteRu');
+        if (typeof favoritesStore !== 'undefined') favoritesStore.syncUI();
         if (qEn && qRu) {
           if (t.quote) {
             qEn.textContent = `“${t.quote}”`;
@@ -3625,58 +3802,188 @@
     };
 
     /* =========================================================================
-       8. PLAYLIST UI RENDERER
+       8. FAVORITES STORE, ALBUM/MOOD FILTERS & PLAYLIST UI RENDERER
        ========================================================================= */
+    const playlistFilter = {
+      mood: 'all',    // 'all' | 'favorites' | 'calm' | 'dance'
+      album: 'all'    // 'all' | 'Thriller' | 'Bad' | ...
+    };
+
+    const favoritesStore = {
+      KEY: 'mj_cozy_room_favs_v1',
+      ids: new Set(),
+
+      init() {
+        try {
+          const raw = localStorage.getItem(this.KEY);
+          const arr = raw ? JSON.parse(raw) : [];
+          if (Array.isArray(arr)) this.ids = new Set(arr);
+        } catch (_) {
+          this.ids = new Set();
+        }
+        this.syncUI();
+      },
+
+      save() {
+        try { localStorage.setItem(this.KEY, JSON.stringify(Array.from(this.ids))); } catch (_) {}
+      },
+
+      has(id) {
+        return this.ids.has(id);
+      },
+
+      toggle(id) {
+        if (!id) return;
+        vibeEngine.ensureInit();
+        const added = !this.ids.has(id);
+        if (added) {
+          this.ids.add(id);
+          vibeEngine.playSoftChime(698.46);
+        } else {
+          this.ids.delete(id);
+          vibeEngine.playSoftChime(440);
+        }
+        this.save();
+        this.syncUI();
+        renderPlaylistUI();
+        if (added) showToast('Трек добавлен в «❤️ Любимые»', '❤️', null, 2400);
+      },
+
+      syncUI() {
+        const cntEl = document.getElementById('favCountPill');
+        if (cntEl) cntEl.textContent = String(this.ids.size);
+        const curBtn = document.getElementById('btnFavCurrent');
+        const cur = musicPlayer.currentTrack;
+        if (curBtn && cur) {
+          const isFav = this.has(cur.id);
+          curBtn.textContent = isFav ? '❤️' : '🤍';
+          curBtn.classList.toggle('bg-rose-500/25', isFav);
+          curBtn.classList.toggle('bg-white/5', !isFav);
+        }
+      }
+    };
+
+    function getFilteredMJTracks() {
+      const searchEl = document.getElementById('trackSearch');
+      const query = (searchEl ? searchEl.value : '').trim().toLowerCase();
+      return MJ_PLAYLIST.filter((t) => {
+        if (playlistFilter.mood === 'favorites' && !favoritesStore.has(t.id)) return false;
+        if (playlistFilter.mood === 'calm' && t.mood !== 'calm') return false;
+        if (playlistFilter.mood === 'dance' && t.mood !== 'dance') return false;
+        if (playlistFilter.album !== 'all' && t.albumGroup !== playlistFilter.album) return false;
+        if (query && !(t.title.toLowerCase().includes(query) || t.album.toLowerCase().includes(query))) return false;
+        return true;
+      });
+    }
+
+    function syncFilterButtonsUI() {
+      document.querySelectorAll('.mood-filter-btn').forEach((b) => {
+        const active = b.getAttribute('data-mood-filter') === playlistFilter.mood;
+        b.className = `mood-filter-btn py-1.5 px-1 rounded-xl text-[10px] sm:text-[11px] transition truncate border ${
+          active
+            ? 'font-semibold bg-amber-400/25 border-amber-300/40 text-amber-100'
+            : 'font-medium bg-white/[0.04] border-white/10 text-amber-200/80 hover:text-amber-100'
+        }`;
+      });
+      document.querySelectorAll('.album-filter-btn').forEach((b) => {
+        const active = b.getAttribute('data-album-filter') === playlistFilter.album;
+        b.className = `album-filter-btn px-2.5 py-1 rounded-full text-[10px] shrink-0 transition border ${
+          active
+            ? 'font-semibold bg-amber-400/25 border-amber-300/40 text-amber-100'
+            : 'font-medium bg-white/[0.05] border-white/10 text-amber-200/75 hover:text-amber-100'
+        }`;
+      });
+    }
+
     function renderPlaylistUI() {
       const searchEl = document.getElementById('trackSearch');
       const query = (searchEl ? searchEl.value : '').trim().toLowerCase();
 
-      // Summary badge of how many MJ tracks are locally stored in IndexedDB
+      // Summary badge
       const boundCount = Object.keys(localDb.boundByTrackId).length;
       const summaryEl = document.getElementById('mjLoadedSummary');
       if (summaryEl) {
-        summaryEl.textContent = boundCount > 0 ? `Свои файлы: ${boundCount}/18` : 'Коллекция хитов';
+        summaryEl.textContent = boundCount > 0 ? `Свои файлы: ${boundCount}/${MJ_PLAYLIST.length}` : 'Коллекция хитов';
       }
 
-      // Render 18 MJ Tracks
+      const filtered = getFilteredMJTracks();
+
+      // Update section heading dynamically
+      const headingEl = document.getElementById('mjListHeading');
+      if (headingEl) {
+        const moodNames = {
+          all: 'Хиты Michael Jackson',
+          favorites: '❤️ Любимые треки',
+          calm: '🌙 Спокойные на ночь',
+          dance: '🕺 Танцевальные хиты'
+        };
+        const baseTitle = moodNames[playlistFilter.mood] || 'Хиты Michael Jackson';
+        const albPart = playlistFilter.album !== 'all' ? ` · ${playlistFilter.album}` : '';
+        headingEl.textContent = `${baseTitle}${albPart} (${filtered.length})`;
+      }
+
+      favoritesStore.syncUI();
+
+      // Render MJ Tracks
       const mjList = document.getElementById('mjTrackList');
       if (mjList) {
-        const filtered = MJ_PLAYLIST.filter((t) =>
-          t.title.toLowerCase().includes(query) || t.album.toLowerCase().includes(query)
-        );
-        mjList.innerHTML = filtered.map((t) => {
-          const active = musicPlayer.currentTrack && musicPlayer.currentTrack.id === t.id;
-          const isBound = Boolean(localDb.boundByTrackId[t.id]);
-          const statusChip = isBound
-            ? '<span class="px-1.5 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/35 text-[9px] font-semibold text-emerald-200 shrink-0">Свой файл</span>'
-            : '';
+        if (!filtered.length) {
+          const emptyMsg = playlistFilter.mood === 'favorites'
+            ? 'Пока нет любимых треков — нажми на 🤍 рядом с любой песней, и она появится здесь!'
+            : 'Ничего не найдено по этому фильтру — попробуй выбрать «Все альбомы» ✨';
+          mjList.innerHTML = `<div class="rounded-2xl p-4 bg-white/[0.03] border border-amber-200/10 text-center text-xs text-amber-200/70">${emptyMsg}</div>`;
+        } else {
+          mjList.innerHTML = filtered.map((t) => {
+            const active = musicPlayer.currentTrack && musicPlayer.currentTrack.id === t.id;
+            const isBound = Boolean(localDb.boundByTrackId[t.id]);
+            const isFav = favoritesStore.has(t.id);
+            const moodTag = t.mood === 'calm'
+              ? '<span class="px-1.5 py-0.5 rounded-md bg-indigo-500/20 text-[9px] text-indigo-200 shrink-0">🌙</span>'
+              : '<span class="px-1.5 py-0.5 rounded-md bg-amber-500/15 text-[9px] text-amber-200 shrink-0">🕺</span>';
+            const statusChip = isBound
+              ? '<span class="px-1.5 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/35 text-[9px] font-semibold text-emerald-200 shrink-0">Файл</span>'
+              : '';
 
-          return `
-            <button data-play-mj="${t.id}" type="button"
-              class="w-full flex items-center gap-2.5 rounded-xl p-2 text-left transition border ${active ? 'bg-amber-400/20 border-amber-300/45 shadow-[0_0_16px_rgba(244,162,97,0.18)]' : 'bg-white/[0.03] border-white/5 hover:bg-white/[0.08]'}">
-              <span class="text-[11px] font-mono text-amber-200/45 w-4 text-right shrink-0">${t.num}</span>
-              <div class="w-9 h-9 rounded-xl shrink-0 flex items-center justify-center text-[10px] font-extrabold text-white shadow border border-white/15"
-                style="background: linear-gradient(135deg, ${t.grad[0]}, ${t.grad[1]});">${t.badge}</div>
-              <div class="min-w-0 flex-1">
-                <div class="text-xs sm:text-sm font-semibold ${active ? 'text-amber-200' : 'text-amber-50'} truncate">${escapeHtml(t.title)}</div>
-                <div class="flex items-center gap-1.5 mt-0.5">
-                  <span class="text-[11px] text-amber-200/60 truncate">${escapeHtml(t.album)} · ${t.year}</span>
-                  ${statusChip}
-                </div>
+            return `
+              <div class="w-full flex items-center gap-1.5 rounded-xl p-1.5 transition border ${active ? 'bg-amber-400/20 border-amber-300/45 shadow-[0_0_16px_rgba(244,162,97,0.18)]' : 'bg-white/[0.03] border-white/5 hover:bg-white/[0.08]'}">
+                <button data-play-mj="${t.id}" type="button" class="flex items-center gap-2.5 flex-1 min-w-0 text-left py-0.5 pl-1">
+                  <span class="text-[10px] font-mono text-amber-200/45 w-4 text-right shrink-0">${t.num}</span>
+                  <div class="w-9 h-9 rounded-xl shrink-0 flex items-center justify-center text-[10px] font-extrabold text-white shadow border border-white/15"
+                    style="background: linear-gradient(135deg, ${t.grad[0]}, ${t.grad[1]});">${t.badge}</div>
+                  <div class="min-w-0 flex-1">
+                    <div class="text-xs sm:text-sm font-semibold ${active ? 'text-amber-200' : 'text-amber-50'} truncate">${escapeHtml(t.title)}</div>
+                    <div class="flex items-center gap-1.5 mt-0.5">
+                      <span class="text-[11px] text-amber-200/60 truncate">${escapeHtml(t.album)} · ${t.year}</span>
+                      ${moodTag}
+                      ${statusChip}
+                    </div>
+                  </div>
+                </button>
+                <button data-fav-track="${t.id}" type="button" title="В любимые"
+                  class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 hover:bg-rose-500/20 active:scale-90 transition ${isFav ? 'text-rose-400' : 'text-amber-200/40'}">
+                  ${isFav ? '❤️' : '🤍'}
+                </button>
+                <button data-play-mj="${t.id}" type="button" aria-label="Играть"
+                  class="text-xs w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${active ? 'bg-amber-400 text-[#23151e] font-bold' : 'bg-white/5 text-amber-200/70'}">
+                  ${active && roomState.audioPlaying ? '♫' : '▶'}
+                </button>
               </div>
-              <span class="text-xs w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${active ? 'bg-amber-400 text-[#23151e] font-bold' : 'bg-white/5 text-amber-200/70'}">
-                ${active && roomState.audioPlaying ? '♫' : '▶'}
-              </span>
-            </button>
-          `;
-        }).join('');
+            `;
+          }).join('');
 
-        mjList.querySelectorAll('[data-play-mj]').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            const found = MJ_PLAYLIST.find((x) => x.id === btn.getAttribute('data-play-mj'));
-            if (found) musicPlayer.selectTrack(found, true);
+          mjList.querySelectorAll('[data-play-mj]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const found = MJ_PLAYLIST.find((x) => x.id === btn.getAttribute('data-play-mj'));
+              if (found) musicPlayer.selectTrack(found, true);
+            });
           });
-        });
+          mjList.querySelectorAll('[data-fav-track]').forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              favoritesStore.toggle(btn.getAttribute('data-fav-track'));
+            });
+          });
+        }
       }
 
       // Render Extra Custom Uploaded Tracks
@@ -3684,20 +3991,29 @@
       const extraList = document.getElementById('extraTrackList');
       const extraCount = document.getElementById('extraMp3Count');
       if (extraSec && extraList) {
-        const filteredExtra = localDb.extraTracks.filter((t) => t.title.toLowerCase().includes(query));
-        if (localDb.extraTracks.length > 0) {
+        const filteredExtra = localDb.extraTracks.filter((t) => {
+          if (playlistFilter.mood === 'favorites' && !favoritesStore.has(t.id)) return false;
+          if (query && !t.title.toLowerCase().includes(query)) return false;
+          return true;
+        });
+        if (filteredExtra.length > 0) {
           extraSec.classList.remove('hidden');
-          if (extraCount) extraCount.textContent = `${localDb.extraTracks.length} шт.`;
+          if (extraCount) extraCount.textContent = `${filteredExtra.length} шт.`;
           extraList.innerHTML = filteredExtra.map((t) => {
             const active = musicPlayer.currentTrack && musicPlayer.currentTrack.id === t.id;
+            const isFav = favoritesStore.has(t.id);
             return `
-              <div class="flex items-center gap-2 rounded-xl p-2 transition border ${active ? 'bg-emerald-500/20 border-emerald-400/45' : 'bg-white/[0.03] border-white/5 hover:bg-white/[0.08]'}">
-                <button data-play-extra="${t.id}" type="button" class="flex items-center gap-2.5 flex-1 min-w-0 text-left">
+              <div class="flex items-center gap-1.5 rounded-xl p-1.5 transition border ${active ? 'bg-emerald-500/20 border-emerald-400/45' : 'bg-white/[0.03] border-white/5 hover:bg-white/[0.08]'}">
+                <button data-play-extra="${t.id}" type="button" class="flex items-center gap-2.5 flex-1 min-w-0 text-left pl-1">
                   <div class="w-9 h-9 rounded-xl shrink-0 flex items-center justify-center text-[10px] font-bold text-white" style="background:linear-gradient(135deg,${t.grad[0]},${t.grad[1]})">MP3</div>
                   <div class="min-w-0">
                     <div class="text-xs sm:text-sm font-semibold text-amber-50 truncate">${escapeHtml(t.title)}</div>
                     <div class="text-[11px] text-emerald-200/70">Загруженный MP3 · Офлайн</div>
                   </div>
+                </button>
+                <button data-fav-track="${t.id}" type="button" title="В любимые"
+                  class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 hover:bg-rose-500/20 transition ${isFav ? 'text-rose-400' : 'text-amber-200/40'}">
+                  ${isFav ? '❤️' : '🤍'}
                 </button>
                 <button data-del-extra="${t.id}" type="button" title="Удалить" class="px-2 py-1 rounded-lg bg-black/30 text-[11px] text-rose-300 hover:bg-rose-500/20">✕</button>
               </div>
@@ -3708,6 +4024,12 @@
             b.addEventListener('click', () => {
               const found = localDb.extraTracks.find((x) => x.id === b.getAttribute('data-play-extra'));
               if (found) musicPlayer.selectTrack(found, true);
+            });
+          });
+          extraList.querySelectorAll('[data-fav-track]').forEach((b) => {
+            b.addEventListener('click', (e) => {
+              e.stopPropagation();
+              favoritesStore.toggle(b.getAttribute('data-fav-track'));
             });
           });
           extraList.querySelectorAll('[data-del-extra]').forEach((b) => {
@@ -3728,8 +4050,10 @@
     const HOTSPOTS = [
       { id: 'window',        label: 'Окно · Погода',        x: 82,   y: 112, w: 296, h: 368 },
       { id: 'plant',         label: 'Цветок · Полить 💧',   x: 108,  y: 382, w: 80,  h: 92  },
+      { id: 'curtain',       label: 'Штора · Светлячки ✨', x: 352,  y: 118, w: 46,  h: 330 },
       { id: 'starProjector', label: 'Проектор неба 🌌',     x: 288,  y: 416, w: 62,  h: 56  },
       { id: 'corkboard',     label: 'Полароиды · Записки',  x: 405,  y: 165, w: 120, h: 155 },
+      { id: 'snowGlobe',     label: 'Снежный шар «Д + А»',  x: 432,  y: 342, w: 66,  h: 72  },
       { id: 'fairyLights',   label: 'Гирлянда',             x: 520,  y: 235, w: 430, h: 85  },
       { id: 'lamp',          label: 'Ночник · Свет',        x: 382,  y: 452, w: 86,  h: 110 },
       { id: 'nightstand',    label: 'Тумбочка · Секреты',   x: 374,  y: 566, w: 136, h: 162 },
@@ -3802,6 +4126,21 @@
         phase: Math.random() * Math.PI * 2,
         col: ['#e0f2fe', '#f5d0fe', '#fde68a', '#a5f3fc'][Math.floor(Math.random() * 4)]
       }));
+
+      // 34 snowflakes & golden glitter particles inside the "Д + А" Snow Globe (dome r=24)
+      particles.snowGlobeFlakes = Array.from({ length: 34 }, (_, i) => {
+        const ang = Math.random() * Math.PI;
+        const rad = Math.random() * 17;
+        return {
+          x: Math.cos(ang) * rad,
+          y: 12 + Math.random() * 6,
+          vx: 0,
+          vy: 0,
+          r: i % 3 === 0 ? (1.4 + Math.random() * 1.1) : (0.9 + Math.random() * 0.9),
+          gold: i % 2 === 0,
+          phase: Math.random() * Math.PI * 2
+        };
+      });
     }
 
     function drawRoundRect(c, x, y, w, h, r) {
@@ -4551,6 +4890,125 @@
       ctx.restore();
       }
 
+      // 1B) Floating Cozy Shelf with Interactive Glass Snow Globe "Д + А"
+      const shx = 418, shy = 404, shw = 96;
+      const wpShelf = getWoodPalette();
+      ctx.save();
+      // Shelf shadow & wood board
+      ctx.fillStyle = 'rgba(0,0,0,0.34)';
+      drawRoundRect(ctx, shx + 3, shy + 5, shw, 10, 3);
+      ctx.fill();
+      ctx.fillStyle = wpShelf.mid;
+      drawRoundRect(ctx, shx, shy, shw, 9, 3);
+      ctx.fill();
+      ctx.fillStyle = wpShelf.top;
+      ctx.fillRect(shx + 2, shy, shw - 4, 3);
+      // Mini brackets
+      ctx.fillStyle = wpShelf.dark;
+      ctx.fillRect(shx + 12, shy + 9, 5, 9);
+      ctx.fillRect(shx + shw - 17, shy + 9, 5, 9);
+
+      // Snow Globe centered at (466, 376) with subtle shake wobble
+      const gx = 466, gy = 376, gr = 24;
+      const shakeAngle = roomState.snowGlobeShake > 0
+        ? Math.sin(t * 38) * 0.16 * roomState.snowGlobeShake
+        : 0;
+      ctx.translate(gx, gy + 24);
+      ctx.rotate(shakeAngle);
+      ctx.translate(0, -24);
+
+      // Soft warm ambient halo around globe when swirling
+      if (roomState.snowGlobeSwirl > 0.02) {
+        const sgGlow = ctx.createRadialGradient(0, 0, 6, 0, 0, 46);
+        sgGlow.addColorStop(0, `rgba(255, 224, 150, ${(0.38 * roomState.snowGlobeSwirl).toFixed(3)})`);
+        sgGlow.addColorStop(1, 'rgba(255, 224, 150, 0)');
+        ctx.fillStyle = sgGlow;
+        ctx.beginPath();
+        ctx.arc(0, 0, 46, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Glass Dome Interior (clipped to circle)
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(0, 0, gr, 0, Math.PI * 2);
+      ctx.clip();
+
+      const domeBg = ctx.createRadialGradient(-6, -8, 3, 0, 2, gr + 2);
+      domeBg.addColorStop(0, '#463259');
+      domeBg.addColorStop(0.55, '#251a38');
+      domeBg.addColorStop(1, '#120d1f');
+      ctx.fillStyle = domeBg;
+      ctx.fillRect(-gr, -gr, gr * 2, gr * 2);
+
+      // Snowy hill floor inside dome
+      ctx.fillStyle = '#eef4ff';
+      ctx.beginPath();
+      ctx.ellipse(0, 18, 25, 11, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Tiny golden glowing heart + subtle pine silhouette inside the globe
+      ctx.fillStyle = '#3b6e52';
+      ctx.beginPath();
+      ctx.moveTo(-13, 12); ctx.lineTo(-9, 0); ctx.lineTo(-5, 12); ctx.closePath();
+      ctx.moveTo(5, 12);   ctx.lineTo(10, -2); ctx.lineTo(15, 12); ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#fda4af';
+      drawHeart(ctx, 0, 6, 6.2);
+      ctx.fill();
+      ctx.fillStyle = '#fff5f7';
+      ctx.font = '800 7px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('Д+А', 0, -9);
+
+      // Snowflakes & golden glitter swirling inside the glass dome
+      for (const fl of particles.snowGlobeFlakes) {
+        const tw = 0.65 + 0.35 * Math.sin(t * 5 + fl.phase);
+        ctx.fillStyle = fl.gold
+          ? `rgba(253, 224, 130, ${(0.92 * tw).toFixed(2)})`
+          : `rgba(241, 248, 255, ${(0.88 * tw).toFixed(2)})`;
+        ctx.beginPath();
+        ctx.arc(fl.x, fl.y, fl.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      // Glass rim & curved specular highlight
+      ctx.strokeStyle = 'rgba(225, 240, 255, 0.45)';
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.arc(0, 0, gr, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.58)';
+      ctx.lineWidth = 2.2;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(0, 0, gr - 4, Math.PI * 1.12, Math.PI * 1.44);
+      ctx.stroke();
+
+      // Wooden carved base pedestal with golden "Д + А" plaque
+      const baseG = ctx.createLinearGradient(-20, 17, 20, 29);
+      baseG.addColorStop(0, wpShelf.light);
+      baseG.addColorStop(1, wpShelf.dark);
+      ctx.fillStyle = baseG;
+      ctx.beginPath();
+      ctx.moveTo(-17, 17);
+      ctx.lineTo(17, 17);
+      ctx.lineTo(21, 28);
+      ctx.lineTo(-21, 28);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#f6c978';
+      drawRoundRect(ctx, -10, 20, 20, 6, 2);
+      ctx.fill();
+      ctx.fillStyle = '#3b211a';
+      ctx.font = '800 5.5px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('Д + А', 0, 23.3);
+      ctx.restore();
+
       // 2) Michael Jackson Framed Posters (photos/4, photos/5, photos/6 with fallback art)
       const p4 = wallPostersStore.items[0];
       drawPosterFrame(1002, 118, 96, 132, '#1f1016', '#f59e0b', (px, py, pw, ph) => {
@@ -4881,8 +5339,9 @@
         { album: 'HIStory',      spine: '#b45309', label: '#ca8a04', ring: '#fef3c7', stripe: '#fde047' },
         { album: 'Invincible',   spine: '#0284c7', label: '#0ea5e9', ring: '#e0f2fe', stripe: '#bae6fd' },
         { album: 'extra',        spine: '#059669', label: '#10b981', ring: '#a7f3d0', stripe: '#d1fae5' },
-        { album: null,           spine: '#be123c', label: '#be123c', ring: '#fda4af', stripe: '#ffe4e6' },
-        { album: null,           spine: '#4f46e5', label: '#4f46e5', ring: '#c7d2fe', stripe: '#e0e7ff' }
+        { album: 'Xscape',       spine: '#be123c', label: '#be123c', ring: '#fda4af', stripe: '#ffe4e6' },
+        { album: 'Michael',      spine: '#ca8a04', label: '#eab308', ring: '#fef08a', stripe: '#fffbeb' },
+        { album: 'Classic',      spine: '#4f46e5', label: '#6366f1', ring: '#c7d2fe', stripe: '#e0e7ff' }
       ];
       const curTr = musicPlayer.currentTrack;
       let activeSlotIdx = 0;
@@ -4890,7 +5349,7 @@
         if (curTr.isExtra) {
           activeSlotIdx = 6;
         } else {
-          const foundIdx = vinylSlots.findIndex((s) => s.album === curTr.album);
+          const foundIdx = vinylSlots.findIndex((s) => s.album === curTr.album || s.album === curTr.albumGroup);
           if (foundIdx !== -1) activeSlotIdx = foundIdx;
         }
       }
@@ -7065,6 +7524,31 @@
         ctx.restore();
       }
 
+      // Warm Glowing Fireflies Floating from Window toward Fairy Lights
+      if (particles.fireflies.length > 0) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        for (const ff of particles.fireflies) {
+          const lifeEnv = ff.age < 0.14 ? (ff.age / 0.14) : ff.age > 0.78 ? Math.max(0, (1 - ff.age) / 0.22) : 1;
+          const pulse = 0.55 + 0.45 * Math.sin(t * ff.pulseSpeed + ff.phase);
+          const alpha = lifeEnv * pulse;
+          const fg = ctx.createRadialGradient(ff.x, ff.y, 0.8, ff.x, ff.y, ff.glowR);
+          fg.addColorStop(0, `rgba(255, 252, 210, ${(0.95 * alpha).toFixed(3)})`);
+          fg.addColorStop(0.35, `rgba(253, 215, 110, ${(0.55 * alpha).toFixed(3)})`);
+          fg.addColorStop(1, 'rgba(253, 215, 110, 0)');
+          ctx.fillStyle = fg;
+          ctx.beginPath();
+          ctx.arc(ff.x, ff.y, ff.glowR, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = `rgba(255, 255, 235, ${(alpha).toFixed(3)})`;
+          ctx.beginPath();
+          ctx.arc(ff.x, ff.y, ff.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
       const vig = ctx.createRadialGradient(SCENE_W / 2, SCENE_H / 2, 360, SCENE_W / 2, SCENE_H / 2, 860);
       vig.addColorStop(0, 'rgba(0,0,0,0)');
       vig.addColorStop(1, 'rgba(14, 7, 16, 0.52)');
@@ -7221,6 +7705,57 @@
         wd.vy += 120 * dt;
         wd.age += dt * 1.15;
         if (wd.age >= 1) particles.waterDrops.splice(i, 1);
+      }
+
+      // Snow Globe "Д + А" Shake & Settling Blizzard Physics
+      if (roomState.snowGlobeShake > 0) {
+        roomState.snowGlobeShake = Math.max(0, roomState.snowGlobeShake - dt * 1.8);
+      }
+      if (roomState.snowGlobeSwirl > 0) {
+        roomState.snowGlobeSwirl = Math.max(0, roomState.snowGlobeSwirl - dt * 0.14);
+      }
+      for (const fl of particles.snowGlobeFlakes) {
+        const floorY = 12.5 + Math.abs(Math.sin(fl.phase)) * 5.2;
+        if (roomState.snowGlobeSwirl > 0.02 || fl.y < floorY) {
+          // Gentle swirling vortex + gradual gravity settling
+          const swirlForce = roomState.snowGlobeSwirl * 34;
+          fl.vx += (Math.cos(t * 2.6 + fl.phase) * swirlForce - fl.vx * 1.6) * dt;
+          fl.vy += (11.5 - roomState.snowGlobeSwirl * 9.5 + Math.sin(t * 3.1 + fl.phase) * swirlForce * 0.45) * dt;
+          fl.x += fl.vx * dt;
+          fl.y += fl.vy * dt;
+
+          // Keep strictly inside glass dome (radius 21.5)
+          const dist = Math.hypot(fl.x, fl.y);
+          if (dist > 21.5) {
+            const nx = fl.x / dist, ny = fl.y / dist;
+            fl.x = nx * 21.5;
+            fl.y = ny * 21.5;
+            fl.vx *= -0.45;
+            fl.vy *= -0.45;
+          }
+          if (fl.y > floorY && roomState.snowGlobeSwirl < 0.18) {
+            fl.y = floorY;
+            fl.vx *= 0.5;
+            fl.vy = 0;
+          }
+        }
+      }
+
+      // Warm Fireflies drifting from window toward fairy lights & gracefully fading
+      for (let i = particles.fireflies.length - 1; i >= 0; i--) {
+        const ff = particles.fireflies[i];
+        ff.age += dt / ff.life;
+        if (ff.age >= 1) {
+          particles.fireflies.splice(i, 1);
+          continue;
+        }
+        // Pull softly toward target fairy-light orbit point + organic wavy flutter
+        const tx = ff.targetX + Math.cos(t * ff.orbitSpeed + ff.phase) * ff.orbitR;
+        const ty = ff.targetY + Math.sin(t * ff.orbitSpeed * 1.25 + ff.phase) * (ff.orbitR * 0.58);
+        ff.vx += ((tx - ff.x) * 0.72 - ff.vx * 1.35) * dt;
+        ff.vy += ((ty - ff.y) * 0.72 - ff.vy * 1.35) * dt;
+        ff.x += ff.vx * dt;
+        ff.y += ff.vy * dt;
       }
 
       // Smooth fade-in & fade-out for foggy window drawing ("Д + А" + heart)
@@ -7553,6 +8088,61 @@
       showToast(names[roomState.lampLevel], '💡');
     }
 
+    function spawnFireflies(startX, startY, count = 4) {
+      for (let i = 0; i < count; i++) {
+        particles.fireflies.push({
+          x: startX + (Math.random() - 0.5) * 26,
+          y: startY + (Math.random() - 0.5) * 26,
+          vx: 35 + Math.random() * 45,
+          vy: -28 - Math.random() * 28,
+          targetX: 545 + Math.random() * 380,
+          targetY: 255 + Math.random() * 75,
+          orbitR: 22 + Math.random() * 34,
+          orbitSpeed: 1.1 + Math.random() * 1.2,
+          r: 1.9 + Math.random() * 1.3,
+          glowR: 13 + Math.random() * 9,
+          pulseSpeed: 3.4 + Math.random() * 2.8,
+          phase: Math.random() * Math.PI * 2,
+          age: 0,
+          life: 8.5 + Math.random() * 3.5
+        });
+      }
+      if (particles.fireflies.length > 24) {
+        particles.fireflies.splice(0, particles.fireflies.length - 24);
+      }
+    }
+
+    function shakeSnowGlobe() {
+      roomState.snowGlobeShake = 1.0;
+      roomState.snowGlobeSwirl = 1.0;
+      for (const fl of particles.snowGlobeFlakes) {
+        const ang = Math.random() * Math.PI * 2;
+        const spd = 28 + Math.random() * 46;
+        fl.vx = Math.cos(ang) * spd;
+        fl.vy = -22 - Math.random() * 36;
+      }
+      // Delicate music-box crystal chime
+      vibeEngine.playSoftChime(783.99);
+      setTimeout(() => vibeEngine.playSoftChime(987.77), 95);
+      setTimeout(() => vibeEngine.playSoftChime(1174.66), 190);
+      spawnSparkles(466, 376, 12);
+      showToast('В снежном шаре «Д + А» закружилась золотая метель ❄️✨', '🔮');
+    }
+
+    function toggleCleanMode(forceState) {
+      const next = typeof forceState === 'boolean' ? forceState : !roomState.cleanMode;
+      roomState.cleanMode = next;
+      document.body.classList.toggle('clean-mode', next);
+      if (next) {
+        roomState.showHints = false;
+        document.getElementById('btnHints')?.classList.remove('bg-amber-400/30');
+        vibeEngine.playSoftChime(523.25);
+        showToast('Режим ночника · Нажми в любое место, чтобы вернуть интерфейс 🌙', '🌙', null, 3200);
+      } else {
+        vibeEngine.playSoftChime(659.25);
+      }
+    }
+
     let lastComplimentIdx = -1;
     function handleHotspotClick(spot) {
       vibeEngine.ensureInit();
@@ -7570,8 +8160,17 @@
             cycleWeather();
           }
           break;
+        case 'curtain':
+          spawnFireflies(366, 265, 5);
+          vibeEngine.playSoftChime(659.25);
+          showToast('Из-за шторы вылетели тёплые светлячки и закружились у гирлянды ✨', '🪲');
+          break;
+        case 'snowGlobe':
+          shakeSnowGlobe();
+          break;
         case 'plant': {
           roomState.plantWaterCount = (roomState.plantWaterCount || 0) + 1;
+          spawnFireflies(150, 392, 3);
           for (let i = 0; i < 14; i++) {
             particles.waterDrops.push({
               x: 120 + Math.random() * 54,
@@ -7815,6 +8414,10 @@
 
         if (camera.movedDist < 12) {
           camera.vx = 0;
+          if (roomState.cleanMode) {
+            toggleCleanMode(false);
+            return;
+          }
           const pt = getScenePoint(clientX, clientY);
           for (let i = HOTSPOTS.length - 1; i >= 0; i--) {
             const h = HOTSPOTS[i];
@@ -8296,6 +8899,31 @@
         if (roomState.showHints) showToast('Подсвечены все интерактивные вещи в комнате ✨', '🔍');
       });
 
+      // Clean Screen / Nightlight Mode button + Escape shortcut
+      document.getElementById('btnCleanMode')?.addEventListener('click', () => toggleCleanMode(true));
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && roomState.cleanMode) toggleCleanMode(false);
+      });
+
+      // Playlist Favorites ❤️ + Mood & Album Filter Chips
+      document.getElementById('btnFavCurrent')?.addEventListener('click', () => {
+        if (musicPlayer.currentTrack) favoritesStore.toggle(musicPlayer.currentTrack.id);
+      });
+      document.querySelectorAll('.mood-filter-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          playlistFilter.mood = btn.getAttribute('data-mood-filter') || 'all';
+          syncFilterButtonsUI();
+          renderPlaylistUI();
+        });
+      });
+      document.querySelectorAll('.album-filter-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          playlistFilter.album = btn.getAttribute('data-album-filter') || 'all';
+          syncFilterButtonsUI();
+          renderPlaylistUI();
+        });
+      });
+
       // Pan edge buttons
       document.getElementById('btnPanLeft')?.addEventListener('click', () => nudgeCamera(-240));
       document.getElementById('btnPanRight')?.addEventListener('click', () => nudgeCamera(240));
@@ -8444,6 +9072,7 @@
       setupCanvasPointerControls();
       wireUIEvents();
       notesStore.init();
+      favoritesStore.init();
       brianPhotoStore.init();
       hugStore.init();
       mjGloveStore.init();
