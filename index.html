@@ -245,6 +245,72 @@
     .mj-moonwalk-anim {
       animation: mjGlide 3.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
+
+    /* Real Animated Moonwalk Dancer on Room Canvas */
+    #mjMoonwalkOverlay {
+      pointer-events: none;
+    }
+    @keyframes mjStepLeft {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-2.5px) rotate(-2deg); }
+    }
+    @keyframes mjStepRight {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-2px) rotate(2deg); }
+    }
+    @keyframes mjGloveShine {
+      0%, 100% { filter: drop-shadow(0 0 4px rgba(255, 224, 150, 0.55)); }
+      50% { filter: drop-shadow(0 0 13px rgba(255, 240, 190, 1)); }
+    }
+    @keyframes mjStageSlide {
+      0% {
+        opacity: 0;
+        transform: translateX(34vw) scale(0.95);
+      }
+      12% {
+        opacity: 1;
+        transform: translateX(22vw) scale(1);
+      }
+      50% {
+        opacity: 1;
+        transform: translateX(0vw) scale(1.03);
+      }
+      88% {
+        opacity: 1;
+        transform: translateX(-22vw) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(-34vw) scale(0.95);
+      }
+    }
+    .mj-stage-glide {
+      animation: mjStageSlide 4.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .mj-leg-back {
+      animation: mjStepLeft 0.42s ease-in-out infinite;
+      transform-origin: 31px 40px;
+    }
+    .mj-leg-front {
+      animation: mjStepRight 0.42s ease-in-out infinite;
+      transform-origin: 33px 40px;
+    }
+    .mj-sparkle-glove {
+      animation: mjGloveShine 0.7s ease-in-out infinite;
+    }
+
+    /* Wardrobe & Nightstand Drawer Modals */
+    #wardrobeOverlay, #drawerOverlay {
+      transition: opacity 0.25s ease;
+    }
+    #wardrobeOverlay.modal-closed, #drawerOverlay.modal-closed {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #wardrobeOverlay.modal-open, #drawerOverlay.modal-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
   </style>
 </head>
 <body>
@@ -253,31 +319,200 @@
   <div id="roomThemeLayer" class="fixed inset-0 z-[2] pointer-events-none"
     style="background: radial-gradient(circle at 50% 42%, rgba(244, 162, 97, 0.08), rgba(20, 14, 22, 0.14));"></div>
 
-  <!-- MJ Moonwalk & Sparkling Glove Easter Egg Layer -->
-  <div id="mjEasterLayer" class="fixed inset-0 z-[45] hidden items-center justify-center pointer-events-none overflow-hidden px-4">
-    <div id="mjEasterCard" class="mj-moonwalk-anim glass-panel rounded-3xl px-5 py-4 border border-amber-300/45 flex items-center gap-4 max-w-sm w-full shadow-[0_20px_70px_rgba(0,0,0,0.8)]">
-      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#231934] via-[#4a1c36] to-[#f4a261] border border-amber-200/40 flex items-center justify-center shrink-0 shadow-lg relative">
-        <svg class="w-11 h-11" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Fedora Hat -->
-          <ellipse cx="32" cy="15" rx="14" ry="3.2" fill="#fff7ed"/>
-          <path d="M22 14.5C22 9.5 26.5 7 32 7C37.5 7 42 9.5 42 14.5H22Z" fill="#fff7ed"/>
-          <rect x="22" y="12.5" width="20" height="2" fill="#f4a261"/>
-          <!-- Moonwalk Silhouette -->
-          <circle cx="32" cy="21.5" r="4.5" fill="#fff7ed"/>
-          <path d="M26 27.5L37 28.5L35 41H27L26 27.5Z" fill="#fff7ed"/>
-          <path d="M27 29L20 34L23 36.5" stroke="#fff7ed" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M36 29L43 24.5" stroke="#ffd6a5" stroke-width="2.6" stroke-linecap="round"/>
-          <!-- Sparkling Glove Hand -->
-          <circle cx="44" cy="23.5" r="3" fill="#ffd6a5"/>
-          <!-- Gliding Moonwalk Legs -->
-          <path d="M28.5 41L23 53.5L17 54.5" stroke="#fff7ed" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M33.5 41L41.5 52.5L48 52.5" stroke="#ffd6a5" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+  <!-- Animated MJ Moonwalk & Sparkling Glove Overlay -->
+  <div id="mjMoonwalkOverlay" class="fixed inset-0 z-[45] hidden flex-col items-center justify-end pb-24 sm:pb-28 pointer-events-none overflow-hidden px-4">
+    <div id="mjMoonwalkActor" class="mj-stage-glide flex flex-col items-center">
+      <!-- Spotlight beam -->
+      <div class="w-44 h-44 rounded-full -mb-28 blur-2xl opacity-45"
+        style="background: radial-gradient(circle, rgba(255,214,165,0.75), rgba(103,232,249,0.22), transparent 72%);"></div>
+
+      <svg class="w-28 h-28 sm:w-32 sm:h-32 overflow-visible" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Back leg gliding -->
+        <g class="mj-leg-back">
+          <path d="M30 40L21 53L13 54" stroke="#f8fafc" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <ellipse cx="14" cy="54.5" rx="5.5" ry="2" fill="#e2e8f0"/>
+        </g>
+        <!-- Front leg moonwalking -->
+        <g class="mj-leg-front">
+          <path d="M34 40L42 52L50 52" stroke="#ffd6a5" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <ellipse cx="49" cy="52.5" rx="5.5" ry="2" fill="#ffd6a5"/>
+        </g>
+        <!-- Torso & Jacket -->
+        <path d="M26 26L38 27L36 41H27L26 26Z" fill="#fff7ed"/>
+        <path d="M29 27L32 40" stroke="#e11d48" stroke-width="1.8"/>
+        <!-- Left arm -->
+        <path d="M27 28L19 35L23 38" stroke="#fff7ed" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Right arm with sparkling glove -->
+        <g class="mj-sparkle-glove">
+          <path d="M37 28L46 21" stroke="#fff7ed" stroke-width="2.8" stroke-linecap="round"/>
+          <circle cx="47.5" cy="19.5" r="3.6" fill="#fffbeb"/>
+          <circle cx="52" cy="15" r="1.4" fill="#67e8f9"/>
+          <circle cx="43" cy="14" r="1.2" fill="#fbbf24"/>
+          <circle cx="53" cy="22" r="1.2" fill="#f472b6"/>
+        </g>
+        <!-- Head & Fedora -->
+        <circle cx="32" cy="20.5" r="4.6" fill="#fff7ed"/>
+        <ellipse cx="32" cy="14.5" rx="15" ry="3.2" fill="#fff7ed"/>
+        <path d="M21.5 14C21.5 8.8 26.2 6.2 32 6.2C37.8 6.2 42.5 8.8 42.5 14H21.5Z" fill="#fff7ed"/>
+        <rect x="21.5" y="12.2" width="21" height="2.2" fill="#f4a261"/>
+      </svg>
+
+      <div class="glass-panel rounded-2xl px-4 py-1.5 border border-amber-300/40 text-center mt-1">
+        <div id="mjEasterTitle" class="text-xs font-extrabold text-amber-100">Лунная походка MJ ✨</div>
+        <div id="mjEasterSub" class="text-[10px] text-amber-200/75">Серебристая перчатка сияет в темноте</div>
       </div>
-      <div class="min-w-0 flex-1">
-        <div class="text-[10px] uppercase tracking-[0.18em] text-amber-300 font-semibold">Секрет короля поп-музыки ✦</div>
-        <div id="mjEasterTitle" class="text-sm sm:text-base font-extrabold text-amber-50 mt-0.5 truncate">Лунная походка в комнате</div>
-        <div id="mjEasterSub" class="text-[11px] text-amber-200/80 mt-0.5 leading-snug">Серебристая перчатка сияет в темноте · Billie Jean вайб 👑✨</div>
+    </div>
+  </div>
+
+  <!-- Girl's Wardrobe Modal (Outfits, Accessories, Hair & Mood) -->
+  <div id="wardrobeOverlay" class="modal-closed fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-3 sm:p-5">
+    <div class="w-full max-w-xl max-h-[86vh] rounded-3xl bg-gradient-to-b from-[#231828] via-[#1b1220] to-[#140e18] border border-amber-200/20 shadow-[0_24px_80px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden">
+      <div class="px-4 py-3 border-b border-amber-200/10 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">👗</span>
+          <div>
+            <div class="text-sm font-bold text-amber-100">Гардероб и образ</div>
+            <div class="text-[10px] text-amber-200/65">Переодевай девочку в комнате — образ сразу меняется на холсте</div>
+          </div>
+        </div>
+        <button id="btnCloseWardrobe" type="button" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-amber-100 flex items-center justify-center active:scale-90 transition">✕</button>
+      </div>
+
+      <div class="cozy-scroll flex-1 overflow-y-auto p-4 space-y-4">
+        <!-- Outfits -->
+        <div class="space-y-2">
+          <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">Свитер / наряд</div>
+          <div class="grid grid-cols-2 gap-2">
+            <button data-outfit="beige" type="button" class="outfit-btn rounded-2xl p-3 text-left border border-amber-300/45 bg-amber-400/20 transition">
+              <div class="text-xs font-bold text-amber-50">🧸 Бежевый свитер</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Тёплая классика с кулоном-сердечком</div>
+            </button>
+            <button data-outfit="rose" type="button" class="outfit-btn rounded-2xl p-3 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">🌸 Пудровый кардиган</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Нежно-розовый уют для вечера</div>
+            </button>
+            <button data-outfit="mjJacket" type="button" class="outfit-btn rounded-2xl p-3 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">👑 Красный «Thriller»</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Куртка в духе короля поп-музыки</div>
+            </button>
+            <button data-outfit="midnight" type="button" class="outfit-btn rounded-2xl p-3 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">🌙 Ночной лавандовый</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Глубокий вечерний тон для сна</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Accessories & Hair -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="rounded-2xl p-3 bg-white/[0.03] border border-amber-200/12 space-y-2">
+            <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">Аксессуары</div>
+            <label class="flex items-center justify-between text-xs text-amber-100 cursor-pointer py-1">
+              <span>🎧 Беспроводные наушники</span>
+              <input id="toggleHeadphones" type="checkbox" class="accent-amber-400 w-4 h-4" />
+            </label>
+            <label class="flex items-center justify-between text-xs text-amber-100 cursor-pointer py-1">
+              <span>👓 Тонкие очки для уюта</span>
+              <input id="toggleGlasses" type="checkbox" class="accent-amber-400 w-4 h-4" />
+            </label>
+            <label class="flex items-center justify-between text-xs text-amber-100 cursor-pointer py-1">
+              <span>✨ Кулон-сердечко</span>
+              <input id="togglePendant" type="checkbox" checked class="accent-amber-400 w-4 h-4" />
+            </label>
+          </div>
+
+          <div class="rounded-2xl p-3 bg-white/[0.03] border border-amber-200/12 space-y-2">
+            <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">Волосы и настроение</div>
+            <button id="btnCycleHairStyle" type="button" class="w-full py-2 px-3 rounded-xl bg-white/10 hover:bg-amber-400/20 text-xs font-semibold text-amber-100 text-left flex items-center justify-between transition">
+              <span>Причёска</span>
+              <span id="hairStyleLabel" class="text-amber-300">Распущенные</span>
+            </button>
+            <button id="btnCycleGirlMood" type="button" class="w-full py-2 px-3 rounded-xl bg-white/10 hover:bg-amber-400/20 text-xs font-semibold text-amber-100 text-left flex items-center justify-between transition">
+              <span>Настроение</span>
+              <span id="girlMoodLabel" class="text-amber-300">Нежная улыбка</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nightstand Drawer Modal (Items inside the nightstand + English ЕГЭ Booster) -->
+  <div id="drawerOverlay" class="modal-closed fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-3 sm:p-5">
+    <div class="w-full max-w-xl h-[86vh] max-h-[740px] rounded-3xl bg-gradient-to-b from-[#241826] via-[#1a121f] to-[#130e17] border border-amber-200/20 shadow-[0_24px_80px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden">
+      <div class="px-4 py-3 border-b border-amber-200/10 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🗄️</span>
+          <div>
+            <div class="text-sm font-bold text-amber-100">Тумбочка · Секретики и Английский ЕГЭ</div>
+            <div class="text-[10px] text-amber-200/65">Спрятанные вещицы и слова уровня C1/B2 для экзамена</div>
+          </div>
+        </div>
+        <button id="btnCloseDrawer" type="button" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-amber-100 flex items-center justify-center active:scale-90 transition">✕</button>
+      </div>
+
+      <!-- 2 Sub-tabs inside Drawer -->
+      <div class="px-4 pt-2.5 pb-2 shrink-0">
+        <div class="grid grid-cols-2 gap-1.5 bg-black/35 p-1 rounded-2xl border border-white/5">
+          <button data-drawer-tab="items" class="drawer-tab py-1.5 px-2 rounded-xl text-xs font-semibold bg-amber-400/25 border border-amber-300/35 text-amber-100 transition">
+            ✨ Вещи в ящике
+          </button>
+          <button data-drawer-tab="english" class="drawer-tab py-1.5 px-2 rounded-xl text-xs font-medium text-amber-200/75 hover:text-amber-100 transition">
+            📚 Английский ЕГЭ (C1/B2)
+          </button>
+        </div>
+      </div>
+
+      <!-- Sub-tab 1: Drawer Treasures -->
+      <div id="drawer-panel-items" class="drawer-panel cozy-scroll flex-1 overflow-y-auto px-4 pb-4 space-y-2.5">
+        <button data-treasure="polaroidExtra" type="button" class="w-full rounded-2xl p-3 bg-white/[0.04] hover:bg-amber-400/15 border border-amber-200/12 text-left flex items-center gap-3 transition">
+          <span class="text-2xl shrink-0">🎞️</span>
+          <div class="min-w-0 flex-1">
+            <div class="text-xs sm:text-sm font-bold text-amber-50">Запасной кадр в конверте</div>
+            <div class="text-[11px] text-amber-200/70">Открыть полароид-карточку на весь экран</div>
+          </div>
+          <span class="text-xs text-amber-300 shrink-0">Открыть →</span>
+        </button>
+
+        <button data-treasure="moonwalkGlove" type="button" class="w-full rounded-2xl p-3 bg-white/[0.04] hover:bg-amber-400/15 border border-amber-200/12 text-left flex items-center gap-3 transition">
+          <span class="text-2xl shrink-0">🧤</span>
+          <div class="min-w-0 flex-1">
+            <div class="text-xs sm:text-sm font-bold text-amber-50">Блестящая перчатка MJ</div>
+            <div class="text-[11px] text-amber-200/70">Запустить анимацию лунной походки прямо сейчас</div>
+          </div>
+          <span class="text-xs text-amber-300 shrink-0">Пуск ✨</span>
+        </button>
+
+        <button data-treasure="wishCard" type="button" class="w-full rounded-2xl p-3 bg-white/[0.04] hover:bg-amber-400/15 border border-amber-200/12 text-left flex items-center gap-3 transition">
+          <span class="text-2xl shrink-0">🍀</span>
+          <div class="min-w-0 flex-1">
+            <div class="text-xs sm:text-sm font-bold text-amber-50">Счастливый талисман для ЕГЭ</div>
+            <div class="text-[11px] text-amber-200/70">Вытянуть ободряющее пожелание перед подготовкой</div>
+          </div>
+          <span class="text-xs text-amber-300 shrink-0">Вытянуть</span>
+        </button>
+
+        <button data-treasure="secretLetter" type="button" class="w-full rounded-2xl p-3 bg-white/[0.04] hover:bg-amber-400/15 border border-amber-200/12 text-left flex items-center gap-3 transition">
+          <span class="text-2xl shrink-0">💌</span>
+          <div class="min-w-0 flex-1">
+            <div class="text-xs sm:text-sm font-bold text-amber-50">Письмо из верхнего ящика</div>
+            <div class="text-[11px] text-amber-200/70">Прочитать письмо от Антона</div>
+          </div>
+          <span class="text-xs text-amber-300 shrink-0">Читать →</span>
+        </button>
+      </div>
+
+      <!-- Sub-tab 2: English ЕГЭ Vocabulary Booster -->
+      <div id="drawer-panel-english" class="drawer-panel hidden flex-1 flex flex-col overflow-hidden px-4 pb-4">
+        <div class="flex items-center justify-between gap-2 mb-2.5 shrink-0">
+          <input id="engSearch" type="text" placeholder="Поиск слова или перевода..."
+            class="flex-1 rounded-xl bg-black/35 border border-amber-200/15 px-3 py-1.5 text-xs text-amber-50 placeholder-amber-200/40 focus:outline-none focus:border-amber-400/60" />
+          <button id="btnRandomEngWord" type="button"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold text-[#23151e] bg-gradient-to-r from-[#ffd6a5] to-[#f4a261] hover:brightness-105 active:scale-95 transition shrink-0">
+            🎲 Слово дня
+          </button>
+        </div>
+
+        <div id="engWordsList" class="cozy-scroll flex-1 overflow-y-auto space-y-2 pr-1"></div>
       </div>
     </div>
   </div>
@@ -368,6 +603,11 @@
         <button id="btnHints" type="button" title="Подсветить интерактивные предметы"
           class="glass-panel rounded-xl w-9 h-9 text-sm font-bold text-amber-200 hover:bg-amber-500/20 active:scale-95 transition flex items-center justify-center">
           ?
+        </button>
+
+        <button id="btnOpenWardrobe" type="button" title="Открыть гардероб"
+          class="glass-panel rounded-xl px-2.5 h-9 text-xs font-semibold text-amber-100 hover:bg-amber-400/25 border-amber-300/30 active:scale-95 transition flex items-center gap-1">
+          <span>👗</span><span class="hidden sm:inline">Образ</span>
         </button>
 
         <button id="btnOpenIpad" type="button"
@@ -482,17 +722,20 @@
           </div>
         </div>
 
-        <!-- 3 Navigation Tabs -->
+        <!-- 4 Navigation Tabs -->
         <div class="px-3 pt-2.5 pb-2 shrink-0">
-          <div class="grid grid-cols-3 gap-1.5 bg-black/35 p-1 rounded-2xl border border-white/5">
-            <button data-tab="playlist" class="ipad-tab py-2 px-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-1.5 bg-gradient-to-r from-amber-400/25 to-rose-400/25 text-amber-100 border border-amber-300/30">
-              <span>🎵</span><span>Плейлист MJ</span>
+          <div class="grid grid-cols-4 gap-1 bg-black/35 p-1 rounded-2xl border border-white/5">
+            <button data-tab="playlist" class="ipad-tab py-2 px-1.5 rounded-xl text-[11px] sm:text-xs font-semibold transition flex items-center justify-center gap-1 bg-gradient-to-r from-amber-400/25 to-rose-400/25 text-amber-100 border border-amber-300/30">
+              <span>🎵</span><span class="truncate">Плейлист</span>
             </button>
-            <button data-tab="notes" class="ipad-tab py-2 px-2 rounded-xl text-xs sm:text-sm font-medium transition flex items-center justify-center gap-1.5 text-amber-200/70 hover:text-amber-100">
-              <span>💌</span><span>Записки</span>
+            <button data-tab="notes" class="ipad-tab py-2 px-1.5 rounded-xl text-[11px] sm:text-xs font-medium transition flex items-center justify-center gap-1 text-amber-200/70 hover:text-amber-100">
+              <span>💌</span><span class="truncate">Записки</span>
             </button>
-            <button data-tab="mixer" class="ipad-tab py-2 px-2 rounded-xl text-xs sm:text-sm font-medium transition flex items-center justify-center gap-1.5 text-amber-200/70 hover:text-amber-100">
-              <span>🌧️</span><span>Вайб-микшер</span>
+            <button data-tab="mixer" class="ipad-tab py-2 px-1.5 rounded-xl text-[11px] sm:text-xs font-medium transition flex items-center justify-center gap-1 text-amber-200/70 hover:text-amber-100">
+              <span>🌧️</span><span class="truncate">Микшер</span>
+            </button>
+            <button data-tab="english" class="ipad-tab py-2 px-1.5 rounded-xl text-[11px] sm:text-xs font-medium transition flex items-center justify-center gap-1 text-amber-200/70 hover:text-amber-100">
+              <span>📚</span><span class="truncate">Англ. ЕГЭ</span>
             </button>
           </div>
         </div>
@@ -739,6 +982,25 @@
             </div>
           </div>
         </section>
+
+        <!-- TAB 4: ENGLISH ЕГЭ VOCABULARY BOOSTER -->
+        <section id="tab-english" class="ipad-panel hidden flex-1 flex flex-col overflow-hidden px-3 sm:px-4 pb-3">
+          <div class="rounded-2xl p-3 mb-2.5 bg-gradient-to-r from-amber-500/15 to-rose-500/10 border border-amber-300/20 shrink-0">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <div class="text-xs sm:text-sm font-bold text-amber-100">Словарь для ЕГЭ (уровень B2–C1)</div>
+                <div class="text-[10px] sm:text-[11px] text-amber-200/70">Выразительные слова, коллокации и фразовые глаголы для эссе и письма</div>
+              </div>
+              <button id="btnIpadRandomEng" type="button"
+                class="px-3 py-1.5 rounded-xl text-xs font-semibold text-[#23151e] bg-gradient-to-r from-[#ffd6a5] to-[#f4a261] hover:brightness-105 active:scale-95 transition shrink-0">
+                🎲 Случайное
+              </button>
+            </div>
+            <input id="ipadEngSearch" type="text" placeholder="Найти слово, перевод или пример..."
+              class="mt-2.5 w-full rounded-xl bg-black/35 border border-amber-200/15 px-3 py-1.5 text-xs text-amber-50 placeholder-amber-200/40 focus:outline-none focus:border-amber-400/60" />
+          </div>
+          <div id="ipadEngWordsList" class="cozy-scroll flex-1 overflow-y-auto space-y-2 pr-1"></div>
+        </section>
       </div>
     </div>
   </div>
@@ -863,9 +1125,57 @@
     const SCENE_W = 1440;
     const SCENE_H = 900;
 
+    const ENGLISH_EGE_WORDS = [
+      { word: 'ubiquitous', pos: 'adj · C1', tr: 'вездесущий, повсеместный',
+        ex: 'Smartphones have become ubiquitous in modern teenage life.', exRu: 'Смартфоны стали повсеместными в жизни современных подростков.' },
+      { word: 'alleviate', pos: 'v · C1', tr: 'облегчать, смягчать (стресс/проблему)',
+        ex: 'Listening to calm music helps alleviate exam anxiety.', exRu: 'Спокойная музыка помогает снизить тревогу перед экзаменом.' },
+      { word: 'resilient', pos: 'adj · C1', tr: 'стойкий, жизнестойкий, умеющий восстанавливаться',
+        ex: 'She stayed resilient even during the hardest study weeks.', exRu: 'Она оставалась стойкой даже в самые сложные учебные недели.' },
+      { word: 'serendipity', pos: 'n · C1', tr: 'счастливая случайность, приятная находка',
+        ex: 'Finding each other felt like pure serendipity.', exRu: 'Встретить друг друга оказалось чистой счастливой случайностью.' },
+      { word: 'mitigate', pos: 'v · C1', tr: 'смягчать последствия, уменьшать риск',
+        ex: 'Good planning mitigates stress before deadlines.', exRu: 'Грамотное планирование снижает стресс перед дедлайнами.' },
+      { word: 'pivotal', pos: 'adj · C1', tr: 'ключевой, поворотный, решающий',
+        ex: 'This year is a pivotal moment for your future plans.', exRu: 'Этот год — ключевой этап для твоих будущих планов.' },
+      { word: 'eloquent', pos: 'adj · B2/C1', tr: 'красноречивый, выразительный',
+        ex: 'Her essay was clear, structured, and eloquent.', exRu: 'Её эссе было чётким, логичным и выразительным.' },
+      { word: 'daunting', pos: 'adj · B2/C1', tr: 'пугающий своей сложностью, непростой',
+        ex: 'The exam syllabus looks daunting at first, yet it is manageable.', exRu: 'Программа экзамена поначалу кажется сложной, но с ней реально справиться.' },
+      { word: 'culminate in', pos: 'phr v · C1', tr: 'увенчаться чем-то, привести к итогу',
+        ex: 'Months of steady practice culminated in a high score.', exRu: 'Месяцы регулярной практики привели к высокому результату.' },
+      { word: 'quintessential', pos: 'adj · C1', tr: 'идеально воплощающий суть, эталонный',
+        ex: 'Rain, warm lights, and lo-fi beats are the quintessential cozy evening.', exRu: 'Дождь, тёплый свет и lo-fi — эталон уютного вечера.' },
+      { word: 'exacerbate', pos: 'v · C1', tr: 'усугублять (проблему, усталость)',
+        ex: 'Staying up too late can exacerbate tiredness.', exRu: 'Слишком поздний отход ко сну может усилить усталость.' },
+      { word: 'pragmatic', pos: 'adj · B2/C1', tr: 'прагматичный, практичный',
+        ex: 'We took a pragmatic approach and weighed every option.', exRu: 'Мы выбрали практичный подход и взвесили все варианты.' },
+      { word: 'nostalgic', pos: 'adj · B2', tr: 'ностальгический, навевающий тёплые воспоминания',
+        ex: 'Classic tracks give the room a warm, nostalgic vibe.', exRu: 'Классические треки придают комнате тёплый ностальгический вайб.' },
+      { word: 'unprecedented', pos: 'adj · C1', tr: 'беспрецедентный, небывалый',
+        ex: 'Access to online courses offers unprecedented opportunities.', exRu: 'Доступ к онлайн-курсам открывает невиданные ранее возможности.' },
+      { word: 'concur with', pos: 'phr v · C1', tr: 'соглашаться с чьим-то мнением',
+        ex: 'I wholeheartedly concur with the first point in the graph.', exRu: 'Я полностью согласен с первым пунктом на графике.' },
+      { word: 'foster', pos: 'v · B2/C1', tr: 'способствовать развитию, взращивать',
+        ex: 'Supportive friends foster confidence and creativity.', exRu: 'Поддерживающие друзья помогают расти уверенности и творчеству.' }
+    ];
+
+    const EGE_LUCKY_WISHES = [
+      'Ты сдашь английский на высокий балл — твоя внимательность и упорство точно окупятся ✨',
+      'Даже самое сложное задание в аудировании или эссе окажется проще, чем кажется 🎧💛',
+      'Маленький шаг каждый день сильнее рывка в последнюю ночь. Ты молодец!',
+      'Пусть на экзамене попадутся знакомые темы и слова, которые ты уже знаешь наизусть 🌟'
+    ];
+
     const roomState = {
       weather: 'sunset',       // 'sunset' | 'night' | 'rain' | 'snow'
       roomTheme: 'sunset',     // 'sunset' | 'amber' | 'velvet'
+      outfit: 'beige',         // 'beige' | 'rose' | 'mjJacket' | 'midnight'
+      hairStyle: 'loose',      // 'loose' | 'halfUp' | 'ponytail'
+      girlMood: 'smile',       // 'smile' | 'dreamy' | 'wink'
+      headphones: false,
+      glasses: false,
+      pendant: true,
       catPetCount: 0,
       mjEasterTimer: 0,
       mjNightClicks: 0,
@@ -2475,7 +2785,7 @@
       { id: 'window',      label: 'Окно · Погода',      x: 82,   y: 112, w: 296, h: 368 },
       { id: 'corkboard',   label: 'Полароиды · Записки',            x: 405,  y: 165, w: 120, h: 155 },
       { id: 'fairyLights', label: 'Гирлянда',           x: 520,  y: 235, w: 430, h: 85  },
-      { id: 'lamp',        label: 'Ночник',             x: 382,  y: 445, w: 96,  h: 130 },
+      { id: 'lamp',        label: 'Тумбочка · Секреты',             x: 382,  y: 445, w: 96,  h: 130 },
       { id: 'cocoa',       label: 'Какао · Комплимент', x: 465,  y: 525, w: 58,  h: 64  },
       { id: 'tablet',      label: 'Планшет iPad',       x: 648,  y: 488, w: 108, h: 84  },
       { id: 'cat',         label: 'Котик',              x: 805,  y: 562, w: 132, h: 86  },
@@ -3678,14 +3988,22 @@
       ctx.stroke();
       ctx.restore();
 
-      // 2) Beige ribbed V-neck knit sweater
+      // 2) Wardrobe Outfit (Beige sweater / Rose cardigan / MJ Thriller jacket / Midnight knit)
       ctx.save();
       ctx.translate(gx + sway * 0.25, gy);
 
+      const outfitPalettes = {
+        beige:    ['#e3ceb5', '#cfb497', '#a98c70', '#dfcab1'],
+        rose:     ['#f4c2c2', '#e29fa8', '#b8727c', '#ecc0c6'],
+        mjJacket: ['#dc2626', '#991b1b', '#5c1118', '#f59e0b'],
+        midnight: ['#5c6bc0', '#3f51b5', '#283593', '#7986cb']
+      };
+      const pal = outfitPalettes[roomState.outfit] || outfitPalettes.beige;
+
       const swGrad = ctx.createLinearGradient(-78, -24, 78, 110);
-      swGrad.addColorStop(0, '#e3ceb5');
-      swGrad.addColorStop(0.52, '#cfb497');
-      swGrad.addColorStop(1, '#a98c70');
+      swGrad.addColorStop(0, pal[0]);
+      swGrad.addColorStop(0.52, pal[1]);
+      swGrad.addColorStop(1, pal[2]);
       ctx.fillStyle = swGrad;
       ctx.beginPath();
       ctx.moveTo(-48, -28);
@@ -3738,7 +4056,7 @@
       ctx.fill();
 
       // Ribbed V-neck collar trim
-      ctx.strokeStyle = '#dfcab1';
+      ctx.strokeStyle = pal[3];
       ctx.lineWidth = 7;
       ctx.lineJoin = 'round';
       ctx.beginPath();
@@ -3759,19 +4077,21 @@
       ctx.ellipse(0, -42, 12, 7, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Thin silver chain & tiny gleaming heart pendant
-      ctx.strokeStyle = '#e2e8f0';
-      ctx.lineWidth = 1.3;
-      ctx.beginPath();
-      ctx.moveTo(-14, -30);
-      ctx.quadraticCurveTo(0, -6, 14, -30);
-      ctx.stroke();
-      ctx.fillStyle = '#f8fafc';
-      ctx.shadowColor = 'rgba(220, 240, 255, 0.85)';
-      ctx.shadowBlur = 5;
-      drawHeart(ctx, 0, -14, 4.4);
-      ctx.fill();
-      ctx.shadowBlur = 0;
+      // Optional silver chain & tiny gleaming heart pendant
+      if (roomState.pendant) {
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 1.3;
+        ctx.beginPath();
+        ctx.moveTo(-14, -30);
+        ctx.quadraticCurveTo(0, -6, 14, -30);
+        ctx.stroke();
+        ctx.fillStyle = '#f8fafc';
+        ctx.shadowColor = 'rgba(220, 240, 255, 0.85)';
+        ctx.shadowBlur = 5;
+        drawHeart(ctx, 0, -14, 4.4);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
       ctx.restore();
 
       // 3) Face & Curtain Bangs (чёлка-шторка)
@@ -3876,17 +4196,51 @@
       ctx.quadraticCurveTo(-2.5, 13.5, 0.5, 14.5);
       ctx.stroke();
 
+      if (roomState.girlMood === 'wink') {
+        // Gentle wink on right eye
+        ctx.fillStyle = '#f2c6ad';
+        ctx.beginPath();
+        ctx.ellipse(13.5, 2.5, 8, 7, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#331b13';
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(7.5, 2.5);
+        ctx.quadraticCurveTo(13.5, 6.2, 19.5, 2.5);
+        ctx.stroke();
+      }
+
       ctx.strokeStyle = '#b96966';
       ctx.lineWidth = 2.1;
       ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.moveTo(-7.5, 22);
-      ctx.quadraticCurveTo(0, 26.8, 7.5, 22);
+      if (roomState.girlMood === 'dreamy') {
+        ctx.moveTo(-5.5, 23);
+        ctx.quadraticCurveTo(0, 25.2, 5.5, 23);
+      } else {
+        ctx.moveTo(-7.5, 22);
+        ctx.quadraticCurveTo(0, 26.8, 7.5, 22);
+      }
       ctx.stroke();
       ctx.fillStyle = 'rgba(244, 160, 155, 0.35)';
       ctx.beginPath();
       ctx.ellipse(0, 26.2, 4.5, 1.8, 0, 0, Math.PI * 2);
       ctx.fill();
+
+      // Optional cozy glasses
+      if (roomState.glasses) {
+        ctx.strokeStyle = 'rgba(245, 220, 195, 0.85)';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        drawRoundRect(ctx, -22, -3, 16.5, 11, 4);
+        ctx.stroke();
+        ctx.beginPath();
+        drawRoundRect(ctx, 5.5, -3, 16.5, 11, 4);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(-5.5, 2); ctx.lineTo(5.5, 2);
+        ctx.stroke();
+      }
 
       // Front chestnut hair with curtain bangs
       const hairGrad = ctx.createLinearGradient(-35, -45, 35, 95);
@@ -3922,6 +4276,35 @@
       ctx.moveTo(-26, -26); ctx.quadraticCurveTo(-14, -34, -4, -30);
       ctx.moveTo(5, -30);   ctx.quadraticCurveTo(16, -34, 27, -25);
       ctx.stroke();
+
+      // Hair style variation: ponytail tie or half-up bow
+      if (roomState.hairStyle === 'ponytail') {
+        ctx.fillStyle = '#f4a261';
+        ctx.beginPath();
+        ctx.arc(0, -34, 4.5, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (roomState.hairStyle === 'halfUp') {
+        ctx.fillStyle = '#f28482';
+        ctx.beginPath();
+        ctx.ellipse(-5, -24, 5, 3, -0.3, 0, Math.PI * 2);
+        ctx.ellipse(5, -24, 5, 3, 0.3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Optional headphones
+      if (roomState.headphones) {
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 3.2;
+        ctx.beginPath();
+        ctx.arc(0, -6, 35, Math.PI * 1.08, Math.PI * 1.92);
+        ctx.stroke();
+        ctx.fillStyle = '#f4a261';
+        drawRoundRect(ctx, -38, -8, 9, 18, 4);
+        ctx.fill();
+        drawRoundRect(ctx, 29, -8, 9, 18, 4);
+        ctx.fill();
+      }
+
       ctx.restore();
 
       // 4) Arms, Wide Textured Metallic Cuff Bracelet & Glowing iPad
@@ -4564,34 +4947,32 @@
       applyRoomTheme(next, true);
     }
 
-    function triggerMjMoonwalkEaster(reasonTitle = 'Лунная походка в комнате', reasonSub = 'Серебристая перчатка сияет в темноте · Billie Jean вайб 👑✨') {
-      const layer = document.getElementById('mjEasterLayer');
-      const card = document.getElementById('mjEasterCard');
+    function triggerMjMoonwalkEaster(reasonTitle = 'Лунная походка MJ ✨', reasonSub = 'Серебристая перчатка сияет в темноте') {
+      const layer = document.getElementById('mjMoonwalkOverlay');
+      const actor = document.getElementById('mjMoonwalkActor');
       const tEl = document.getElementById('mjEasterTitle');
       const sEl = document.getElementById('mjEasterSub');
-      if (!layer || !card) return;
+      if (!layer || !actor) return;
 
       if (tEl) tEl.textContent = reasonTitle;
       if (sEl) sEl.textContent = reasonSub;
 
-      // Spawn golden & cyan sparkles around MJ zone
-      spawnSparkles(1175, 345, 18);
-      spawnSparkles(1135, 488, 12);
+      spawnSparkles(1175, 345, 20);
+      spawnSparkles(1135, 488, 14);
       vibeEngine.playSoftChime(783.99);
 
       layer.classList.remove('hidden');
       layer.classList.add('flex');
 
-      // Restart CSS keyframe animation cleanly
-      card.classList.remove('mj-moonwalk-anim');
-      void card.offsetWidth;
-      card.classList.add('mj-moonwalk-anim');
+      actor.classList.remove('mj-stage-glide');
+      void actor.offsetWidth;
+      actor.classList.add('mj-stage-glide');
 
       if (roomState.mjEasterTimeout) clearTimeout(roomState.mjEasterTimeout);
       roomState.mjEasterTimeout = setTimeout(() => {
         layer.classList.add('hidden');
         layer.classList.remove('flex');
-      }, 3450);
+      }, 4450);
     }
 
     function applyRandomCozyVibe() {
@@ -4737,7 +5118,7 @@
           break;
         }
         case 'lamp':
-          cycleLamp();
+          openDrawerModal('items');
           break;
         case 'candles':
           roomState.candlesOn = !roomState.candlesOn;
@@ -4935,6 +5316,137 @@
       vibeEngine.setLevel(channel, value);
     }
 
+
+    const wardrobeStore = {
+      open() {
+        const ov = document.getElementById('wardrobeOverlay');
+        if (!ov) return;
+        ov.classList.remove('modal-closed');
+        ov.classList.add('modal-open');
+        this.syncUI();
+      },
+      close() {
+        const ov = document.getElementById('wardrobeOverlay');
+        if (!ov) return;
+        ov.classList.remove('modal-open');
+        ov.classList.add('modal-closed');
+      },
+      setOutfit(val) {
+        roomState.outfit = val;
+        this.syncUI();
+        vibeEngine.playSoftChime(587.33);
+      },
+      cycleHair() {
+        const order = ['loose', 'halfUp', 'ponytail'];
+        roomState.hairStyle = order[(order.indexOf(roomState.hairStyle) + 1) % order.length];
+        this.syncUI();
+        vibeEngine.playSoftChime(659.25);
+      },
+      cycleMood() {
+        const order = ['smile', 'dreamy', 'wink'];
+        roomState.girlMood = order[(order.indexOf(roomState.girlMood) + 1) % order.length];
+        this.syncUI();
+        vibeEngine.playSoftChime(523.25);
+      },
+      syncUI() {
+        document.querySelectorAll('.outfit-btn').forEach((b) => {
+          const active = b.getAttribute('data-outfit') === roomState.outfit;
+          b.className = `outfit-btn rounded-2xl p-3 text-left transition border ${
+            active
+              ? 'border-amber-300/45 bg-amber-400/20'
+              : 'border-white/10 bg-white/[0.04] hover:bg-white/[0.08]'
+          }`;
+        });
+        const hMap = { loose: 'Распущенные', halfUp: 'Мальвинка', ponytail: 'Высокий хвост' };
+        const mMap = { smile: 'Нежная улыбка', dreamy: 'Мечтательный', wink: 'Подмигивает' };
+        const hEl = document.getElementById('hairStyleLabel');
+        const mEl = document.getElementById('girlMoodLabel');
+        if (hEl) hEl.textContent = hMap[roomState.hairStyle] || 'Распущенные';
+        if (mEl) mEl.textContent = mMap[roomState.girlMood] || 'Нежная улыбка';
+
+        const hp = document.getElementById('toggleHeadphones');
+        const gl = document.getElementById('toggleGlasses');
+        const pn = document.getElementById('togglePendant');
+        if (hp) hp.checked = roomState.headphones;
+        if (gl) gl.checked = roomState.glasses;
+        if (pn) pn.checked = roomState.pendant;
+      }
+    };
+
+    function openDrawerModal(subTab = 'items') {
+      const ov = document.getElementById('drawerOverlay');
+      if (!ov) return;
+      ov.classList.remove('modal-closed');
+      ov.classList.add('modal-open');
+      switchDrawerSubTab(subTab);
+      renderEnglishLists();
+    }
+
+    function closeDrawerModal() {
+      const ov = document.getElementById('drawerOverlay');
+      if (!ov) return;
+      ov.classList.remove('modal-open');
+      ov.classList.add('modal-closed');
+    }
+
+    function switchDrawerSubTab(subTab) {
+      document.querySelectorAll('.drawer-panel').forEach((p) => {
+        p.classList.toggle('hidden', p.id !== `drawer-panel-${subTab}`);
+      });
+      document.querySelectorAll('.drawer-tab').forEach((b) => {
+        const active = b.getAttribute('data-drawer-tab') === subTab;
+        b.className = `drawer-tab py-1.5 px-2 rounded-xl text-xs transition ${
+          active
+            ? 'font-semibold bg-amber-400/25 border border-amber-300/35 text-amber-100'
+            : 'font-medium text-amber-200/75 hover:text-amber-100'
+        }`;
+      });
+    }
+
+    function renderEnglishCardHtml(item) {
+      return `
+        <div class="rounded-2xl p-3 bg-white/[0.04] border border-amber-200/12 space-y-1">
+          <div class="flex items-baseline justify-between gap-2">
+            <span class="text-sm font-extrabold text-amber-200">${escapeHtml(item.word)}</span>
+            <span class="text-[10px] font-mono text-amber-300/75 shrink-0">${escapeHtml(item.pos)}</span>
+          </div>
+          <div class="text-xs font-semibold text-amber-50">${escapeHtml(item.tr)}</div>
+          <div class="text-[11px] italic text-amber-100/80 pt-0.5">“${escapeHtml(item.ex)}”</div>
+          <div class="text-[10px] text-amber-200/60">${escapeHtml(item.exRu)}</div>
+        </div>
+      `;
+    }
+
+    function renderEnglishLists() {
+      const qDrawer = (document.getElementById('engSearch')?.value || '').trim().toLowerCase();
+      const qIpad = (document.getElementById('ipadEngSearch')?.value || '').trim().toLowerCase();
+
+      const filterFn = (q) => ENGLISH_EGE_WORDS.filter((w) =>
+        !q || w.word.toLowerCase().includes(q) || w.tr.toLowerCase().includes(q) || w.ex.toLowerCase().includes(q) || w.exRu.toLowerCase().includes(q)
+      );
+
+      const dList = document.getElementById('engWordsList');
+      if (dList) {
+        const arr = filterFn(qDrawer);
+        dList.innerHTML = arr.length ? arr.map(renderEnglishCardHtml).join('') : '<div class="text-xs text-amber-200/60 py-4 text-center">Ничего не найдено</div>';
+      }
+
+      const iList = document.getElementById('ipadEngWordsList');
+      if (iList) {
+        const arr = filterFn(qIpad);
+        iList.innerHTML = arr.length ? arr.map(renderEnglishCardHtml).join('') : '<div class="text-xs text-amber-200/60 py-4 text-center">Ничего не найдено</div>';
+      }
+    }
+
+    function pickRandomEnglishToast() {
+      const pick = ENGLISH_EGE_WORDS[Math.floor(Math.random() * ENGLISH_EGE_WORDS.length)];
+      vibeEngine.playSoftChime(659.25);
+      showToast(`${pick.word} (${pick.pos}) — ${pick.tr}. «${pick.ex}»`, '📚', {
+        label: 'Открыть словарь',
+        onClick: () => openIpad('english')
+      }, 6500);
+    }
+
     function wireUIEvents() {
       // Welcome Splash
       document.getElementById('btnEnterRoom')?.addEventListener('click', () => {
@@ -4944,6 +5456,57 @@
         if (sp) sp.classList.add('splash-hidden');
         setTimeout(() => { if (sp) sp.style.display = 'none'; }, 480);
       });
+
+      // Wardrobe Modal
+      document.getElementById('btnOpenWardrobe')?.addEventListener('click', () => wardrobeStore.open());
+      document.getElementById('btnCloseWardrobe')?.addEventListener('click', () => wardrobeStore.close());
+      document.getElementById('wardrobeOverlay')?.addEventListener('click', (e) => {
+        if (e.target.id === 'wardrobeOverlay') wardrobeStore.close();
+      });
+      document.querySelectorAll('.outfit-btn').forEach((b) => {
+        b.addEventListener('click', () => wardrobeStore.setOutfit(b.getAttribute('data-outfit')));
+      });
+      document.getElementById('toggleHeadphones')?.addEventListener('change', (e) => {
+        roomState.headphones = e.target.checked;
+      });
+      document.getElementById('toggleGlasses')?.addEventListener('change', (e) => {
+        roomState.glasses = e.target.checked;
+      });
+      document.getElementById('togglePendant')?.addEventListener('change', (e) => {
+        roomState.pendant = e.target.checked;
+      });
+      document.getElementById('btnCycleHairStyle')?.addEventListener('click', () => wardrobeStore.cycleHair());
+      document.getElementById('btnCycleGirlMood')?.addEventListener('click', () => wardrobeStore.cycleMood());
+
+      // Nightstand Drawer & English ЕГЭ
+      document.getElementById('btnCloseDrawer')?.addEventListener('click', closeDrawerModal);
+      document.getElementById('drawerOverlay')?.addEventListener('click', (e) => {
+        if (e.target.id === 'drawerOverlay') closeDrawerModal();
+      });
+      document.querySelectorAll('.drawer-tab').forEach((b) => {
+        b.addEventListener('click', () => switchDrawerSubTab(b.getAttribute('data-drawer-tab')));
+      });
+      document.querySelectorAll('[data-treasure]').forEach((b) => {
+        b.addEventListener('click', () => {
+          const kind = b.getAttribute('data-treasure');
+          closeDrawerModal();
+          if (kind === 'polaroidExtra') {
+            polaroidsStore.openLightbox(polaroidsStore.items[0]);
+          } else if (kind === 'moonwalkGlove') {
+            triggerMjMoonwalkEaster('Сверкающая перчатка MJ ✨', 'Тот самый лунный шаг прямо у тебя в комнате');
+          } else if (kind === 'wishCard') {
+            const wish = EGE_LUCKY_WISHES[Math.floor(Math.random() * EGE_LUCKY_WISHES.length)];
+            vibeEngine.playSoftChime(587.33);
+            showToast(wish, '🍀', null, 6000);
+          } else if (kind === 'secretLetter') {
+            secretLetter.unlockAndOpen();
+          }
+        });
+      });
+      document.getElementById('engSearch')?.addEventListener('input', renderEnglishLists);
+      document.getElementById('ipadEngSearch')?.addEventListener('input', renderEnglishLists);
+      document.getElementById('btnRandomEngWord')?.addEventListener('click', pickRandomEnglishToast);
+      document.getElementById('btnIpadRandomEng')?.addEventListener('click', pickRandomEnglishToast);
 
       // Top HUD
       document.getElementById('btnHudCounters')?.addEventListener('click', () => openIpad('notes'));
@@ -5099,6 +5662,8 @@
       secretLetter.init();
       updateRelationshipCounters();
       applyRoomTheme('sunset', false);
+      wardrobeStore.syncUI();
+      renderEnglishLists();
       renderPlaylistUI();
       updateClock();
       setInterval(() => { updateClock(); updateRelationshipCounters(); }, 30000);
