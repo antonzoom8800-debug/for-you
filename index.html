@@ -216,89 +216,6 @@
       transition: background 0.5s ease, opacity 0.5s ease;
     }
 
-    /* MJ Moonwalk & Sparkling Glove Overlay */
-    #mjEasterLayer {
-      pointer-events: none;
-    }
-    @keyframes mjGlide {
-      0% {
-        opacity: 0;
-        transform: translateX(120px) translateY(10px) scale(0.94);
-      }
-      14% {
-        opacity: 1;
-        transform: translateX(75px) translateY(4px) scale(1);
-      }
-      50% {
-        opacity: 1;
-        transform: translateX(0px) translateY(0px) scale(1.02);
-      }
-      86% {
-        opacity: 1;
-        transform: translateX(-75px) translateY(4px) scale(1);
-      }
-      100% {
-        opacity: 0;
-        transform: translateX(-125px) translateY(10px) scale(0.94);
-      }
-    }
-    .mj-moonwalk-anim {
-      animation: mjGlide 3.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-
-    /* Real Animated Moonwalk Dancer on Room Canvas */
-    #mjMoonwalkOverlay {
-      pointer-events: none;
-    }
-    @keyframes mjStepLeft {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-2.5px) rotate(-2deg); }
-    }
-    @keyframes mjStepRight {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-2px) rotate(2deg); }
-    }
-    @keyframes mjGloveShine {
-      0%, 100% { filter: drop-shadow(0 0 4px rgba(255, 224, 150, 0.55)); }
-      50% { filter: drop-shadow(0 0 13px rgba(255, 240, 190, 1)); }
-    }
-    @keyframes mjStageSlide {
-      0% {
-        opacity: 0;
-        transform: translateX(34vw) scale(0.95);
-      }
-      12% {
-        opacity: 1;
-        transform: translateX(22vw) scale(1);
-      }
-      50% {
-        opacity: 1;
-        transform: translateX(0vw) scale(1.03);
-      }
-      88% {
-        opacity: 1;
-        transform: translateX(-22vw) scale(1);
-      }
-      100% {
-        opacity: 0;
-        transform: translateX(-34vw) scale(0.95);
-      }
-    }
-    .mj-stage-glide {
-      animation: mjStageSlide 4.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-    .mj-leg-back {
-      animation: mjStepLeft 0.42s ease-in-out infinite;
-      transform-origin: 31px 40px;
-    }
-    .mj-leg-front {
-      animation: mjStepRight 0.42s ease-in-out infinite;
-      transform-origin: 33px 40px;
-    }
-    .mj-sparkle-glove {
-      animation: mjGloveShine 0.7s ease-in-out infinite;
-    }
-
     /* Wardrobe & Nightstand Drawer Modals */
     #wardrobeOverlay, #drawerOverlay {
       transition: opacity 0.25s ease;
@@ -313,6 +230,9 @@
     }
 
     /* Fullscreen Flying Sparkling Glove & Moonwalk Overlay */
+    #mjMoonwalkOverlay {
+      pointer-events: none;
+    }
     @keyframes gloveFlyArc {
       0% {
         opacity: 0;
@@ -516,6 +436,15 @@
           <span class="text-xs text-amber-300 shrink-0">Вытянуть</span>
         </button>
 
+        <button data-treasure="brianQuote" type="button" class="w-full rounded-2xl p-3 bg-white/[0.04] hover:bg-amber-400/15 border border-amber-200/12 text-left flex items-center gap-3 transition">
+          <span class="text-2xl shrink-0">🥕</span>
+          <div class="min-w-0 flex-1">
+            <div class="text-xs sm:text-sm font-bold text-amber-50">Цитатник Брайана Мапса</div>
+            <div class="text-[11px] text-amber-200/70">Вытянуть легендарную фразу из скетчей</div>
+          </div>
+          <span class="text-xs text-amber-300 shrink-0">Слушать →</span>
+        </button>
+
         <button data-treasure="secretLetter" type="button" class="w-full rounded-2xl p-3 bg-white/[0.04] hover:bg-amber-400/15 border border-amber-200/12 text-left flex items-center gap-3 transition">
           <span class="text-2xl shrink-0">💌</span>
           <div class="min-w-0 flex-1">
@@ -528,12 +457,8 @@
 
       <!-- Sub-tab 2: English ЕГЭ Vocabulary Booster -->
       <div id="drawer-panel-english" class="drawer-panel hidden flex-1 flex flex-col overflow-hidden px-4 pb-4">
-        <div class="flex items-center justify-between gap-2 mb-2.5 shrink-0">
-          <div class="text-xs text-amber-200/75">Слова для ЕГЭ по английскому</div>
-          <button id="btnRandomEngWord" type="button"
-            class="px-3 py-1.5 rounded-xl text-xs font-semibold text-[#23151e] bg-gradient-to-r from-[#ffd6a5] to-[#f4a261] hover:brightness-105 active:scale-95 transition shrink-0">
-            🎲 Слово дня
-          </button>
+        <div class="mb-2.5 shrink-0">
+          <div class="text-xs font-semibold text-amber-200/85">Подборка выразительных слов для ЕГЭ (B2–C1)</div>
         </div>
 
         <div id="engWordsList" class="cozy-scroll flex-1 overflow-y-auto space-y-2 pr-1"></div>
@@ -989,7 +914,6 @@
               </div>
               <input id="mixNight" type="range" min="0" max="100" value="0" class="warm-slider w-full" />
             </div>
-          </div>
 
             <div class="rounded-2xl p-3.5 bg-white/[0.04] border border-white/10">
               <div class="flex items-center justify-between mb-2">
@@ -1009,15 +933,9 @@
 
         <!-- TAB 4: ENGLISH ЕГЭ VOCABULARY BOOSTER -->
         <section id="tab-english" class="ipad-panel hidden flex-1 flex flex-col overflow-hidden px-3 sm:px-4 pb-3">
-          <div class="rounded-2xl p-3 mb-2.5 bg-gradient-to-r from-amber-500/15 to-rose-500/10 border border-amber-300/20 shrink-0 flex items-center justify-between gap-2">
-            <div>
-              <div class="text-xs sm:text-sm font-bold text-amber-100">Словарь для ЕГЭ (уровень B2–C1)</div>
-              <div class="text-[10px] sm:text-[11px] text-amber-200/70">Необычные и сильные слова для эссе и письма</div>
-            </div>
-            <button id="btnIpadRandomEng" type="button"
-              class="px-3 py-1.5 rounded-xl text-xs font-semibold text-[#23151e] bg-gradient-to-r from-[#ffd6a5] to-[#f4a261] hover:brightness-105 active:scale-95 transition shrink-0">
-              🎲 Слово дня
-            </button>
+          <div class="rounded-2xl p-3 mb-2.5 bg-gradient-to-r from-amber-500/15 to-rose-500/10 border border-amber-300/20 shrink-0">
+            <div class="text-xs sm:text-sm font-bold text-amber-100">Словарь для ЕГЭ (уровень B2–C1)</div>
+            <div class="text-[10px] sm:text-[11px] text-amber-200/70">Необычные и сильные слова для эссе и письма</div>
           </div>
           <div id="ipadEngWordsList" class="cozy-scroll flex-1 overflow-y-auto space-y-2 pr-1"></div>
         </section>
@@ -1176,6 +1094,15 @@
       { word: 'perseverance', pos: 'B2', tr: 'настойчивость, упорство' }
     ];
 
+    const BRIAN_MAPS_QUOTES = [
+      '«Девочки, почему мы больше не улыбаемся на фото?»',
+      '«Добавлю зернистости, чтобы было меньше видно мои прыщи»',
+      '«Сколько тебе лет? — Где-то между 10 и 35»',
+      '«Если вы думаете — то не думайте»',
+      '«Я тру. Живу себе да тру... морковь»',
+      '«В этом есть логика только если подумать»'
+    ];
+
     const EGE_LUCKY_WISHES = [
       'Ты сдашь английский на высокий балл — твоя внимательность и упорство точно окупятся ✨',
       'Даже самое сложное задание в аудировании или эссе окажется проще, чем кажется 🎧💛',
@@ -1194,6 +1121,8 @@
       pendant: true,
       blanketTapCount: 0,
       boyfriendState: 'none',  // 'none' | 'lyingBack' | 'betweenLegs'
+      boyfriendAlpha: 0,       // smooth fade in/out 0..1
+      boyfriendPoseBlend: 0,   // smooth transition 0 (lyingBack) -> 1 (betweenLegs)
       brianMapsClicks: 0,
       catPetCount: 0,
       mjEasterTimer: 0,
@@ -1488,6 +1417,23 @@
           nightFilter.connect(nightGain).connect(master);
           this.gains.night = nightGain;
 
+          // 6) TRAIN JOURNEY CHANNEL (Soft cabin rumble + rail clacks routed through masterGain)
+          const trainGain = ctx.createGain();
+          trainGain.gain.value = 0;
+          const trainSrc = ctx.createBufferSource();
+          trainSrc.buffer = pinkBuf;
+          trainSrc.loop = true;
+          const trainLp = ctx.createBiquadFilter();
+          trainLp.type = 'lowpass';
+          trainLp.frequency.value = 185;
+          trainLp.Q.value = 1.1;
+          const trainRumbleGain = ctx.createGain();
+          trainRumbleGain.gain.value = 0.42;
+          trainSrc.connect(trainLp).connect(trainRumbleGain).connect(trainGain);
+          trainGain.connect(master);
+          trainSrc.start();
+          this.gains.train = trainGain;
+
           this.initialized = true;
           this.applyLevels();
           return true;
@@ -1518,29 +1464,28 @@
         if (this.trainTimer) return;
         let tick = 0;
         const step = () => {
-          if (!this.initialized || !this.ctx || this.levels.train <= 0) return;
+          if (!this.initialized || !this.ctx || !this.gains.train || this.levels.train <= 0) return;
           const now = this.ctx.currentTime + 0.01;
-          const vol = (this.levels.train / 100) * 0.34;
-          // Gentle four-beat rail clack rhythm: da-dum ... da-dum
+          // Gentle four-beat rail clack rhythm routed through train bus -> masterGain
           const pat = tick % 8;
           if (pat === 0 || pat === 1 || pat === 4 || pat === 5) {
-            const pitch = (pat % 2 === 0) ? 74 : 62;
+            const pitch = (pat % 2 === 0) ? 78 : 64;
             const osc = this.ctx.createOscillator();
             const g = this.ctx.createGain();
             osc.type = 'sine';
             osc.frequency.setValueAtTime(pitch, now);
-            osc.frequency.exponentialRampToValueAtTime(34, now + 0.09);
+            osc.frequency.exponentialRampToValueAtTime(32, now + 0.095);
             g.gain.setValueAtTime(0.0001, now);
-            g.gain.linearRampToValueAtTime(vol * (pat % 2 === 0 ? 1 : 0.72), now + 0.012);
-            g.gain.exponentialRampToValueAtTime(0.0008, now + 0.13);
-            osc.connect(g).connect(this.ctx.destination);
+            g.gain.linearRampToValueAtTime(pat % 2 === 0 ? 0.58 : 0.40, now + 0.012);
+            g.gain.exponentialRampToValueAtTime(0.0008, now + 0.135);
+            osc.connect(g).connect(this.gains.train);
             osc.start(now);
             osc.stop(now + 0.15);
           }
           tick++;
         };
         step();
-        this.trainTimer = setInterval(step, 240);
+        this.trainTimer = setInterval(step, 245);
       },
 
       stopTrainLoop() {
@@ -2831,18 +2776,20 @@
     const ctx = canvas.getContext('2d', { alpha: false });
 
     const HOTSPOTS = [
-      { id: 'window',      label: 'Окно · Погода',         x: 82,   y: 112, w: 296, h: 368 },
-      { id: 'corkboard',   label: 'Полароиды · Записки',   x: 405,  y: 165, w: 120, h: 155 },
-      { id: 'fairyLights', label: 'Гирлянда',              x: 520,  y: 235, w: 430, h: 85  },
-      { id: 'lamp',        label: 'Тумбочка · Секреты',    x: 376,  y: 562, w: 132, h: 164 },
-      { id: 'cocoa',       label: 'Какао · Комплимент',    x: 465,  y: 525, w: 58,  h: 64  },
-      { id: 'tablet',      label: 'Планшет iPad',          x: 648,  y: 488, w: 108, h: 84  },
-      { id: 'blanket',     label: 'Одеяло · Секрет',       x: 510,  y: 565, w: 280, h: 130 },
-      { id: 'cat',         label: 'Котик',                 x: 805,  y: 562, w: 132, h: 86  },
-      { id: 'neonMJ',      label: 'Неон MJ · Перчатка',    x: 1090, y: 290, w: 170, h: 95  },
-      { id: 'candles',     label: 'Свечи',                 x: 1005, y: 452, w: 72,  h: 72  },
-      { id: 'turntable',   label: 'Винил',                 x: 1088, y: 450, w: 160, h: 92  },
-      { id: 'speaker',     label: 'Колонка · Брайан Мапс', x: 1262, y: 398, w: 116, h: 175 }
+      { id: 'window',       label: 'Окно · Погода',        x: 82,   y: 112, w: 296, h: 368 },
+      { id: 'corkboard',    label: 'Полароиды · Записки',  x: 405,  y: 165, w: 120, h: 155 },
+      { id: 'fairyLights',  label: 'Гирлянда',             x: 520,  y: 235, w: 430, h: 85  },
+      { id: 'lamp',         label: 'Ночник · Свет',        x: 382,  y: 452, w: 86,  h: 110 },
+      { id: 'nightstand',   label: 'Тумбочка · Секреты',   x: 374,  y: 566, w: 136, h: 162 },
+      { id: 'cocoa',        label: 'Какао · Комплимент',   x: 468,  y: 524, w: 46,  h: 42  },
+      { id: 'tablet',       label: 'Планшет iPad',         x: 648,  y: 488, w: 108, h: 84  },
+      { id: 'blanket',      label: 'Одеяло · Секрет',      x: 510,  y: 565, w: 280, h: 135 },
+      { id: 'cat',          label: 'Котик',                x: 805,  y: 562, w: 132, h: 86  },
+      { id: 'neonMJ',       label: 'Неон MJ · Перчатка',   x: 1090, y: 290, w: 170, h: 95  },
+      { id: 'candles',      label: 'Свечи',                x: 1005, y: 452, w: 72,  h: 72  },
+      { id: 'turntable',    label: 'Винил',                x: 1088, y: 450, w: 160, h: 92  },
+      { id: 'speaker',      label: 'Колонка · Плей/Пауза', x: 1262, y: 398, w: 116, h: 122 },
+      { id: 'brianSticker', label: 'Стикер Брайана 🥕',    x: 1238, y: 568, w: 88,  h: 78  }
     ];
 
     function initParticles() {
@@ -3697,6 +3644,41 @@
         ctx.stroke();
       }
 
+      // Cute Brian Maps Carrot Sticker on Right Cabinet Door
+      ctx.save();
+      ctx.translate(cx + 286, cy + 88);
+      ctx.rotate(-0.07);
+      ctx.fillStyle = 'rgba(0,0,0,0.26)';
+      drawRoundRect(ctx, -25, -23, 54, 50, 9);
+      ctx.fill();
+      ctx.fillStyle = '#fff5e4';
+      drawRoundRect(ctx, -27, -25, 54, 50, 9);
+      ctx.fill();
+      ctx.strokeStyle = '#f4a261';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // Mini carrot doodle
+      ctx.fillStyle = '#f97316';
+      ctx.beginPath();
+      ctx.moveTo(-4, -8);
+      ctx.lineTo(6, -10);
+      ctx.lineTo(1, 8);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#22c55e';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(1, -10); ctx.lineTo(-3, -16);
+      ctx.moveTo(1, -10); ctx.lineTo(2, -17);
+      ctx.moveTo(1, -10); ctx.lineTo(6, -15);
+      ctx.stroke();
+      // "BM" caption
+      ctx.fillStyle = '#3b2121';
+      ctx.font = '800 10px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('BRIAN', 0, 20);
+      ctx.restore();
+
       // 1) Flickering Aromatic Candles
       [
         { x: 1022, y: 513, w: 18, h: 36, col: '#f7e1c8' },
@@ -4360,24 +4342,31 @@
 
       ctx.restore();
 
-      // 4) Arms, Wide Textured Metallic Cuff Bracelet & Glowing iPad
+      // 4) Slimmer Sleeves (Matching Current Outfit), Cuff Bracelet & Glowing iPad
       ctx.save();
       ctx.translate(gx + sway * 0.25, gy);
 
-      ctx.fillStyle = '#d3b89b';
+      const sleeveGrad = ctx.createLinearGradient(0, 6, 0, 82);
+      sleeveGrad.addColorStop(0, pal[0]);
+      sleeveGrad.addColorStop(0.55, pal[1]);
+      sleeveGrad.addColorStop(1, pal[2]);
+      ctx.fillStyle = sleeveGrad;
+
+      // Left sleeve smoothly attached to slim shoulder
       ctx.beginPath();
-      ctx.moveTo(-76, 16);
-      ctx.bezierCurveTo(-92, 58, -74, 88, -44, 72);
-      ctx.lineTo(-34, 52);
-      ctx.bezierCurveTo(-50, 56, -58, 42, -52, 16);
+      ctx.moveTo(-53, 8);
+      ctx.bezierCurveTo(-72, 46, -68, 82, -43, 68);
+      ctx.lineTo(-35, 50);
+      ctx.bezierCurveTo(-48, 52, -50, 36, -40, 12);
       ctx.closePath();
       ctx.fill();
 
+      // Right sleeve smoothly attached to slim shoulder
       ctx.beginPath();
-      ctx.moveTo(76, 16);
-      ctx.bezierCurveTo(92, 58, 76, 86, 42, 70);
-      ctx.lineTo(32, 50);
-      ctx.bezierCurveTo(48, 56, 58, 42, 52, 16);
+      ctx.moveTo(53, 8);
+      ctx.bezierCurveTo(72, 46, 68, 80, 42, 66);
+      ctx.lineTo(34, 48);
+      ctx.bezierCurveTo(47, 52, 50, 36, 40, 12);
       ctx.closePath();
       ctx.fill();
 
@@ -4596,68 +4585,246 @@
       ctx.fill();
       ctx.restore();
 
-      // Boyfriend Easter Egg (lying on stomach facing away with curly hair, or between girl's legs on next tap)
-      if (roomState.boyfriendState !== 'none') {
+      // Boyfriend Cozy Easter Egg (smooth fade & transition between lying on stomach & nestled between legs)
+      if (roomState.boyfriendAlpha > 0.01) {
+        const a = roomState.boyfriendAlpha;
+        const p = roomState.boyfriendPoseBlend; // 0 = lying on stomach facing away, 1 = nestled between legs
+        const bfBreath = Math.sin(t * 1.65) * 1.8;
+
         ctx.save();
-        if (roomState.boyfriendState === 'lyingBack') {
-          const bx = 618, by = 648;
-          ctx.translate(bx, by + Math.sin(t * 1.8) * 1.5);
-          // Back / shoulders lying on stomach facing away
-          ctx.fillStyle = '#2d3748';
-          drawRoundRect(ctx, -44, -12, 88, 26, 12);
+        ctx.globalAlpha = a;
+
+        // Pose 1: Lying comfortably on stomach on the left/center blanket, facing away, curly hair
+        if (p < 0.99) {
+          ctx.save();
+          ctx.globalAlpha = a * (1 - p);
+          const bx = 612 + p * 68;
+          const by = 646 - p * 18 + bfBreath * 0.6;
+          ctx.translate(bx, by);
+
+          // Soft blanket contact shadow
+          ctx.fillStyle = 'rgba(32, 14, 22, 0.42)';
+          ctx.beginPath();
+          ctx.ellipse(2, 18, 72, 16, 0.04, 0, Math.PI * 2);
           ctx.fill();
-          ctx.strokeStyle = 'rgba(255,255,255,0.14)';
-          ctx.lineWidth = 1.5;
+
+          // Relaxed resting arms tucked near pillow/blanket
+          ctx.fillStyle = '#363b52';
+          ctx.beginPath();
+          ctx.moveTo(22, -16);
+          ctx.quadraticCurveTo(54, -26, 66, -12);
+          ctx.quadraticCurveTo(58, -2, 34, -2);
+          ctx.closePath();
+          ctx.fill();
+          ctx.beginPath();
+          ctx.moveTo(16, 12);
+          ctx.quadraticCurveTo(48, 22, 62, 12);
+          ctx.quadraticCurveTo(52, 4, 26, 2);
+          ctx.closePath();
+          ctx.fill();
+
+          // Warm dark oversized hoodie back (sculpted shoulders & spine fold)
+          const backGrad = ctx.createLinearGradient(-64, -24, 34, 24);
+          backGrad.addColorStop(0, '#26293a');
+          backGrad.addColorStop(0.45, '#3b415a');
+          backGrad.addColorStop(0.85, '#4c4f6b');
+          backGrad.addColorStop(1, '#2b2e42');
+          ctx.fillStyle = backGrad;
+          ctx.beginPath();
+          ctx.moveTo(-64, 4);
+          ctx.bezierCurveTo(-56, -16, -24, -22, 16, -20);
+          ctx.bezierCurveTo(34, -19, 40, -10, 40, 2);
+          ctx.bezierCurveTo(40, 14, 28, 22, 10, 22);
+          ctx.bezierCurveTo(-24, 23, -58, 19, -64, 4);
+          ctx.closePath();
+          ctx.fill();
+
+          // Warm rim light on hoodie back + natural fabric folds
+          ctx.strokeStyle = 'rgba(255, 224, 195, 0.18)';
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          ctx.moveTo(-42, -12);
+          ctx.quadraticCurveTo(-8, -19, 24, -14);
           ctx.stroke();
-          // Curly hair head facing away
-          ctx.fillStyle = '#3b2419';
+
+          ctx.strokeStyle = 'rgba(18, 16, 28, 0.34)';
+          ctx.lineWidth = 2;
           ctx.beginPath();
-          ctx.arc(38, -2, 16, 0, Math.PI * 2);
-          ctx.fill();
-          [
-            [26, -10], [34, -16], [44, -15], [51, -8],
-            [25, 2],   [32, 9],   [43, 10],  [51, 3]
-          ].forEach(([hcx, hcy], idx) => {
-            ctx.fillStyle = idx % 2 === 0 ? '#4e3022' : '#2e1b13';
-            ctx.beginPath();
-            ctx.arc(hcx, hcy, 6.2, 0, Math.PI * 2);
-            ctx.fill();
-          });
-        } else if (roomState.boyfriendState === 'betweenLegs') {
-          const bx = 716, by = 618;
-          ctx.translate(bx, by + Math.sin(t * 2.2) * 1.4);
-          // Cozy curly-haired guy nestled right between girl's legs on the bed
-          ctx.fillStyle = '#2b3545';
-          drawRoundRect(ctx, -32, 8, 64, 34, 14);
-          ctx.fill();
-          ctx.fillStyle = '#f2c6ad';
+          ctx.moveTo(-36, 4); ctx.quadraticCurveTo(-8, 8, 18, 3);
+          ctx.moveTo(-18, -8); ctx.quadraticCurveTo(-2, -3, 8, -10);
+          ctx.stroke();
+
+          // Hood resting casually at the nape of the neck
+          ctx.fillStyle = '#31364c';
           ctx.beginPath();
-          ctx.arc(0, -2, 16, 0, Math.PI * 2);
+          ctx.ellipse(26, 0, 11, 17, 0.08, 0, Math.PI * 2);
           ctx.fill();
-          // Curly hair crown
-          const bCurls = [
-            [-15, -8], [-11, -16], [-3, -19], [6, -18], [14, -13], [16, -5]
+          ctx.strokeStyle = 'rgba(255, 224, 195, 0.14)';
+          ctx.lineWidth = 1.4;
+          ctx.stroke();
+
+          // Blanket edge gently draped over lower back/waist
+          const drapeGrad = ctx.createLinearGradient(-72, -10, -40, 24);
+          drapeGrad.addColorStop(0, '#b97b77');
+          drapeGrad.addColorStop(1, '#7c4850');
+          ctx.fillStyle = drapeGrad;
+          ctx.beginPath();
+          ctx.moveTo(-72, 14);
+          ctx.quadraticCurveTo(-56, -14, -36, -6);
+          ctx.quadraticCurveTo(-48, 8, -42, 22);
+          ctx.closePath();
+          ctx.fill();
+
+          // Back of head with voluminous soft dark-brown curls (facing away toward her)
+          const hx = 47, hy = -1;
+          ctx.fillStyle = '#2d1a12';
+          ctx.beginPath();
+          ctx.ellipse(hx, hy, 18, 17, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          const backCurls = [
+            [-12, -11, 7.2], [-3, -15, 7.6], [7, -14, 7.2], [14, -7, 6.8],
+            [-14, -1, 7.0],  [-5, -4, 7.8],  [5, -3, 7.6],  [15, 3, 6.8],
+            [-11, 10, 6.8],  [-1, 12, 7.4],  [9, 11, 7.0],  [3, 4, 7.2]
           ];
-          bCurls.forEach(([ccx, ccy], idx) => {
-            ctx.fillStyle = idx % 2 === 0 ? '#4a2e20' : '#2d1b12';
+          backCurls.forEach(([cxo, cyo, cr], idx) => {
+            const cg = ctx.createRadialGradient(hx + cxo - 2, hy + cyo - 2, 1, hx + cxo, hy + cyo, cr);
+            cg.addColorStop(0, idx % 3 === 0 ? '#694330' : '#523223');
+            cg.addColorStop(1, '#26150e');
+            ctx.fillStyle = cg;
             ctx.beginPath();
-            ctx.arc(ccx, ccy, 6.5, 0, Math.PI * 2);
+            ctx.arc(hx + cxo, hy + cyo, cr, 0, Math.PI * 2);
             ctx.fill();
           });
-          // Soft eyes & smile
-          ctx.strokeStyle = '#331b13';
-          ctx.lineWidth = 1.8;
+
+          // Subtle warm golden light glint on top curls
+          ctx.strokeStyle = 'rgba(255, 222, 182, 0.25)';
+          ctx.lineWidth = 1.6;
           ctx.beginPath();
-          ctx.arc(-5.5, -1, 3, 0.15 * Math.PI, 0.85 * Math.PI);
+          ctx.arc(hx + 1, hy - 8, 9, Math.PI * 1.15, Math.PI * 1.85);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // Pose 2: Nestled cozily right between her legs on the blanket, head resting up, curly hair
+        if (p > 0.01) {
+          ctx.save();
+          ctx.globalAlpha = a * p;
+          const bx = 716;
+          const by = 626 + (1 - p) * 18 + bfBreath * 0.55;
+          ctx.translate(bx, by);
+
+          // Blanket contours cradling him on both sides (suggesting her cozy legs under the duvet)
+          const sideGradL = ctx.createLinearGradient(-92, -30, -34, 48);
+          sideGradL.addColorStop(0, '#c0827c');
+          sideGradL.addColorStop(1, '#7c4750');
+          ctx.fillStyle = sideGradL;
+          ctx.beginPath();
+          ctx.ellipse(-62, 12, 34, 42, 0.22, 0, Math.PI * 2);
+          ctx.fill();
+
+          const sideGradR = ctx.createLinearGradient(34, -30, 92, 48);
+          sideGradR.addColorStop(0, '#b97b76');
+          sideGradR.addColorStop(1, '#71404a');
+          ctx.fillStyle = sideGradR;
+          ctx.beginPath();
+          ctx.ellipse(62, 12, 34, 42, -0.22, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Soft shadow underneath him
+          ctx.fillStyle = 'rgba(30, 12, 22, 0.45)';
+          ctx.beginPath();
+          ctx.ellipse(0, 26, 46, 20, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Hoodie shoulders & upper back tucked under her blanket
+          const shGrad = ctx.createLinearGradient(-40, 4, 40, 50);
+          shGrad.addColorStop(0, '#444a66');
+          shGrad.addColorStop(0.55, '#33384f');
+          shGrad.addColorStop(1, '#232638');
+          ctx.fillStyle = shGrad;
+          ctx.beginPath();
+          ctx.moveTo(-40, 40);
+          ctx.bezierCurveTo(-44, 16, -28, 6, 0, 6);
+          ctx.bezierCurveTo(28, 6, 44, 16, 40, 40);
+          ctx.quadraticCurveTo(0, 50, -40, 40);
+          ctx.closePath();
+          ctx.fill();
+
+          // Cozy arms resting forward along the blanket
+          ctx.fillStyle = '#393e57';
+          ctx.beginPath();
+          ctx.ellipse(-30, 22, 12, 18, 0.45, 0, Math.PI * 2);
+          ctx.ellipse(30, 22, 12, 18, -0.45, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Warm neckline & soft cheek resting comfortably
+          ctx.fillStyle = '#e5b89d';
+          ctx.beginPath();
+          ctx.ellipse(0, 4, 17, 14, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Soft rosy warmth on cheek
+          ctx.fillStyle = 'rgba(242, 132, 130, 0.25)';
+          ctx.beginPath();
+          ctx.ellipse(-8, 7, 5, 3, 0, 0, Math.PI * 2);
+          ctx.ellipse(8, 7, 5, 3, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Peaceful closed smiling eyes
+          ctx.strokeStyle = '#331c13';
+          ctx.lineWidth = 1.7;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.arc(-6, 5, 3.2, 0.15 * Math.PI, 0.85 * Math.PI);
           ctx.stroke();
           ctx.beginPath();
-          ctx.arc(5.5, -1, 3, 0.15 * Math.PI, 0.85 * Math.PI);
+          ctx.arc(6, 5, 3.2, 0.15 * Math.PI, 0.85 * Math.PI);
           ctx.stroke();
-          ctx.strokeStyle = '#9e5652';
+
+          // Gentle content smile
+          ctx.strokeStyle = '#a35d58';
+          ctx.lineWidth = 1.6;
           ctx.beginPath();
-          ctx.moveTo(-4, 6);
-          ctx.quadraticCurveTo(0, 9.5, 4, 6);
+          ctx.moveTo(-3.5, 11.5);
+          ctx.quadraticCurveTo(0, 14, 3.5, 11.5);
           ctx.stroke();
+
+          // Voluminous curly hair crown resting upward
+          const topCurls = [
+            [-17, -2, 7.0], [-14, -10, 7.6], [-6, -15, 8.0], [3, -16, 8.2],
+            [12, -12, 7.6], [17, -3, 7.0],   [-8, -7, 7.4],  [1, -8, 7.8], [9, -6, 7.2]
+          ];
+          topCurls.forEach(([ccx, ccy, ccr], idx) => {
+            const cg = ctx.createRadialGradient(ccx - 2, ccy - 2, 1, ccx, ccy, ccr);
+            cg.addColorStop(0, idx % 2 === 0 ? '#66402d' : '#4e2f20');
+            cg.addColorStop(1, '#26160f');
+            ctx.fillStyle = cg;
+            ctx.beginPath();
+            ctx.arc(ccx, ccy, ccr, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          // Soft blue-warm bounce light from iPad screen onto his curls
+          const padGlow = ctx.createRadialGradient(0, -14, 2, 0, -14, 24);
+          padGlow.addColorStop(0, 'rgba(215, 238, 255, 0.28)');
+          padGlow.addColorStop(1, 'rgba(215, 238, 255, 0)');
+          ctx.fillStyle = padGlow;
+          ctx.beginPath();
+          ctx.arc(0, -12, 24, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Draped throw blanket fold gently overlapping lower hoodie edge
+          ctx.fillStyle = '#a86b6c';
+          ctx.beginPath();
+          ctx.moveTo(-46, 36);
+          ctx.quadraticCurveTo(0, 52, 46, 36);
+          ctx.lineTo(48, 52);
+          ctx.quadraticCurveTo(0, 62, -48, 52);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.restore();
         }
         ctx.restore();
       }
@@ -4878,6 +5045,14 @@
       }
 
       if (roomState.catPurrTimer > 0) roomState.catPurrTimer = Math.max(0, roomState.catPurrTimer - dt);
+
+      // Smooth fade & pose transition for boyfriend easter egg
+      const bfTargetAlpha = roomState.boyfriendState === 'none' ? 0 : 1;
+      roomState.boyfriendAlpha += (bfTargetAlpha - roomState.boyfriendAlpha) * Math.min(1, dt * 6.5);
+      if (roomState.boyfriendAlpha < 0.005 && bfTargetAlpha === 0) roomState.boyfriendAlpha = 0;
+
+      const bfTargetPose = roomState.boyfriendState === 'betweenLegs' ? 1 : 0;
+      roomState.boyfriendPoseBlend += (bfTargetPose - roomState.boyfriendPoseBlend) * Math.min(1, dt * 5.2);
       if (roomState.cocoaSteamBoost > 0) roomState.cocoaSteamBoost = Math.max(0, roomState.cocoaSteamBoost - dt * 0.5);
 
       for (const d of particles.dust) {
@@ -5057,6 +5232,7 @@
         }`;
       });
 
+      try { localStorage.setItem('mj_cozy_room_theme_v1', key); } catch (_) {}
       if (notify) showToast(`Тема комнаты: ${cfg.label}`, cfg.icon);
     }
 
@@ -5208,20 +5384,31 @@
             roomState.blanketTapCount++;
             if (roomState.blanketTapCount >= 2) {
               roomState.blanketTapCount = 0;
+              roomState.boyfriendPoseBlend = 0;
               roomState.boyfriendState = 'lyingBack';
               vibeEngine.playSoftChime(587.33);
-              showToast('Под одеялом кто-то устроился на животе спиной — кудряшки узнаёшь? 😉 Нажми на него ещё раз!', '🧸');
+              showToast('Рядом устроился кудрявый парень на животе спиной — нажми на него ещё раз 😉', '🧸');
             } else {
-              showToast('Одеяло мягко шевельнулось… нажми ещё раз', '🛏️');
+              showToast('Плед мягко шевельнулся… нажми ещё раз', '🛏️');
             }
           } else if (roomState.boyfriendState === 'lyingBack') {
             roomState.boyfriendState = 'betweenLegs';
             vibeEngine.playSoftChime(659.25);
-            showToast('Он перебрался поближе и устроился прямо между твоих ног 💛✨ (нажми ещё раз, чтобы спрятался)', '🥰');
+            for (let i = 0; i < 7; i++) {
+              particles.hearts.push({
+                x: 716 + (Math.random() - 0.5) * 60,
+                y: 610 - Math.random() * 18,
+                vy: -30 - Math.random() * 20,
+                size: 5 + Math.random() * 4.5,
+                age: 0,
+                col: i % 2 === 0 ? '#ff8fa3' : '#ffd166'
+              });
+            }
+            showToast('Перебрался поближе и уютно устроился прямо между твоих ног 💛', '🥰');
           } else {
             roomState.boyfriendState = 'none';
             vibeEngine.playSoftChime(493.88);
-            showToast('Снова спрятался под пледом', '🌙');
+            showToast('Спрятался обратно под одеяло', '🌙');
           }
           break;
         case 'cat':
@@ -5259,6 +5446,9 @@
           break;
         }
         case 'lamp':
+          cycleLamp();
+          break;
+        case 'nightstand':
           openDrawerModal('items');
           break;
         case 'candles':
@@ -5278,7 +5468,7 @@
           roomState.mjNightClicks = (roomState.mjNightClicks || 0) + 1;
           vibeEngine.playSoftChime(783.99);
           if (roomState.mjNightClicks % 3 === 0) {
-            triggerMjMoonwalkEaster('Постер MJ оживает!', 'Лунная походка и золотые искорки в твоей комнате 👑✨');
+            triggerMjMoonwalkEaster('Перчатка короля поп-музыки ✨', 'Искры пролетают по всей комнате 👑');
           } else {
             showToast(roomState.neonOn ? 'Неон «MJ» светится! Король поп-музыки в комнате 👑' : 'Неон «MJ» выключен', '⚡');
           }
@@ -5286,19 +5476,14 @@
         case 'turntable':
           musicPlayer.togglePlayPause();
           if (roomState.weather === 'night' && roomState.lampLevel === 0) {
-            triggerMjMoonwalkEaster('Ночной лунный танец ✨', 'В темноте под звёздами появляется сияющий силуэт MJ 🌙👑');
+            triggerMjMoonwalkEaster('Ночное сияние MJ ✨', 'В темноте под звёздами пролетает сверкающая перчатка 🌙👑');
           }
           break;
         case 'speaker':
           musicPlayer.togglePlayPause();
-          roomState.brianMapsClicks = (roomState.brianMapsClicks || 0) + 1;
-          if (roomState.brianMapsClicks % 2 === 0) {
-            const brianQuotes = [
-              'Пасхалка на Брайана Мапса: «И всем привет, с вами Брайн!» 🎙️✨',
-              'Отсылка к Брайану Мапсу: тёплый ламповый вайб старых добрых видео и уютного вечера 🎧💛'
-            ];
-            showToast(brianQuotes[(roomState.brianMapsClicks / 2 - 1) % brianQuotes.length], '🎬', null, 5500);
-          }
+          break;
+        case 'brianSticker':
+          showNextBrianQuote();
           break;
       }
     }
@@ -5439,7 +5624,7 @@
       });
       document.querySelectorAll('.ipad-tab').forEach((btn) => {
         const active = btn.getAttribute('data-tab') === tabName;
-        btn.className = `ipad-tab py-2 px-2 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-1.5 ${
+        btn.className = `ipad-tab py-2 px-1.5 rounded-xl text-[11px] sm:text-xs transition flex items-center justify-center gap-1 ${
           active
             ? 'font-semibold bg-gradient-to-r from-amber-400/25 to-rose-400/25 text-amber-100 border border-amber-300/30'
             : 'font-medium text-amber-200/70 hover:text-amber-100'
@@ -5466,7 +5651,40 @@
     }
 
 
+    function showNextBrianQuote() {
+      const idx = roomState.brianMapsClicks % BRIAN_MAPS_QUOTES.length;
+      roomState.brianMapsClicks++;
+      vibeEngine.playSoftChime(659.25);
+      showToast(BRIAN_MAPS_QUOTES[idx], '🥕', null, 5500);
+    }
+
     const wardrobeStore = {
+      KEY: 'mj_cozy_room_wardrobe_v1',
+      load() {
+        try {
+          const raw = localStorage.getItem(this.KEY);
+          if (!raw) return;
+          const d = JSON.parse(raw);
+          if (d.outfit) roomState.outfit = d.outfit;
+          if (d.hairStyle) roomState.hairStyle = d.hairStyle;
+          if (d.girlMood) roomState.girlMood = d.girlMood;
+          if (typeof d.headphones === 'boolean') roomState.headphones = d.headphones;
+          if (typeof d.glasses === 'boolean') roomState.glasses = d.glasses;
+          if (typeof d.pendant === 'boolean') roomState.pendant = d.pendant;
+        } catch (_) {}
+      },
+      save() {
+        try {
+          localStorage.setItem(this.KEY, JSON.stringify({
+            outfit: roomState.outfit,
+            hairStyle: roomState.hairStyle,
+            girlMood: roomState.girlMood,
+            headphones: roomState.headphones,
+            glasses: roomState.glasses,
+            pendant: roomState.pendant
+          }));
+        } catch (_) {}
+      },
       open() {
         const ov = document.getElementById('wardrobeOverlay');
         if (!ov) return;
@@ -5482,18 +5700,21 @@
       },
       setOutfit(val) {
         roomState.outfit = val;
+        this.save();
         this.syncUI();
         vibeEngine.playSoftChime(587.33);
       },
       cycleHair() {
         const order = ['loose', 'curly', 'halfUp', 'ponytail'];
         roomState.hairStyle = order[(order.indexOf(roomState.hairStyle) + 1) % order.length];
+        this.save();
         this.syncUI();
         vibeEngine.playSoftChime(659.25);
       },
       cycleMood() {
         const order = ['smile', 'dreamy', 'wink'];
         roomState.girlMood = order[(order.indexOf(roomState.girlMood) + 1) % order.length];
+        this.save();
         this.syncUI();
         vibeEngine.playSoftChime(523.25);
       },
@@ -5572,15 +5793,6 @@
       if (iList) iList.innerHTML = htmlCards;
     }
 
-    function pickRandomEnglishToast() {
-      const pick = ENGLISH_EGE_WORDS[Math.floor(Math.random() * ENGLISH_EGE_WORDS.length)];
-      vibeEngine.playSoftChime(659.25);
-      showToast(`${pick.word} (${pick.pos}) — ${pick.tr}`, '📚', {
-        label: 'Открыть словарь',
-        onClick: () => openIpad('english')
-      }, 5500);
-    }
-
     function wireUIEvents() {
       // Welcome Splash
       document.getElementById('btnEnterRoom')?.addEventListener('click', () => {
@@ -5602,12 +5814,15 @@
       });
       document.getElementById('toggleHeadphones')?.addEventListener('change', (e) => {
         roomState.headphones = e.target.checked;
+        wardrobeStore.save();
       });
       document.getElementById('toggleGlasses')?.addEventListener('change', (e) => {
         roomState.glasses = e.target.checked;
+        wardrobeStore.save();
       });
       document.getElementById('togglePendant')?.addEventListener('change', (e) => {
         roomState.pendant = e.target.checked;
+        wardrobeStore.save();
       });
       document.getElementById('btnCycleHairStyle')?.addEventListener('click', () => wardrobeStore.cycleHair());
       document.getElementById('btnCycleGirlMood')?.addEventListener('click', () => wardrobeStore.cycleMood());
@@ -5632,13 +5847,13 @@
             const wish = EGE_LUCKY_WISHES[Math.floor(Math.random() * EGE_LUCKY_WISHES.length)];
             vibeEngine.playSoftChime(587.33);
             showToast(wish, '🍀', null, 6000);
+          } else if (kind === 'brianQuote') {
+            showNextBrianQuote();
           } else if (kind === 'secretLetter') {
             secretLetter.unlockAndOpen();
           }
         });
       });
-      document.getElementById('btnRandomEngWord')?.addEventListener('click', pickRandomEnglishToast);
-      document.getElementById('btnIpadRandomEng')?.addEventListener('click', pickRandomEnglishToast);
 
       // Top HUD
       document.getElementById('btnHudCounters')?.addEventListener('click', () => openIpad('notes'));
@@ -5720,15 +5935,21 @@
         showToast(musicPlayer.repeatOne ? 'Повтор текущей песни 🔁' : 'Повтор одной песни выключен', '🔁');
       });
 
-      // Scrubbers
+      // Scrubbers (with release safety so isSeeking never gets stuck on touch cancel)
       ['miniSeek', 'ipadSeek'].forEach((id) => {
         const el = document.getElementById(id);
         if (!el) return;
+        const finishSeek = () => {
+          if (musicPlayer.isSeeking) {
+            musicPlayer.seekToPercent(Number(el.value));
+            musicPlayer.isSeeking = false;
+          }
+        };
         el.addEventListener('input', () => { musicPlayer.isSeeking = true; });
-        el.addEventListener('change', () => {
-          musicPlayer.seekToPercent(Number(el.value));
-          musicPlayer.isSeeking = false;
-        });
+        el.addEventListener('change', finishSeek);
+        el.addEventListener('pointerup', finishSeek);
+        el.addEventListener('touchend', finishSeek, { passive: true });
+        el.addEventListener('pointercancel', () => { musicPlayer.isSeeking = false; });
       });
 
       // Search & Multi-MP3 Upload
@@ -5794,7 +6015,10 @@
       polaroidsStore.init();
       secretLetter.init();
       updateRelationshipCounters();
-      applyRoomTheme('sunset', false);
+      let savedTheme = 'sunset';
+      try { savedTheme = localStorage.getItem('mj_cozy_room_theme_v1') || 'sunset'; } catch (_) {}
+      applyRoomTheme(savedTheme, false);
+      wardrobeStore.load();
       wardrobeStore.syncUI();
       renderEnglishLists();
       renderPlaylistUI();
