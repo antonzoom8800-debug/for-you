@@ -171,6 +171,34 @@
     .swipe-hint-anim {
       animation: gentlePulse 2.4s ease-in-out infinite;
     }
+
+    /* Secret Letter & Polaroid Lightbox Modals */
+    #secretLetterOverlay, #polaroidOverlay {
+      transition: opacity 0.28s ease;
+    }
+    #secretLetterOverlay.modal-closed, #polaroidOverlay.modal-closed {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #secretLetterOverlay.modal-open, #polaroidOverlay.modal-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .letter-paper {
+      background: linear-gradient(165deg, #fff8ee 0%, #f7e9d7 55%, #efdcc5 100%);
+      color: #3a2320;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.75), inset 0 0 40px rgba(180, 125, 85, 0.16);
+    }
+    .polaroid-card {
+      background: #fbf7f0;
+      color: #3a2724;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+    .polaroid-card:hover {
+      transform: translateY(-3px) scale(1.02) !important;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6);
+    }
   </style>
 </head>
 <body>
@@ -183,13 +211,24 @@
   <!-- Compact Mobile-First Top HUD Bar -->
   <header class="top-bar fixed top-0 left-0 right-0 z-20 px-2.5 sm:px-5 pointer-events-none">
     <div class="max-w-5xl mx-auto flex items-center justify-between gap-2">
-      <!-- Room Badge -->
-      <div class="glass-panel pointer-events-auto rounded-2xl px-3 py-1.5 sm:px-3.5 sm:py-2 flex items-center gap-2 min-w-0">
-        <span class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_10px_#fbbf24] shrink-0"></span>
-        <div class="min-w-0">
-          <div class="text-xs sm:text-sm font-semibold tracking-tight text-amber-100 truncate">Для самой любимой</div>
-          <div id="statusSubtitle" class="text-[10px] sm:text-[11px] text-amber-200/70 truncate">Свайпай по комнате · Тапай на вещи</div>
-        </div>
+      <!-- Room Badge + Days Together Pill -->
+      <div class="flex items-center gap-1.5 min-w-0 pointer-events-auto">
+        <button id="btnHudCounters" type="button" title="Открыть наши счётчики и записки"
+          class="glass-panel rounded-2xl px-2.5 py-1.5 sm:px-3.5 sm:py-2 flex items-center gap-2 min-w-0 text-left hover:bg-amber-500/15 active:scale-95 transition">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_10px_#fbbf24] shrink-0"></span>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs sm:text-sm font-semibold tracking-tight text-amber-100 truncate">Для самой любимой</span>
+              <span id="hudDaysBadge" class="px-1.5 py-0.5 rounded-full bg-rose-500/25 border border-rose-300/35 text-[10px] font-semibold text-rose-100 shrink-0">❤️ …</span>
+            </div>
+            <div id="statusSubtitle" class="text-[10px] sm:text-[11px] text-amber-200/70 truncate">Свайпай по комнате · Тапай на вещи</div>
+          </div>
+        </button>
+
+        <button id="hudSleepBadge" type="button" title="Таймер сна активен (нажми, чтобы изменить)"
+          class="hidden glass-panel rounded-xl px-2 h-9 text-[11px] font-mono font-semibold text-amber-200 border border-amber-300/35 items-center gap-1 hover:bg-amber-500/20 active:scale-95 transition shrink-0">
+          <span>🌙</span><span id="hudSleepTime">15:00</span>
+        </button>
       </div>
 
       <!-- Compact Action Controls -->
@@ -356,6 +395,10 @@
                   class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#ffd6a5] to-[#f4a261] text-[#23151e] font-bold text-sm flex items-center justify-center active:scale-90 transition">
                   ▶
                 </button>
+                <button id="btnToggleQuote" type="button" title="Строчка из песни"
+                  class="w-8 h-8 rounded-xl bg-amber-400/25 hover:bg-amber-400/35 text-amber-100 text-xs font-serif font-bold flex items-center justify-center transition">❝</button>
+                <button id="btnQuickSleep" type="button" title="Таймер сна (15 / 30 / 60 мин)"
+                  class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/15 text-amber-200/70 text-xs flex items-center justify-center transition">⏱️</button>
                 <button id="btnShuffle" type="button" title="Перемешать"
                   class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/15 text-amber-200/70 text-xs flex items-center justify-center transition">🔀</button>
                 <button id="btnRepeat" type="button" title="Повтор трека"
@@ -366,6 +409,11 @@
               <span id="ipadCurrentTime" class="text-[11px] font-mono text-amber-200/75 w-9 text-right">0:00</span>
               <input id="ipadSeek" type="range" min="0" max="100" value="0" step="0.25" class="warm-slider flex-1" />
               <span id="ipadDuration" class="text-[11px] font-mono text-amber-200/75 w-9">0:00</span>
+            </div>
+            <!-- Iconic MJ Lyric Quote + Translation -->
+            <div id="lyricQuoteBox" class="mt-2 pt-2 border-t border-amber-200/10">
+              <div id="lyricQuoteEn" class="text-[11px] sm:text-xs italic text-amber-100/90 leading-snug">“The kid is not my son…”</div>
+              <div id="lyricQuoteRu" class="text-[10px] sm:text-[11px] text-amber-200/65 mt-0.5 leading-snug">«Этот малыш — не мой сын…»</div>
             </div>
           </div>
 
@@ -402,9 +450,41 @@
           </div>
         </section>
 
-        <!-- TAB 2: ROMANTIC NOTES & COMPLIMENTS -->
-        <section id="tab-notes" class="ipad-panel hidden flex-1 flex flex-col overflow-hidden px-3 sm:px-4 pb-3">
-          <form id="noteForm" class="rounded-2xl p-3 mb-3 bg-white/[0.04] border border-amber-200/15 shrink-0 space-y-2">
+        <!-- TAB 2: COUNTERS, POLAROIDS, SECRET LETTER & ROMANTIC NOTES -->
+        <section id="tab-notes" class="ipad-panel hidden flex-1 flex flex-col overflow-y-auto cozy-scroll px-3 sm:px-4 pb-4 space-y-3">
+          <!-- Counters Widget: Together + Both Birthdays -->
+          <div class="grid grid-cols-3 gap-2 shrink-0">
+            <div class="rounded-2xl p-2.5 bg-gradient-to-br from-rose-500/20 to-amber-500/10 border border-rose-300/25 text-center">
+              <div class="text-[10px] uppercase tracking-wider text-rose-200/80 font-semibold">💕 Вместе</div>
+              <div id="cntTogetherMain" class="text-sm sm:text-base font-extrabold text-amber-50 mt-0.5">—</div>
+              <div id="cntTogetherSub" class="text-[10px] text-amber-200/65 mt-0.5">с 5 октября 2026</div>
+            </div>
+            <div class="rounded-2xl p-2.5 bg-gradient-to-br from-amber-400/18 to-orange-500/10 border border-amber-300/25 text-center">
+              <div class="text-[10px] uppercase tracking-wider text-amber-200/80 font-semibold">🎂 Твой ДР</div>
+              <div id="cntHerBdayMain" class="text-sm sm:text-base font-extrabold text-amber-50 mt-0.5">—</div>
+              <div id="cntHerBdaySub" class="text-[10px] text-amber-200/65 mt-0.5">9 октября</div>
+            </div>
+            <div class="rounded-2xl p-2.5 bg-gradient-to-br from-violet-400/18 to-rose-400/10 border border-violet-300/25 text-center">
+              <div class="text-[10px] uppercase tracking-wider text-violet-200/85 font-semibold">🎉 ДР Антона</div>
+              <div id="cntHisBdayMain" class="text-sm sm:text-base font-extrabold text-amber-50 mt-0.5">—</div>
+              <div id="cntHisBdaySub" class="text-[10px] text-amber-200/65 mt-0.5">2 декабря</div>
+            </div>
+          </div>
+
+          <!-- Polaroid Gallery from Corkboard -->
+          <div class="rounded-2xl p-3 bg-white/[0.03] border border-amber-200/12 shrink-0">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[11px] uppercase tracking-wider font-semibold text-amber-200/90">📸 Полароиды на доске</span>
+              <span class="text-[10px] text-amber-200/55">Нажми, чтобы увеличить</span>
+            </div>
+            <div id="polaroidGrid" class="grid grid-cols-3 gap-2.5"></div>
+          </div>
+
+          <!-- Secret Letter Status Banner -->
+          <div id="secretLetterBanner" class="shrink-0"></div>
+
+          <!-- Add Note Form -->
+          <form id="noteForm" class="rounded-2xl p-3 bg-white/[0.04] border border-amber-200/15 shrink-0 space-y-2">
             <label for="noteInput" class="block text-xs font-semibold text-amber-200">Оставить новую тёплую записку:</label>
             <textarea id="noteInput" rows="2" maxlength="280" placeholder="Напиши что-нибудь нежное для нас..."
               class="w-full rounded-xl bg-black/35 border border-amber-200/15 p-2.5 text-xs sm:text-sm text-amber-50 placeholder-amber-200/35 focus:outline-none focus:border-amber-400/60 resize-none"></textarea>
@@ -417,13 +497,33 @@
             </div>
           </form>
 
-          <div id="notesList" class="cozy-scroll flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-2.5 pr-1 content-start"></div>
+          <div id="notesList" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 content-start pb-1"></div>
         </section>
 
         <!-- TAB 3: WEB AUDIO VIBE MIXER + BUILT-IN LO-FI BEAT -->
         <section id="tab-mixer" class="ipad-panel hidden flex-1 flex flex-col overflow-y-auto cozy-scroll px-3 sm:px-4 pb-4 space-y-3">
           <div class="rounded-2xl p-3 bg-amber-500/10 border border-amber-300/20 text-xs text-amber-100/90 leading-relaxed">
             Собери идеальную атмосферу для вечера: смешай мягкий <strong>Lo-Fi бит</strong>, шум дождя, треск винила и мурлыканье котика — всё работает сразу и без задержек ✨
+          </div>
+
+          <!-- Sleep Timer Card -->
+          <div class="rounded-2xl p-3 bg-gradient-to-r from-indigo-500/15 via-purple-500/12 to-rose-500/10 border border-indigo-300/25">
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="text-base">🌙</span>
+                <div>
+                  <div class="text-xs sm:text-sm font-semibold text-amber-50">Таймер сна</div>
+                  <div class="text-[10px] text-amber-200/65">Музыка и дождь плавно затухнут сами</div>
+                </div>
+              </div>
+              <span id="mixerSleepStatus" class="text-xs font-mono text-amber-300">Выкл</span>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5">
+              <button data-sleep="0" type="button" class="sleep-btn py-1.5 rounded-xl bg-amber-400/25 border border-amber-300/40 text-xs font-semibold text-amber-100 transition">Выкл</button>
+              <button data-sleep="15" type="button" class="sleep-btn py-1.5 rounded-xl bg-white/10 hover:bg-amber-400/20 text-xs font-medium text-amber-100 transition">15 мин</button>
+              <button data-sleep="30" type="button" class="sleep-btn py-1.5 rounded-xl bg-white/10 hover:bg-amber-400/20 text-xs font-medium text-amber-100 transition">30 мин</button>
+              <button data-sleep="60" type="button" class="sleep-btn py-1.5 rounded-xl bg-white/10 hover:bg-amber-400/20 text-xs font-medium text-amber-100 transition">60 мин</button>
+            </div>
           </div>
 
           <!-- Quick Presets -->
@@ -487,6 +587,45 @@
     </div>
   </div>
 
+
+  <!-- Secret Letter Modal (Unlocked by petting the cat 3 times) -->
+  <div id="secretLetterOverlay" class="modal-closed fixed inset-0 z-[60] bg-black/75 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="letter-paper relative w-full max-w-md rounded-3xl p-6 sm:p-7 border-2 border-[#d9b896] overflow-y-auto max-h-[86vh] cozy-scroll">
+      <button id="btnCloseLetter" type="button" aria-label="Закрыть письмо"
+        class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-[#3a2320]/10 hover:bg-[#3a2320]/20 text-[#3a2320] flex items-center justify-center font-bold transition">✕</button>
+      <div class="flex flex-col items-center text-center mb-4">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#c92a42] to-[#8a182b] text-[#ffe8d6] flex items-center justify-center text-xl shadow-lg border-2 border-[#f2c6a0]/60 mb-2">💌</div>
+        <div class="text-[11px] uppercase tracking-[0.18em] text-[#8c5a44] font-semibold">Секретный конверт</div>
+        <h2 class="text-lg sm:text-xl font-extrabold text-[#3a2320] mt-0.5">Письмо для тебя</h2>
+      </div>
+      <div class="space-y-3 text-xs sm:text-sm leading-relaxed text-[#4b2f28]">
+        <p>Ты нашла главный секрет этой комнаты — котик знал, кому его можно доверить ✨</p>
+        <p>С <strong>5 октября 2026 года</strong> каждый мой день стал теплее, спокойнее и счастливее просто от того, что в нём есть ты. Мне правда безумно повезло с тобой.</p>
+        <p>Когда тебе захочется тишины, уюта или просто перезагрузиться после длинного дня — открывай эту комнату, включай Майкла Джексона или дождь за окном и помни: я всегда рядом, даже если мы сейчас не в одной комнате.</p>
+        <p class="font-semibold text-[#7a2835] pt-1">Очень сильно тебя люблю. Твой Антон 💛</p>
+      </div>
+      <div class="mt-5 pt-3 border-t border-[#3a2320]/15 flex justify-center">
+        <button id="btnCloseLetterBottom" type="button"
+          class="px-5 py-2 rounded-xl text-xs font-semibold bg-[#3a2320] text-[#fff6ea] hover:brightness-110 active:scale-95 transition">
+          Спрятать обратно в конверт 🤍
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Polaroid Lightbox Modal -->
+  <div id="polaroidOverlay" class="modal-closed fixed inset-0 z-[60] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="relative max-w-sm w-full">
+      <button id="btnClosePolaroid" type="button" aria-label="Закрыть фото"
+        class="absolute -top-11 right-0 w-9 h-9 rounded-full bg-white/15 hover:bg-white/25 text-amber-50 flex items-center justify-center font-bold transition">✕</button>
+      <div class="polaroid-card rounded-xl p-3.5 pb-5">
+        <div id="polaroidModalMedia" class="w-full aspect-square rounded-md overflow-hidden bg-[#241724] flex items-center justify-center"></div>
+        <div id="polaroidModalCaption" class="text-center text-sm font-semibold text-[#3a2724] mt-3.5">Наш момент ✨</div>
+        <div id="polaroidModalSub" class="text-center text-[11px] text-[#7c5c52] mt-0.5">2026</div>
+      </div>
+    </div>
+  </div>
+
   <script>
     'use strict';
 
@@ -494,24 +633,54 @@
        1. MICHAEL JACKSON 18-TRACK PLAYLIST & ROMANTIC CONTENT
        ========================================================================= */
     const MJ_PLAYLIST = [
-      { id: 'mj-1',  num: 1,  slug: 'billie-jean',                 title: 'Billie Jean',                 album: 'Thriller',     year: 1982, grad: ['#8f1d2c', '#e09f3e'], badge: 'T82', keywords: ['billie', 'jean'] },
-      { id: 'mj-2',  num: 2,  slug: 'smooth-criminal',             title: 'Smooth Criminal',             album: 'Bad',          year: 1987, grad: ['#22223b', '#9a8c98'], badge: 'BAD', keywords: ['smooth', 'criminal'] },
-      { id: 'mj-3',  num: 3,  slug: 'thriller',                    title: 'Thriller',                    album: 'Thriller',     year: 1982, grad: ['#7f1d1d', '#d97706'], badge: 'T82', keywords: ['thriller'] },
-      { id: 'mj-4',  num: 4,  slug: 'beat-it',                     title: 'Beat It',                     album: 'Thriller',     year: 1982, grad: ['#991b1b', '#f97316'], badge: 'T82', keywords: ['beat it', 'beat_it', 'beat-it'] },
-      { id: 'mj-5',  num: 5,  slug: 'rock-with-you',               title: 'Rock With You',               album: 'Off the Wall', year: 1979, grad: ['#4c1d95', '#ec4899'], badge: 'OTW', keywords: ['rock with you', 'rock_with'] },
-      { id: 'mj-6',  num: 6,  slug: 'bad',                         title: 'Bad',                         album: 'Bad',          year: 1987, grad: ['#1f2937', '#dc2626'], badge: 'BAD', keywords: ['bad'] },
-      { id: 'mj-7',  num: 7,  slug: 'human-nature',                title: 'Human Nature',                album: 'Thriller',     year: 1982, grad: ['#312e81', '#f59e0b'], badge: 'T82', keywords: ['human', 'nature'] },
-      { id: 'mj-8',  num: 8,  slug: 'the-way-you-make-me-feel',    title: 'The Way You Make Me Feel',    album: 'Bad',          year: 1987, grad: ['#1e3a8a', '#f43f5e'], badge: 'BAD', keywords: ['way you make', 'make me feel'] },
-      { id: 'mj-9',  num: 9,  slug: 'dirty-diana',                 title: 'Dirty Diana',                 album: 'Bad',          year: 1987, grad: ['#111827', '#b91c1c'], badge: 'BAD', keywords: ['dirty', 'diana'] },
-      { id: 'mj-10', num: 10, slug: 'dont-stop-til-you-get-enough',title: "Don't Stop 'Til You Get Enough", album: 'Off the Wall', year: 1979, grad: ['#6d28d9', '#f59e0b'], badge: 'OTW', keywords: ['dont stop', 'get enough', 'don\'t stop'] },
-      { id: 'mj-11', num: 11, slug: 'remember-the-time',           title: 'Remember the Time',           album: 'Dangerous',    year: 1991, grad: ['#92400e', '#fbbf24'], badge: 'DNG', keywords: ['remember', 'time'] },
-      { id: 'mj-12', num: 12, slug: 'black-or-white',              title: 'Black or White',              album: 'Dangerous',    year: 1991, grad: ['#374151', '#d97706'], badge: 'DNG', keywords: ['black or white', 'black_or_white'] },
-      { id: 'mj-13', num: 13, slug: 'liberian-girl',               title: 'Liberian Girl',               album: 'Bad',          year: 1987, grad: ['#581c87', '#fb7185'], badge: 'BAD', keywords: ['liberian'] },
-      { id: 'mj-14', num: 14, slug: 'you-rock-my-world',           title: 'You Rock My World',           album: 'Invincible',   year: 2001, grad: ['#1e293b', '#38bdf8'], badge: 'INV', keywords: ['rock my world', 'my world'] },
-      { id: 'mj-15', num: 15, slug: 'man-in-the-mirror',           title: 'Man in the Mirror',           album: 'Bad',          year: 1987, grad: ['#1f2937', '#60a5fa'], badge: 'BAD', keywords: ['mirror', 'man in the'] },
-      { id: 'mj-16', num: 16, slug: 'earth-song',                  title: 'Earth Song',                  album: 'HIStory',      year: 1995, grad: ['#78350f', '#ca8a04'], badge: 'HIS', keywords: ['earth song', 'earth'] },
-      { id: 'mj-17', num: 17, slug: 'they-dont-care-about-us',     title: "They Don't Care About Us",    album: 'HIStory',      year: 1995, grad: ['#7c2d12', '#eab308'], badge: 'HIS', keywords: ['care about us', 'dont care'] },
-      { id: 'mj-18', num: 18, slug: 'pyt-pretty-young-thing',      title: 'P.Y.T. (Pretty Young Thing)', album: 'Thriller',     year: 1982, grad: ['#9d174d', '#f59e0b'], badge: 'T82', keywords: ['pyt', 'p.y.t', 'pretty young'] }
+      { id: 'mj-1',  num: 1,  slug: 'billie-jean',                 title: 'Billie Jean',                 album: 'Thriller',     year: 1982, grad: ['#8f1d2c', '#e09f3e'], badge: 'T82', keywords: ['billie', 'jean'],
+        quote: "People always told me: be careful of what you do.", quoteRu: "Люди всегда говорили мне: будь осторожен в своих поступках." },
+      { id: 'mj-2',  num: 2,  slug: 'smooth-criminal',             title: 'Smooth Criminal',             album: 'Bad',          year: 1987, grad: ['#22223b', '#9a8c98'], badge: 'BAD', keywords: ['smooth', 'criminal'],
+        quote: "Annie, are you okay? So, Annie, are you okay?", quoteRu: "Энни, ты в порядке? Скажи, Энни, с тобой всё хорошо?" },
+      { id: 'mj-3',  num: 3,  slug: 'thriller',                    title: 'Thriller',                    album: 'Thriller',     year: 1982, grad: ['#7f1d1d', '#d97706'], badge: 'T82', keywords: ['thriller'],
+        quote: "You try to scream, but terror takes the sound before you make it.", quoteRu: "Ночной триллер оживает — держись ко мне поближе." },
+      { id: 'mj-4',  num: 4,  slug: 'beat-it',                     title: 'Beat It',                     album: 'Thriller',     year: 1982, grad: ['#991b1b', '#f97316'], badge: 'T82', keywords: ['beat it', 'beat_it', 'beat-it'],
+        quote: "Showin' how funky and strong is your fight.", quoteRu: "Покажи, насколько яркой и сильной бывает твоя смелость." },
+      { id: 'mj-5',  num: 5,  slug: 'rock-with-you',               title: 'Rock With You',               album: 'Off the Wall', year: 1979, grad: ['#4c1d95', '#ec4899'], badge: 'OTW', keywords: ['rock with you', 'rock_with'],
+        quote: "I wanna rock with you all night, dance you into day.", quoteRu: "Я хочу танцевать с тобой всю ночь — прямо до самого рассвета." },
+      { id: 'mj-6',  num: 6,  slug: 'bad',                         title: 'Bad',                         album: 'Bad',          year: 1987, grad: ['#1f2937', '#dc2626'], badge: 'BAD', keywords: ['bad'],
+        quote: "The whole world has to answer right now just to tell you once again.", quoteRu: "Весь мир должен услышать это прямо сейчас — снова и снова." },
+      { id: 'mj-7',  num: 7,  slug: 'human-nature',                title: 'Human Nature',                album: 'Thriller',     year: 1982, grad: ['#312e81', '#f59e0b'], badge: 'T82', keywords: ['human', 'nature'],
+        quote: "Looking out across the nighttime, the city winks a sleepless eye.", quoteRu: "Глядя в ночную даль, город подмигивает бессонным огоньком." },
+      { id: 'mj-8',  num: 8,  slug: 'the-way-you-make-me-feel',    title: 'The Way You Make Me Feel',    album: 'Bad',          year: 1987, grad: ['#1e3a8a', '#f43f5e'], badge: 'BAD', keywords: ['way you make', 'make me feel'],
+        quote: "The way you make me feel — you really turn me on, you knock me off of my feet.", quoteRu: "То, что ты заставляешь меня чувствовать — ты просто сбиваешь меня с ног." },
+      { id: 'mj-9',  num: 9,  slug: 'dirty-diana',                 title: 'Dirty Diana',                 album: 'Bad',          year: 1987, grad: ['#111827', '#b91c1c'], badge: 'BAD', keywords: ['dirty', 'diana'],
+        quote: "She likes the boys in the band, she knows when they come to town.", quoteRu: "Огни сцены, гитарный драйв и история, от которой бегут мурашки." },
+      { id: 'mj-10', num: 10, slug: 'dont-stop-til-you-get-enough',title: "Don't Stop 'Til You Get Enough", album: 'Off the Wall', year: 1979, grad: ['#6d28d9', '#f59e0b'], badge: 'OTW', keywords: ['dont stop', 'get enough', 'don\'t stop'],
+        quote: "Keep on with the force, don't stop — don't stop 'til you get enough.", quoteRu: "Не останавливайся, лови этот ритм, пока не почувствуешь его до конца." },
+      { id: 'mj-11', num: 11, slug: 'remember-the-time',           title: 'Remember the Time',           album: 'Dangerous',    year: 1991, grad: ['#92400e', '#fbbf24'], badge: 'DNG', keywords: ['remember', 'time'],
+        quote: "Do you remember when we fell in love? We were young and innocent then.", quoteRu: "Помнишь то время, когда мы влюбились? Самое тёплое воспоминание." },
+      { id: 'mj-12', num: 12, slug: 'black-or-white',              title: 'Black or White',              album: 'Dangerous',    year: 1991, grad: ['#374151', '#d97706'], badge: 'DNG', keywords: ['black or white', 'black_or_white'],
+        quote: "I'm not gonna spend my life being a color.", quoteRu: "Важно только то, что внутри — всё остальное не имеет значения." },
+      { id: 'mj-13', num: 13, slug: 'liberian-girl',               title: 'Liberian Girl',               album: 'Bad',          year: 1987, grad: ['#581c87', '#fb7185'], badge: 'BAD', keywords: ['liberian'],
+        quote: "You came and you changed my world, just like in the movies.", quoteRu: "Ты пришла и изменила мой мир — прямо как в самом красивом кино." },
+      { id: 'mj-14', num: 14, slug: 'you-rock-my-world',           title: 'You Rock My World',           album: 'Invincible',   year: 2001, grad: ['#1e293b', '#38bdf8'], badge: 'INV', keywords: ['rock my world', 'my world'],
+        quote: "You rock my world, you know you did — and everything I own I give.", quoteRu: "Ты перевернула весь мой мир, и я готов отдать тебе всё на свете." },
+      { id: 'mj-15', num: 15, slug: 'man-in-the-mirror',           title: 'Man in the Mirror',           album: 'Bad',          year: 1987, grad: ['#1f2937', '#60a5fa'], badge: 'BAD', keywords: ['mirror', 'man in the'],
+        quote: "If you wanna make the world a better place, take a look at yourself and make a change.", quoteRu: "Если хочешь сделать мир лучше — начни с себя и подари тепло." },
+      { id: 'mj-16', num: 16, slug: 'earth-song',                  title: 'Earth Song',                  album: 'HIStory',      year: 1995, grad: ['#78350f', '#ca8a04'], badge: 'HIS', keywords: ['earth song', 'earth'],
+        quote: "What about sunrise? What about rain? What about all the things that you said we were to gain?", quoteRu: "А как же рассветы и тихий дождь? Береги всё самое светлое." },
+      { id: 'mj-17', num: 17, slug: 'they-dont-care-about-us',     title: "They Don't Care About Us",    album: 'HIStory',      year: 1995, grad: ['#7c2d12', '#eab308'], badge: 'HIS', keywords: ['care about us', 'dont care'],
+        quote: "All I wanna say is that they don't really care about us.", quoteRu: "Пусть весь мир шумит — главное, что мы всегда на одной стороне." },
+      { id: 'mj-18', num: 18, slug: 'pyt-pretty-young-thing',      title: 'P.Y.T. (Pretty Young Thing)', album: 'Thriller',     year: 1982, grad: ['#9d174d', '#f59e0b'], badge: 'T82', keywords: ['pyt', 'p.y.t', 'pretty young'],
+        quote: "I wanna love you, P.Y.T. — pretty young thing, you make me sing.", quoteRu: "Я хочу любить тебя — рядом с тобой хочется петь и улыбаться." }
+    ];
+
+    const IMPORTANT_DATES = {
+      togetherStart: { year: 2026, month: 10, day: 5 },  // 5 октября 2026
+      herBirthday:   { year: 2009, month: 10, day: 9 },  // 9 октября 2009
+      hisBirthday:   { year: 2009, month: 12, day: 2 }   // 2 декабря 2009 (Антон)
+    };
+
+    const POLAROIDS_CONFIG = [
+      { id: 1, base: 'photos/1', caption: 'Наш уютный момент ✨',   sub: 'Вместе с 5 октября 2026', rot: -3.5, grad: ['#7c3f62', '#f6b17a'], icon: '🌇' },
+      { id: 2, base: 'photos/2', caption: 'Самая красивая улыбка 💛', sub: 'Всегда в сердечке',   rot:  2.2, grad: ['#3b2442', '#e07a5f'], icon: '💛' },
+      { id: 3, base: 'photos/3', caption: 'Вместе теплее 🌙',        sub: 'Наша маленькая вселенная', rot: -2.0, grad: ['#1d2b53', '#8f5d85'], icon: '🌙' }
     ];
 
     const COCOA_COMPLIMENTS = [
@@ -539,7 +708,8 @@
     const SCENE_H = 900;
 
     const roomState = {
-      weather: 'sunset',       // 'sunset' | 'night' | 'rain'
+      weather: 'sunset',       // 'sunset' | 'night' | 'rain' | 'snow'
+      catPetCount: 0,
       lampLevel: 2,            // 2 = bright, 1 = dim, 0 = off
       candlesOn: true,
       fairyMode: 1,            // 1 = warm twinkle, 2 = bright steady, 0 = off
@@ -579,6 +749,7 @@
       stars: [],
       shootingStar: null,
       rainOutside: [],
+      snowOutside: [],
       glassDrops: [],
       steam: [],
       hearts: [],
@@ -705,6 +876,7 @@
           const master = ctx.createGain();
           master.gain.value = 0.88;
           master.connect(ctx.destination);
+          this.masterGain = master;
 
           // Shared 3s pink noise buffer for rain & lo-fi snare/hat
           const bufferSize = ctx.sampleRate * 3;
@@ -1524,6 +1696,17 @@
           ipadCover.style.background = gradStyle;
           ipadCover.textContent = t.badge || 'MJ';
         }
+        const qEn = document.getElementById('lyricQuoteEn');
+        const qRu = document.getElementById('lyricQuoteRu');
+        if (qEn && qRu) {
+          if (t.quote) {
+            qEn.textContent = `“${t.quote}”`;
+            qRu.textContent = `«${t.quoteRu || ''}»`;
+          } else {
+            qEn.textContent = '“Music is my soul and my heart.”';
+            qRu.textContent = '«Музыка — это то, что согревает вечер.»';
+          }
+        }
       },
 
       /* --- LOCK-SCREEN MEDIA SESSION API --- */
@@ -1636,6 +1819,334 @@
       }
     };
 
+
+    /* =========================================================================
+       7B. DATE COUNTERS, POLAROIDS GALLERY, SECRET LETTER & SLEEP TIMER
+       ========================================================================= */
+    function pluralRu(n, one, few, many) {
+      const a = Math.abs(n) % 100;
+      const b = a % 10;
+      if (a > 10 && a < 20) return many;
+      if (b > 1 && b < 5) return few;
+      if (b === 1) return one;
+      return many;
+    }
+
+    function updateRelationshipCounters() {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      // 1) Days together since May 20, 2026
+      const st = IMPORTANT_DATES.togetherStart;
+      const startDate = new Date(st.year, st.month - 1, st.day);
+      const diffDays = Math.max(0, Math.floor((today - startDate) / 86400000));
+      const togetherLabel = `${diffDays} ${pluralRu(diffDays, 'день', 'дня', 'дней')}`;
+
+      const hudBadge = document.getElementById('hudDaysBadge');
+      if (hudBadge) hudBadge.textContent = `❤️ ${diffDays} дн.`;
+
+      const cTogMain = document.getElementById('cntTogetherMain');
+      const cTogSub = document.getElementById('cntTogetherSub');
+      if (cTogMain) cTogMain.textContent = togetherLabel;
+      if (cTogSub) {
+        const approxMonths = Math.floor(diffDays / 30.4375);
+        cTogSub.textContent = approxMonths >= 1
+          ? `≈ ${approxMonths} ${pluralRu(approxMonths, 'мес.', 'мес.', 'мес.')} · с 05.10.26`
+          : 'с 5 октября 2026';
+      }
+
+      // Helper for birthday countdown
+      const calcBday = (bd) => {
+        let target = new Date(today.getFullYear(), bd.month - 1, bd.day);
+        if (target < today) {
+          target = new Date(today.getFullYear() + 1, bd.month - 1, bd.day);
+        }
+        const daysLeft = Math.round((target - today) / 86400000);
+        const turning = target.getFullYear() - bd.year;
+        return { daysLeft, turning };
+      };
+
+      const her = calcBday(IMPORTANT_DATES.herBirthday);
+      const cHerMain = document.getElementById('cntHerBdayMain');
+      const cHerSub = document.getElementById('cntHerBdaySub');
+      if (cHerMain) {
+        cHerMain.textContent = her.daysLeft === 0
+          ? 'Сегодня! 🎉'
+          : `${her.daysLeft} ${pluralRu(her.daysLeft, 'день', 'дня', 'дней')}`;
+      }
+      if (cHerSub) cHerSub.textContent = `9 окт · исполн. ${her.turning}`;
+
+      const his = calcBday(IMPORTANT_DATES.hisBirthday);
+      const cHisMain = document.getElementById('cntHisBdayMain');
+      const cHisSub = document.getElementById('cntHisBdaySub');
+      if (cHisMain) {
+        cHisMain.textContent = his.daysLeft === 0
+          ? 'Сегодня! 🎉'
+          : `${his.daysLeft} ${pluralRu(his.daysLeft, 'день', 'дня', 'дней')}`;
+      }
+      if (cHisSub) cHisSub.textContent = `2 дек · исполн. ${his.turning}`;
+    }
+
+    // Polaroids loader (automatically tries .jpg, .jpeg, .png, .webp from photos/)
+    const polaroidsStore = {
+      items: POLAROIDS_CONFIG.map((p) => ({ ...p, img: null, loadedUrl: null })),
+
+      init() {
+        const exts = ['.jpg', '.jpeg', '.png', '.webp'];
+        this.items.forEach((item) => {
+          let extIdx = 0;
+          const tryLoad = () => {
+            if (extIdx >= exts.length) return;
+            const url = `./${item.base}${exts[extIdx]}`;
+            const img = new Image();
+            img.onload = () => {
+              item.img = img;
+              item.loadedUrl = url;
+              this.renderGrid();
+            };
+            img.onerror = () => {
+              extIdx++;
+              tryLoad();
+            };
+            img.src = url;
+          };
+          tryLoad();
+        });
+        this.renderGrid();
+      },
+
+      renderGrid() {
+        const grid = document.getElementById('polaroidGrid');
+        if (!grid) return;
+        grid.innerHTML = this.items.map((p) => {
+          const media = p.loadedUrl
+            ? `<img src="${p.loadedUrl}" alt="${escapeHtml(p.caption)}" class="w-full h-full object-cover" />`
+            : `<div class="w-full h-full flex flex-col items-center justify-center text-white/90" style="background:linear-gradient(135deg,${p.grad[0]},${p.grad[1]})"><span class="text-xl sm:text-2xl drop-shadow">${p.icon}</span></div>`;
+          return `
+            <button data-open-polaroid="${p.id}" type="button" style="transform:rotate(${p.rot}deg)"
+              class="polaroid-card rounded-lg p-1.5 pb-2.5 text-left flex flex-col">
+              <div class="w-full aspect-square rounded-[4px] overflow-hidden bg-[#241724]">${media}</div>
+              <div class="text-[9px] sm:text-[10px] font-semibold text-[#3a2724] text-center mt-1.5 leading-tight truncate">${escapeHtml(p.caption)}</div>
+            </button>
+          `;
+        }).join('');
+
+        grid.querySelectorAll('[data-open-polaroid]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const id = Number(btn.getAttribute('data-open-polaroid'));
+            const found = this.items.find((x) => x.id === id);
+            if (found) this.openLightbox(found);
+          });
+        });
+      },
+
+      openLightbox(item) {
+        const overlay = document.getElementById('polaroidOverlay');
+        const media = document.getElementById('polaroidModalMedia');
+        const cap = document.getElementById('polaroidModalCaption');
+        const sub = document.getElementById('polaroidModalSub');
+        if (!overlay || !media) return;
+
+        if (item.loadedUrl) {
+          media.innerHTML = `<img src="${item.loadedUrl}" alt="${escapeHtml(item.caption)}" class="w-full h-full object-cover" />`;
+        } else {
+          media.innerHTML = `<div class="w-full h-full flex flex-col items-center justify-center gap-2 text-amber-50 p-4 text-center" style="background:linear-gradient(135deg,${item.grad[0]},${item.grad[1]})"><span class="text-5xl drop-shadow">${item.icon}</span><span class="text-xs text-amber-100/85">${escapeHtml(item.caption)}</span></div>`;
+        }
+        if (cap) cap.textContent = item.caption;
+        if (sub) sub.textContent = item.sub;
+
+        overlay.classList.remove('modal-closed');
+        overlay.classList.add('modal-open');
+      },
+
+      closeLightbox() {
+        const overlay = document.getElementById('polaroidOverlay');
+        if (!overlay) return;
+        overlay.classList.remove('modal-open');
+        overlay.classList.add('modal-closed');
+      }
+    };
+
+    // Secret Letter Module (unlocked by petting the cat 3 times)
+    const secretLetter = {
+      KEY: 'mj_cozy_room_secret_unlocked_v1',
+      unlocked: false,
+
+      init() {
+        try { this.unlocked = localStorage.getItem(this.KEY) === '1'; } catch (_) {}
+        this.renderBanner();
+      },
+
+      unlockAndOpen() {
+        this.unlocked = true;
+        try { localStorage.setItem(this.KEY, '1'); } catch (_) {}
+        this.renderBanner();
+        this.open();
+      },
+
+      open() {
+        const ov = document.getElementById('secretLetterOverlay');
+        if (!ov) return;
+        ov.classList.remove('modal-closed');
+        ov.classList.add('modal-open');
+        vibeEngine.playSoftChime(659.25);
+      },
+
+      close() {
+        const ov = document.getElementById('secretLetterOverlay');
+        if (!ov) return;
+        ov.classList.remove('modal-open');
+        ov.classList.add('modal-closed');
+      },
+
+      renderBanner() {
+        const el = document.getElementById('secretLetterBanner');
+        if (!el) return;
+        if (this.unlocked) {
+          el.innerHTML = `
+            <button id="btnOpenSecretFromNotes" type="button"
+              class="w-full rounded-2xl p-3 bg-gradient-to-r from-rose-500/25 via-amber-500/20 to-rose-400/20 border border-rose-300/35 hover:brightness-110 active:scale-[0.99] transition flex items-center justify-between gap-2 text-left">
+              <div class="flex items-center gap-2.5">
+                <span class="text-xl">💌</span>
+                <div>
+                  <div class="text-xs sm:text-sm font-bold text-amber-50">Секретное письмо от Антона</div>
+                  <div class="text-[10px] text-amber-200/75">Нажми, чтобы перечитать</div>
+                </div>
+              </div>
+              <span class="text-xs font-semibold text-amber-200 shrink-0">Открыть →</span>
+            </button>
+          `;
+          document.getElementById('btnOpenSecretFromNotes')?.addEventListener('click', () => this.open());
+        } else {
+          el.innerHTML = `
+            <div class="rounded-2xl px-3 py-2 bg-white/[0.03] border border-amber-200/10 flex items-center gap-2 text-[11px] text-amber-200/65">
+              <span>🔒</span>
+              <span>В комнате спрятан секретный конверт… Подсказка: котик очень любит ласку 🐱</span>
+            </div>
+          `;
+        }
+      }
+    };
+
+    // Sleep Timer Module (15 / 30 / 60 min with 10s smooth fade-out)
+    const sleepTimer = {
+      minutes: 0,
+      endAt: 0,
+      intervalId: null,
+      fading: false,
+
+      setMinutes(mins) {
+        if (this.intervalId) {
+          clearInterval(this.intervalId);
+          this.intervalId = null;
+        }
+        this.minutes = mins;
+        this.fading = false;
+
+        // Restore volumes cleanly if previously faded
+        if (musicPlayer.audioEl) musicPlayer.audioEl.volume = 1;
+        if (vibeEngine.masterGain && vibeEngine.ctx) {
+          vibeEngine.masterGain.gain.cancelScheduledValues(vibeEngine.ctx.currentTime);
+          vibeEngine.masterGain.gain.setTargetAtTime(0.88, vibeEngine.ctx.currentTime, 0.1);
+        }
+
+        if (mins <= 0) {
+          this.endAt = 0;
+          this.updateUI();
+          return;
+        }
+
+        this.endAt = Date.now() + mins * 60 * 1000;
+        this.updateUI();
+        showToast(`Таймер сна поставлен на ${mins} мин. Музыка плавно затухнет сама 🌙`, '🌙');
+
+        this.intervalId = setInterval(() => this.tick(), 500);
+      },
+
+      cycleQuick() {
+        const order = [0, 15, 30, 60];
+        const next = order[(order.indexOf(this.minutes) + 1) % order.length];
+        this.setMinutes(next);
+        if (next === 0) showToast('Таймер сна выключен', '⏱️');
+      },
+
+      tick() {
+        const remMs = this.endAt - Date.now();
+        if (remMs <= 0) {
+          this.finish();
+          return;
+        }
+        // Smooth 10-second fade-out
+        if (remMs <= 10000) {
+          const ratio = Math.max(0, remMs / 10000);
+          if (musicPlayer.audioEl) musicPlayer.audioEl.volume = ratio;
+          if (vibeEngine.masterGain && vibeEngine.ctx) {
+            vibeEngine.masterGain.gain.setTargetAtTime(0.88 * ratio, vibeEngine.ctx.currentTime, 0.15);
+          }
+        }
+        this.updateUI();
+      },
+
+      finish() {
+        if (this.intervalId) {
+          clearInterval(this.intervalId);
+          this.intervalId = null;
+        }
+        this.minutes = 0;
+        this.endAt = 0;
+
+        // Pause audio and silence mixer
+        if (musicPlayer.audioEl && !musicPlayer.audioEl.paused) {
+          musicPlayer.audioEl.pause();
+        }
+        ['beat', 'rain', 'vinyl', 'purr', 'night'].forEach((ch) => setMixerSlider(ch, 0));
+
+        // Restore master volumes for next time she presses Play
+        setTimeout(() => {
+          if (musicPlayer.audioEl) musicPlayer.audioEl.volume = 1;
+          if (vibeEngine.masterGain && vibeEngine.ctx) {
+            vibeEngine.masterGain.gain.setTargetAtTime(0.88, vibeEngine.ctx.currentTime, 0.1);
+          }
+        }, 300);
+
+        this.updateUI();
+        showToast('Спокойной ночи, самая любимая 🌙💛', '✨', null, 7000);
+      },
+
+      updateUI() {
+        const active = this.minutes > 0 && this.endAt > Date.now();
+        const remSec = active ? Math.ceil((this.endAt - Date.now()) / 1000) : 0;
+        const formatted = active ? formatTime(remSec) : 'Выкл';
+
+        const statusEl = document.getElementById('mixerSleepStatus');
+        if (statusEl) statusEl.textContent = active ? `Осталось ${formatted}` : 'Выкл';
+
+        const hudBtn = document.getElementById('hudSleepBadge');
+        const hudTime = document.getElementById('hudSleepTime');
+        if (hudBtn && hudTime) {
+          hudBtn.classList.toggle('hidden', !active);
+          hudBtn.classList.toggle('flex', active);
+          hudTime.textContent = formatted;
+        }
+
+        const quickBtn = document.getElementById('btnQuickSleep');
+        if (quickBtn) {
+          quickBtn.classList.toggle('bg-amber-400/30', active);
+          quickBtn.classList.toggle('text-amber-100', active);
+        }
+
+        document.querySelectorAll('.sleep-btn').forEach((b) => {
+          const val = Number(b.getAttribute('data-sleep'));
+          const isSel = val === this.minutes;
+          b.className = `sleep-btn py-1.5 rounded-xl text-xs transition ${
+            isSel
+              ? 'bg-amber-400/25 border border-amber-300/40 font-semibold text-amber-100'
+              : 'bg-white/10 hover:bg-amber-400/20 font-medium text-amber-100'
+          }`;
+        });
+      }
+    };
+
     /* =========================================================================
        8. PLAYLIST UI RENDERER
        ========================================================================= */
@@ -1739,7 +2250,7 @@
 
     const HOTSPOTS = [
       { id: 'window',      label: 'Окно · Погода',      x: 82,   y: 112, w: 296, h: 368 },
-      { id: 'corkboard',   label: 'Записки',            x: 405,  y: 165, w: 120, h: 155 },
+      { id: 'corkboard',   label: 'Полароиды · Записки',            x: 405,  y: 165, w: 120, h: 155 },
       { id: 'fairyLights', label: 'Гирлянда',           x: 520,  y: 235, w: 430, h: 85  },
       { id: 'lamp',        label: 'Ночник',             x: 382,  y: 445, w: 96,  h: 130 },
       { id: 'cocoa',       label: 'Какао · Комплимент', x: 465,  y: 525, w: 58,  h: 64  },
@@ -1774,6 +2285,15 @@
         y: 120 + Math.random() * 340,
         len: 14 + Math.random() * 18,
         speed: 370 + Math.random() * 240
+      }));
+
+      particles.snowOutside = Array.from({ length: 85 }, () => ({
+        x: 90 + Math.random() * 282,
+        y: 118 + Math.random() * 346,
+        r: 1.2 + Math.random() * 2.4,
+        speed: 22 + Math.random() * 40,
+        phase: Math.random() * Math.PI * 2,
+        sway: 10 + Math.random() * 18
       }));
 
       particles.glassDrops = Array.from({ length: 34 }, () => ({
@@ -1859,6 +2379,10 @@
         wallGrad.addColorStop(0, '#221f36');
         wallGrad.addColorStop(0.5, '#251c31');
         wallGrad.addColorStop(1, '#1b1526');
+      } else if (w === 'snow') {
+        wallGrad.addColorStop(0, '#222844');
+        wallGrad.addColorStop(0.5, '#282038');
+        wallGrad.addColorStop(1, '#1c172a');
       } else {
         wallGrad.addColorStop(0, '#27203a');
         wallGrad.addColorStop(0.5, '#2a1d32');
@@ -1959,6 +2483,10 @@
         sky.addColorStop(0, '#090d24');
         sky.addColorStop(0.5, '#141d42');
         sky.addColorStop(1, '#26305c');
+      } else if (weather === 'snow') {
+        sky.addColorStop(0, '#0d1530');
+        sky.addColorStop(0.52, '#1f2f5c');
+        sky.addColorStop(1, '#3b4f7d');
       } else {
         sky.addColorStop(0, '#0c1224');
         sky.addColorStop(0.55, '#1d2744');
@@ -2081,6 +2609,27 @@
           ctx.arc(d.x - d.r * 0.22, d.y - d.r * 0.3, d.r * 0.28, 0, Math.PI * 2);
           ctx.fill();
         }
+      } else if (weather === 'snow') {
+        // Soft snowy rooftop caps on near buildings
+        ctx.fillStyle = 'rgba(235, 244, 255, 0.72)';
+        nearBuildings.forEach(([bx, by, bw]) => {
+          drawRoundRect(ctx, bx - 1, by - 3, bw + 2, 5, 2);
+          ctx.fill();
+        });
+        // Gently falling snowflakes
+        for (const sf of particles.snowOutside) {
+          const sx = sf.x + Math.sin(t * 1.15 + sf.phase) * sf.sway;
+          ctx.fillStyle = `rgba(240, 248, 255, ${(0.45 + (sf.r / 4.2)).toFixed(2)})`;
+          ctx.beginPath();
+          ctx.arc(sx, sf.y, sf.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        // Subtle frosted snow ledge at the bottom of glass
+        const frost = ctx.createLinearGradient(wx, wy + wh - 26, wx, wy + wh);
+        frost.addColorStop(0, 'rgba(230, 242, 255, 0)');
+        frost.addColorStop(1, 'rgba(235, 246, 255, 0.42)');
+        ctx.fillStyle = frost;
+        ctx.fillRect(wx, wy + wh - 26, ww, 26);
       }
 
       // Glass reflection sheen
@@ -2208,31 +2757,68 @@
       drawRoundRect(ctx, cx + 7, cy + 7, cw - 14, ch - 14, 4);
       ctx.fill();
 
-      [
-        { x: cx + 16, y: cy + 18, w: 34, h: 34, rot: -0.08, col: '#fde68a' },
-        { x: cx + 58, y: cy + 22, w: 36, h: 36, rot: 0.06,  col: '#fecdd3' },
-        { x: cx + 22, y: cy + 68, w: 38, h: 42, rot: 0.04,  col: '#fed7aa' },
-        { x: cx + 65, y: cy + 74, w: 30, h: 34, rot: -0.09, col: '#e9d5ff' }
-      ].forEach((n) => {
+      // 3 Pinned Polaroids + 1 Sticky Note on Corkboard
+      const corkSlots = [
+        { x: cx + 14, y: cy + 16, w: 40, h: 48, rot: -0.09, pIdx: 0 },
+        { x: cx + 57, y: cy + 22, w: 40, h: 48, rot:  0.07, pIdx: 1 },
+        { x: cx + 20, y: cy + 74, w: 42, h: 48, rot:  0.04, pIdx: 2 }
+      ];
+      corkSlots.forEach((slot) => {
+        const pItem = polaroidsStore.items[slot.pIdx];
         ctx.save();
-        ctx.translate(n.x + n.w / 2, n.y + n.h / 2);
-        ctx.rotate(n.rot);
-        ctx.fillStyle = 'rgba(0,0,0,0.2)';
-        ctx.fillRect(-n.w / 2 + 2, -n.h / 2 + 3, n.w, n.h);
-        ctx.fillStyle = n.col;
-        ctx.fillRect(-n.w / 2, -n.h / 2, n.w, n.h);
-        ctx.strokeStyle = 'rgba(70, 40, 45, 0.45)';
-        ctx.lineWidth = 1.3;
-        ctx.beginPath();
-        ctx.moveTo(-n.w / 2 + 5, -4); ctx.lineTo(n.w / 2 - 6, -4);
-        ctx.moveTo(-n.w / 2 + 5, 3);  ctx.lineTo(n.w / 2 - 10, 3);
-        ctx.stroke();
+        ctx.translate(slot.x + slot.w / 2, slot.y + slot.h / 2);
+        ctx.rotate(slot.rot);
+        ctx.fillStyle = 'rgba(0,0,0,0.26)';
+        ctx.fillRect(-slot.w / 2 + 2, -slot.h / 2 + 3, slot.w, slot.h);
+        ctx.fillStyle = '#fbf6ee';
+        ctx.fillRect(-slot.w / 2, -slot.h / 2, slot.w, slot.h);
+
+        const ix = -slot.w / 2 + 3.5;
+        const iy = -slot.h / 2 + 4;
+        const iw = slot.w - 7;
+        const ih = slot.h - 14;
+
+        if (pItem && pItem.img) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(ix, iy, iw, ih);
+          ctx.clip();
+          const scale = Math.max(iw / pItem.img.width, ih / pItem.img.height);
+          const dw = pItem.img.width * scale;
+          const dh = pItem.img.height * scale;
+          ctx.drawImage(pItem.img, ix + (iw - dw) / 2, iy + (ih - dh) / 2, dw, dh);
+          ctx.restore();
+        } else {
+          const pg = ctx.createLinearGradient(ix, iy, ix + iw, iy + ih);
+          pg.addColorStop(0, pItem ? pItem.grad[0] : '#7c3f62');
+          pg.addColorStop(1, pItem ? pItem.grad[1] : '#f6b17a');
+          ctx.fillStyle = pg;
+          ctx.fillRect(ix, iy, iw, ih);
+          ctx.fillStyle = 'rgba(255,245,235,0.85)';
+          drawHeart(ctx, 0, iy + ih * 0.56, 5.2);
+          ctx.fill();
+        }
+
+        // Red pushpin
         ctx.fillStyle = '#e11d48';
         ctx.beginPath();
-        ctx.arc(0, -n.h / 2 + 4, 3, 0, Math.PI * 2);
+        ctx.arc(0, -slot.h / 2 + 3.5, 2.8, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       });
+
+      // Small yellow sticky note in bottom right of corkboard
+      ctx.save();
+      ctx.translate(cx + 81, cy + 98);
+      ctx.rotate(-0.08);
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.fillRect(-13, -13, 28, 30);
+      ctx.fillStyle = '#fde68a';
+      ctx.fillRect(-15, -15, 28, 30);
+      ctx.fillStyle = '#e11d48';
+      drawHeart(ctx, -1, 1, 4.5);
+      ctx.fill();
+      ctx.restore();
 
       // 2) Michael Jackson Framed Posters
       drawPosterFrame(1002, 118, 96, 132, '#1f1016', '#f59e0b', (px, py, pw, ph) => {
@@ -3369,6 +3955,10 @@
         shaftGrad.addColorStop(0, 'rgba(165, 198, 255, 0.18)');
         shaftGrad.addColorStop(0.55, 'rgba(130, 165, 240, 0.06)');
         shaftGrad.addColorStop(1, 'rgba(130, 165, 240, 0)');
+      } else if (weather === 'snow') {
+        shaftGrad.addColorStop(0, 'rgba(205, 228, 255, 0.24)');
+        shaftGrad.addColorStop(0.55, 'rgba(165, 200, 248, 0.09)');
+        shaftGrad.addColorStop(1, 'rgba(155, 190, 245, 0)');
       } else {
         const flashBoost = roomState.lightningFlash * 0.25;
         shaftGrad.addColorStop(0, `rgba(145, 175, 235, ${(0.13 + flashBoost).toFixed(3)})`);
@@ -3603,6 +4193,14 @@
             particles.shootingStar.life -= dt;
             if (particles.shootingStar.life <= 0) particles.shootingStar = null;
           }
+        } else if (roomState.weather === 'snow') {
+          for (const sf of particles.snowOutside) {
+            sf.y += sf.speed * dt;
+            if (sf.y > 466) {
+              sf.y = 114;
+              sf.x = 90 + Math.random() * 282;
+            }
+          }
         }
       }
 
@@ -3685,14 +4283,15 @@
        10. INTERACTIVITY: ROOM OBJECTS & SMOOTH TOUCH SWIPE / PANNING
        ========================================================================= */
     function cycleWeather() {
-      const order = ['sunset', 'night', 'rain'];
+      const order = ['sunset', 'night', 'rain', 'snow'];
       const next = order[(order.indexOf(roomState.weather) + 1) % order.length];
       roomState.weather = next;
 
       const meta = {
         sunset: { icon: '🌇', label: 'Закат', toast: 'За окном тёплый закат 🌇' },
         night:  { icon: '🌌', label: 'Звёзды', toast: 'Звёздная ночь и лунный свет 🌙✨' },
-        rain:   { icon: '🌧️', label: 'Дождь', toast: 'За окном пошёл уютный ночной дождь 🌧️' }
+        rain:   { icon: '🌧️', label: 'Дождь', toast: 'За окном пошёл уютный ночной дождь 🌧️' },
+        snow:   { icon: '❄️', label: 'Снег',   toast: 'За окном пошёл тихий зимний снег ❄️✨' }
       }[next];
 
       const wIcon = document.getElementById('weatherIcon');
@@ -3705,6 +4304,9 @@
         setMixerSlider('rain', 55);
       } else if (next !== 'rain' && vibeEngine.levels.rain > 0) {
         setMixerSlider('rain', 0);
+      }
+      if (next === 'snow' && vibeEngine.levels.night < 20) {
+        setMixerSlider('night', 30);
       }
     }
 
@@ -3735,18 +4337,28 @@
           break;
         case 'cat':
           roomState.catPurrTimer = 3.2;
+          roomState.catPetCount++;
           vibeEngine.triggerPurrBurst();
-          for (let i = 0; i < 6; i++) {
+          const heartCount = roomState.catPetCount === 3 ? 14 : 6;
+          for (let i = 0; i < heartCount; i++) {
             particles.hearts.push({
-              x: 848 + (Math.random() - 0.5) * 52,
-              y: 590 - Math.random() * 18,
-              vy: -32 - Math.random() * 22,
-              size: 5 + Math.random() * 5,
+              x: 848 + (Math.random() - 0.5) * 64,
+              y: 590 - Math.random() * 22,
+              vy: -32 - Math.random() * 26,
+              size: 5 + Math.random() * 5.5,
               age: 0,
               col: i % 2 === 0 ? '#ff8fa3' : '#ffd166'
             });
           }
-          showToast('Мрррр... Котик доволен и мурлычет от твоих рук 🐱💛', '🐾');
+          if (roomState.catPetCount === 3) {
+            roomState.catPetCount = 0;
+            showToast('Котик принёс тебе секретный конверт! 💌', '🐾');
+            setTimeout(() => secretLetter.unlockAndOpen(), 450);
+          } else if (roomState.catPetCount === 2 && !secretLetter.unlocked) {
+            showToast('Мрррр... Котик что-то прячет под лапкой (погладь ещё раз!) 🐱✨', '🐾');
+          } else {
+            showToast('Мрррр... Котик доволен и мурлычет от твоих рук 🐱💛', '🐾');
+          }
           break;
         case 'cocoa': {
           roomState.cocoaSteamBoost = 2.0;
@@ -3947,6 +4559,8 @@
 
     function wireUIEvents() {
       // Top HUD
+      document.getElementById('btnHudCounters')?.addEventListener('click', () => openIpad('notes'));
+      document.getElementById('hudSleepBadge')?.addEventListener('click', () => openIpad('mixer'));
       document.getElementById('btnWeather')?.addEventListener('click', cycleWeather);
       document.getElementById('btnLight')?.addEventListener('click', cycleLamp);
       document.getElementById('btnOpenIpad')?.addEventListener('click', () => openIpad('playlist'));
@@ -3983,6 +4597,32 @@
         e.currentTarget.classList.toggle('bg-amber-400/30', musicPlayer.shuffle);
         e.currentTarget.classList.toggle('text-amber-100', musicPlayer.shuffle);
         showToast(musicPlayer.shuffle ? 'Случайный порядок включён 🔀' : 'Случайный порядок выключен', '🔀');
+      });
+
+      document.getElementById('btnToggleQuote')?.addEventListener('click', (e) => {
+        const box = document.getElementById('lyricQuoteBox');
+        if (!box) return;
+        const hidden = box.classList.toggle('hidden');
+        e.currentTarget.classList.toggle('bg-amber-400/25', !hidden);
+        e.currentTarget.classList.toggle('bg-white/5', hidden);
+      });
+
+      document.getElementById('btnQuickSleep')?.addEventListener('click', () => sleepTimer.cycleQuick());
+
+      document.querySelectorAll('.sleep-btn').forEach((btn) => {
+        btn.addEventListener('click', () => sleepTimer.setMinutes(Number(btn.getAttribute('data-sleep'))));
+      });
+
+      // Secret Letter & Polaroid Lightbox Modals
+      document.getElementById('btnCloseLetter')?.addEventListener('click', () => secretLetter.close());
+      document.getElementById('btnCloseLetterBottom')?.addEventListener('click', () => secretLetter.close());
+      document.getElementById('secretLetterOverlay')?.addEventListener('click', (e) => {
+        if (e.target.id === 'secretLetterOverlay') secretLetter.close();
+      });
+
+      document.getElementById('btnClosePolaroid')?.addEventListener('click', () => polaroidsStore.closeLightbox());
+      document.getElementById('polaroidOverlay')?.addEventListener('click', (e) => {
+        if (e.target.id === 'polaroidOverlay') polaroidsStore.closeLightbox();
       });
 
       document.getElementById('btnRepeat')?.addEventListener('click', (e) => {
@@ -4059,9 +4699,12 @@
       setupCanvasPointerControls();
       wireUIEvents();
       notesStore.init();
+      polaroidsStore.init();
+      secretLetter.init();
+      updateRelationshipCounters();
       renderPlaylistUI();
       updateClock();
-      setInterval(updateClock, 30000);
+      setInterval(() => { updateClock(); updateRelationshipCounters(); }, 30000);
 
       lastFrameTime = performance.now();
       requestAnimationFrame(renderFrame);
