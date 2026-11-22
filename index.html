@@ -199,10 +199,121 @@
       transform: translateY(-3px) scale(1.02) !important;
       box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6);
     }
+
+    /* Welcome Splash Screen */
+    #welcomeSplash {
+      transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #welcomeSplash.splash-hidden {
+      opacity: 0;
+      transform: scale(1.03);
+      pointer-events: none;
+    }
+
+    /* Room Theme Tint Layer */
+    #roomThemeLayer {
+      pointer-events: none;
+      transition: background 0.5s ease, opacity 0.5s ease;
+    }
+
+    /* MJ Moonwalk & Sparkling Glove Overlay */
+    #mjEasterLayer {
+      pointer-events: none;
+    }
+    @keyframes mjGlide {
+      0% {
+        opacity: 0;
+        transform: translateX(120px) translateY(10px) scale(0.94);
+      }
+      14% {
+        opacity: 1;
+        transform: translateX(75px) translateY(4px) scale(1);
+      }
+      50% {
+        opacity: 1;
+        transform: translateX(0px) translateY(0px) scale(1.02);
+      }
+      86% {
+        opacity: 1;
+        transform: translateX(-75px) translateY(4px) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(-125px) translateY(10px) scale(0.94);
+      }
+    }
+    .mj-moonwalk-anim {
+      animation: mjGlide 3.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
   </style>
 </head>
 <body>
   <!-- Fullscreen Interactive Lo-Fi 2D Room Illustration Canvas -->
+    <!-- Room Color Theme Tint Overlay -->
+  <div id="roomThemeLayer" class="fixed inset-0 z-[2] pointer-events-none"
+    style="background: radial-gradient(circle at 50% 42%, rgba(244, 162, 97, 0.08), rgba(20, 14, 22, 0.14));"></div>
+
+  <!-- MJ Moonwalk & Sparkling Glove Easter Egg Layer -->
+  <div id="mjEasterLayer" class="fixed inset-0 z-[45] hidden items-center justify-center pointer-events-none overflow-hidden px-4">
+    <div id="mjEasterCard" class="mj-moonwalk-anim glass-panel rounded-3xl px-5 py-4 border border-amber-300/45 flex items-center gap-4 max-w-sm w-full shadow-[0_20px_70px_rgba(0,0,0,0.8)]">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#231934] via-[#4a1c36] to-[#f4a261] border border-amber-200/40 flex items-center justify-center shrink-0 shadow-lg relative">
+        <svg class="w-11 h-11" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Fedora Hat -->
+          <ellipse cx="32" cy="15" rx="14" ry="3.2" fill="#fff7ed"/>
+          <path d="M22 14.5C22 9.5 26.5 7 32 7C37.5 7 42 9.5 42 14.5H22Z" fill="#fff7ed"/>
+          <rect x="22" y="12.5" width="20" height="2" fill="#f4a261"/>
+          <!-- Moonwalk Silhouette -->
+          <circle cx="32" cy="21.5" r="4.5" fill="#fff7ed"/>
+          <path d="M26 27.5L37 28.5L35 41H27L26 27.5Z" fill="#fff7ed"/>
+          <path d="M27 29L20 34L23 36.5" stroke="#fff7ed" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M36 29L43 24.5" stroke="#ffd6a5" stroke-width="2.6" stroke-linecap="round"/>
+          <!-- Sparkling Glove Hand -->
+          <circle cx="44" cy="23.5" r="3" fill="#ffd6a5"/>
+          <!-- Gliding Moonwalk Legs -->
+          <path d="M28.5 41L23 53.5L17 54.5" stroke="#fff7ed" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M33.5 41L41.5 52.5L48 52.5" stroke="#ffd6a5" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="min-w-0 flex-1">
+        <div class="text-[10px] uppercase tracking-[0.18em] text-amber-300 font-semibold">Секрет короля поп-музыки ✦</div>
+        <div id="mjEasterTitle" class="text-sm sm:text-base font-extrabold text-amber-50 mt-0.5 truncate">Лунная походка в комнате</div>
+        <div id="mjEasterSub" class="text-[11px] text-amber-200/80 mt-0.5 leading-snug">Серебристая перчатка сияет в темноте · Billie Jean вайб 👑✨</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cozy Welcome Splash Screen (Unlocks Web Audio & Enters Room) -->
+  <div id="welcomeSplash" class="fixed inset-0 z-[70] flex items-center justify-center p-4"
+    style="background: radial-gradient(circle at 50% 35%, rgba(92, 46, 68, 0.94), rgba(20, 14, 22, 0.98)); backdrop-filter: blur(18px);">
+    <div class="glass-panel max-w-md w-full rounded-[28px] p-6 sm:p-7 text-center border border-amber-200/25 shadow-[0_24px_90px_rgba(0,0,0,0.85)] space-y-4">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/15 border border-amber-300/30 text-[11px] font-medium text-amber-200">
+        <span>✨</span><span>Маленький уютный мир для тебя</span>
+      </div>
+
+      <div class="space-y-1.5">
+        <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-amber-50">
+          Добро пожаловать в твою комнату, <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#ffd6a5] to-[#f28482]">Даша</span> 💛
+        </h1>
+        <p class="text-xs sm:text-sm text-amber-200/80 leading-relaxed">
+          Тёплый закат, любимые треки Майкла Джексона, мурлыкающий котик и записки — всё готово к твоему приходу.
+        </p>
+      </div>
+
+      <div id="splashTogetherPill" class="rounded-2xl py-2 px-3 bg-white/[0.04] border border-amber-200/12 text-xs text-amber-100/90">
+        💕 Вместе с 5 октября 2026 года
+      </div>
+
+      <button id="btnEnterRoom" type="button"
+        class="w-full py-3 px-5 rounded-2xl text-sm font-bold text-[#23151e] bg-gradient-to-r from-[#ffd6a5] via-[#f4a261] to-[#f28482] shadow-[0_8px_28px_rgba(244,162,97,0.45)] hover:brightness-105 active:scale-[0.98] transition cursor-pointer">
+        Войти в комнату 🌙✨
+      </button>
+
+      <div class="text-[10px] text-amber-200/50">
+        Нажатие сразу включит звук и уютную атмосферу
+      </div>
+    </div>
+  </div>
+
   <canvas id="roomCanvas" aria-label="Уютная Lo-Fi комната"></canvas>
 
   <!-- Native HTML5 Audio Player (Zero YouTube blocks, works on iOS Safari / Android / Telegram) -->
@@ -233,6 +344,16 @@
 
       <!-- Compact Action Controls -->
       <div class="pointer-events-auto flex items-center gap-1.5 shrink-0">
+        <button id="btnRandomCozy" type="button" title="Собрать случайный уютный вайб"
+          class="glass-panel rounded-xl px-2.5 h-9 text-xs font-semibold text-amber-100 hover:bg-amber-400/25 border-amber-300/30 active:scale-95 transition flex items-center gap-1">
+          <span>🎲</span><span class="hidden md:inline">Уют</span>
+        </button>
+
+        <button id="btnTheme" type="button" title="Цветовая тема комнаты"
+          class="glass-panel rounded-xl px-2 h-9 text-xs font-medium text-amber-100 hover:bg-amber-500/20 active:scale-95 transition flex items-center gap-1">
+          <span id="themeIcon">🎨</span><span id="themeLabel" class="hidden lg:inline">Закат</span>
+        </button>
+
         <button id="btnWeather" type="button" title="Сменить погоду за окном"
           class="glass-panel rounded-xl px-2.5 h-9 text-xs font-medium text-amber-100 hover:bg-amber-500/20 active:scale-95 transition flex items-center gap-1.5">
           <span id="weatherIcon">🌇</span>
@@ -452,12 +573,17 @@
 
         <!-- TAB 2: COUNTERS, POLAROIDS, SECRET LETTER & ROMANTIC NOTES -->
         <section id="tab-notes" class="ipad-panel hidden flex-1 flex flex-col overflow-y-auto cozy-scroll px-3 sm:px-4 pb-4 space-y-3">
-          <!-- Counters Widget: Together + Both Birthdays -->
-          <div class="grid grid-cols-3 gap-2 shrink-0">
+          <!-- Counters Widget: Together + Milestone + Both Birthdays -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 shrink-0">
             <div class="rounded-2xl p-2.5 bg-gradient-to-br from-rose-500/20 to-amber-500/10 border border-rose-300/25 text-center">
               <div class="text-[10px] uppercase tracking-wider text-rose-200/80 font-semibold">💕 Вместе</div>
               <div id="cntTogetherMain" class="text-sm sm:text-base font-extrabold text-amber-50 mt-0.5">—</div>
               <div id="cntTogetherSub" class="text-[10px] text-amber-200/65 mt-0.5">с 5 октября 2026</div>
+            </div>
+            <div class="rounded-2xl p-2.5 bg-gradient-to-br from-emerald-400/18 to-teal-500/10 border border-emerald-300/25 text-center">
+              <div class="text-[10px] uppercase tracking-wider text-emerald-200/85 font-semibold">🎯 До 100 дней</div>
+              <div id="cntMilestoneMain" class="text-sm sm:text-base font-extrabold text-amber-50 mt-0.5">—</div>
+              <div id="cntMilestoneSub" class="text-[10px] text-amber-200/65 mt-0.5">круглая дата</div>
             </div>
             <div class="rounded-2xl p-2.5 bg-gradient-to-br from-amber-400/18 to-orange-500/10 border border-amber-300/25 text-center">
               <div class="text-[10px] uppercase tracking-wider text-amber-200/80 font-semibold">🎂 Твой ДР</div>
@@ -526,10 +652,25 @@
             </div>
           </div>
 
-          <!-- Quick Presets -->
+          <!-- Room Color Theme Selector -->
+          <div class="rounded-2xl p-3 bg-white/[0.03] border border-amber-200/12 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-amber-100">🎨 Настроение комнаты</span>
+              <span id="mixerThemeName" class="text-[11px] text-amber-300">Тёплый закат</span>
+            </div>
+            <div class="grid grid-cols-3 gap-1.5">
+              <button data-room-theme="sunset" type="button" class="room-theme-btn py-1.5 px-2 rounded-xl bg-amber-400/25 border border-amber-300/40 text-xs font-semibold text-amber-100 transition">🌇 Закат</button>
+              <button data-room-theme="amber" type="button" class="room-theme-btn py-1.5 px-2 rounded-xl bg-white/10 hover:bg-amber-400/20 text-xs font-medium text-amber-100 transition">🕯️ Янтарь</button>
+              <button data-room-theme="velvet" type="button" class="room-theme-btn py-1.5 px-2 rounded-xl bg-white/10 hover:bg-amber-400/20 text-xs font-medium text-amber-100 transition">🌌 Полночь</button>
+            </div>
+          </div>
+
+          <!-- Quick Presets + Random Cozy -->
           <div class="flex flex-wrap gap-1.5">
+            <button id="btnMixerRandomCozy" type="button" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#ffd6a5]/30 to-[#f28482]/30 border border-amber-200/40 hover:brightness-110 text-xs font-bold text-amber-50 transition">🎲 Случайный уют</button>
             <button data-preset="lofiEvening" type="button" class="mixer-preset px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-400/25 to-rose-400/20 border border-amber-300/30 hover:brightness-110 text-xs font-semibold text-amber-100 transition">🎹 Уютный Lo-Fi вечер</button>
             <button data-preset="rainy" type="button" class="mixer-preset px-3 py-1.5 rounded-xl bg-white/10 hover:bg-amber-400/20 text-xs font-medium text-amber-100 transition">🌧️ Дождь + винил</button>
+            <button data-preset="trainJourney" type="button" class="mixer-preset px-3 py-1.5 rounded-xl bg-white/10 hover:bg-amber-400/20 text-xs font-medium text-amber-100 transition">🚂 Дальняя дорога</button>
             <button data-preset="cat" type="button" class="mixer-preset px-3 py-1.5 rounded-xl bg-white/10 hover:bg-amber-400/20 text-xs font-medium text-amber-100 transition">🐱 Спящий котик</button>
             <button data-preset="silent" type="button" class="mixer-preset px-3 py-1.5 rounded-xl bg-white/5 hover:bg-rose-400/20 text-xs font-medium text-amber-200/75 transition">🔇 Тишина</button>
           </div>
@@ -580,6 +721,21 @@
                 <span id="valNight" class="text-xs font-mono text-amber-300">0%</span>
               </div>
               <input id="mixNight" type="range" min="0" max="100" value="0" class="warm-slider w-full" />
+            </div>
+          </div>
+
+            <div class="rounded-2xl p-3.5 bg-white/[0.04] border border-white/10">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-lg">🚂</span>
+                  <div>
+                    <div class="text-sm font-medium text-amber-50">Дальняя дорога / поезд</div>
+                    <div class="text-[10px] text-amber-200/65">Мягкий ритм колёс и покачивание за окном</div>
+                  </div>
+                </div>
+                <span id="valTrain" class="text-xs font-mono text-amber-300">0%</span>
+              </div>
+              <input id="mixTrain" type="range" min="0" max="100" value="0" class="warm-slider w-full" />
             </div>
           </div>
         </section>
@@ -709,7 +865,10 @@
 
     const roomState = {
       weather: 'sunset',       // 'sunset' | 'night' | 'rain' | 'snow'
+      roomTheme: 'sunset',     // 'sunset' | 'amber' | 'velvet'
       catPetCount: 0,
+      mjEasterTimer: 0,
+      mjNightClicks: 0,
       lampLevel: 2,            // 2 = bright, 1 = dim, 0 = off
       candlesOn: true,
       fairyMode: 1,            // 1 = warm twinkle, 2 = bright steady, 0 = off
@@ -841,7 +1000,8 @@
     const vibeEngine = {
       ctx: null,
       initialized: false,
-      levels: { beat: 0, rain: 0, vinyl: 0, purr: 0, night: 0 },
+      levels: { beat: 0, rain: 0, vinyl: 0, purr: 0, night: 0, train: 0 },
+      trainTimer: null,
       gains: {},
       purrBurstGain: null,
       noiseBuf: null,
@@ -1019,6 +1179,46 @@
           else this.stopBeatLoop();
           this.updateQuickBeatButton();
         }
+        if (channel === 'train') {
+          if (val > 0) this.startTrainLoop();
+          else this.stopTrainLoop();
+        }
+      },
+
+      startTrainLoop() {
+        if (this.trainTimer) return;
+        let tick = 0;
+        const step = () => {
+          if (!this.initialized || !this.ctx || this.levels.train <= 0) return;
+          const now = this.ctx.currentTime + 0.01;
+          const vol = (this.levels.train / 100) * 0.34;
+          // Gentle four-beat rail clack rhythm: da-dum ... da-dum
+          const pat = tick % 8;
+          if (pat === 0 || pat === 1 || pat === 4 || pat === 5) {
+            const pitch = (pat % 2 === 0) ? 74 : 62;
+            const osc = this.ctx.createOscillator();
+            const g = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(pitch, now);
+            osc.frequency.exponentialRampToValueAtTime(34, now + 0.09);
+            g.gain.setValueAtTime(0.0001, now);
+            g.gain.linearRampToValueAtTime(vol * (pat % 2 === 0 ? 1 : 0.72), now + 0.012);
+            g.gain.exponentialRampToValueAtTime(0.0008, now + 0.13);
+            osc.connect(g).connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.15);
+          }
+          tick++;
+        };
+        step();
+        this.trainTimer = setInterval(step, 240);
+      },
+
+      stopTrainLoop() {
+        if (this.trainTimer) {
+          clearInterval(this.trainTimer);
+          this.trainTimer = null;
+        }
       },
 
       applyLevels() {
@@ -1029,7 +1229,8 @@
           rain:  (this.levels.rain / 100) * 0.52,
           vinyl: (this.levels.vinyl / 100) * 0.42,
           purr:  (this.levels.purr / 100) * 0.36,
-          night: (this.levels.night / 100) * 0.32
+          night: (this.levels.night / 100) * 0.32,
+          train: (this.levels.train / 100) * 0.48
         };
         Object.keys(map).forEach((k) => {
           if (this.gains[k]) {
@@ -1855,6 +2056,28 @@
           : 'с 5 октября 2026';
       }
 
+      const splashPill = document.getElementById('splashTogetherPill');
+      if (splashPill) {
+        splashPill.textContent = diffDays === 0
+          ? '💕 Сегодня наш первый день вместе · 5 октября 2026'
+          : `💕 Вместе уже ${togetherLabel} · с 5 октября 2026`;
+      }
+
+      // Milestone: 100 days together
+      const milestoneDays = 100;
+      const cMileMain = document.getElementById('cntMilestoneMain');
+      const cMileSub = document.getElementById('cntMilestoneSub');
+      if (diffDays >= milestoneDays) {
+        if (cMileMain) cMileMain.textContent = 'Есть! 🎉';
+        if (cMileSub) cMileSub.textContent = '100 дней позади';
+      } else {
+        const left100 = milestoneDays - diffDays;
+        const mDate = new Date(startDate.getTime() + milestoneDays * 86400000);
+        const mStr = mDate.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+        if (cMileMain) cMileMain.textContent = `${left100} ${pluralRu(left100, 'день', 'дня', 'дней')}`;
+        if (cMileSub) cMileSub.textContent = `цель · ${mStr}`;
+      }
+
       // Helper for birthday countdown
       const calcBday = (bd) => {
         let target = new Date(today.getFullYear(), bd.month - 1, bd.day);
@@ -2099,7 +2322,7 @@
         if (musicPlayer.audioEl && !musicPlayer.audioEl.paused) {
           musicPlayer.audioEl.pause();
         }
-        ['beat', 'rain', 'vinyl', 'purr', 'night'].forEach((ch) => setMixerSlider(ch, 0));
+        ['beat', 'rain', 'vinyl', 'purr', 'night', 'train'].forEach((ch) => setMixerSlider(ch, 0));
 
         // Restore master volumes for next time she presses Play
         setTimeout(() => {
@@ -4092,6 +4315,15 @@
       roomState.time += dt;
       const t = roomState.time;
 
+      // Subtle rail sway when train sound is active
+      if (vibeEngine.levels.train > 0) {
+        roomState.trainSwayX = Math.sin(t * 1.45) * (vibeEngine.levels.train / 100) * 4.2;
+        roomState.trainSwayY = Math.cos(t * 2.9) * (vibeEngine.levels.train / 100) * 1.4;
+      } else {
+        roomState.trainSwayX = (roomState.trainSwayX || 0) * Math.pow(0.05, dt);
+        roomState.trainSwayY = (roomState.trainSwayY || 0) * Math.pow(0.05, dt);
+      }
+
       if (!camera.isDragging && Math.abs(camera.vx) > 0.05) {
         camera.x -= camera.vx * dt;
         camera.vx *= Math.pow(0.06, dt);
@@ -4260,7 +4492,7 @@
         ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
         ctx.scale(camera.scale, camera.scale);
-        ctx.translate(-camera.x, -camera.y);
+        ctx.translate(-camera.x + (roomState.trainSwayX || 0), -camera.y + (roomState.trainSwayY || 0));
 
         drawRoomShell();
         drawWindow(roomState.time);
@@ -4282,6 +4514,141 @@
     /* =========================================================================
        10. INTERACTIVITY: ROOM OBJECTS & SMOOTH TOUCH SWIPE / PANNING
        ========================================================================= */
+
+    const ROOM_THEMES = {
+      sunset: {
+        label: 'Закат',
+        icon: '🎨',
+        overlay: 'radial-gradient(circle at 50% 42%, rgba(244, 162, 97, 0.08), rgba(20, 14, 22, 0.14))'
+      },
+      amber: {
+        label: 'Янтарь',
+        icon: '🕯️',
+        overlay: 'linear-gradient(160deg, rgba(255, 174, 72, 0.14), rgba(180, 75, 35, 0.16))'
+      },
+      velvet: {
+        label: 'Полночь',
+        icon: '🌌',
+        overlay: 'radial-gradient(circle at 50% 35%, rgba(129, 140, 248, 0.13), rgba(14, 10, 28, 0.34))'
+      }
+    };
+
+    function applyRoomTheme(themeKey, notify = false) {
+      const key = ROOM_THEMES[themeKey] ? themeKey : 'sunset';
+      roomState.roomTheme = key;
+      const cfg = ROOM_THEMES[key];
+
+      const layer = document.getElementById('roomThemeLayer');
+      if (layer) layer.style.background = cfg.overlay;
+
+      const tLbl = document.getElementById('themeLabel');
+      const mLbl = document.getElementById('mixerThemeName');
+      if (tLbl) tLbl.textContent = cfg.label;
+      if (mLbl) mLbl.textContent = cfg.label;
+
+      document.querySelectorAll('.room-theme-btn').forEach((b) => {
+        const active = b.getAttribute('data-room-theme') === key;
+        b.className = `room-theme-btn py-1.5 px-2 rounded-xl text-xs transition ${
+          active
+            ? 'bg-amber-400/25 border border-amber-300/40 font-semibold text-amber-100'
+            : 'bg-white/10 hover:bg-amber-400/20 font-medium text-amber-100'
+        }`;
+      });
+
+      if (notify) showToast(`Тема комнаты: ${cfg.label}`, cfg.icon);
+    }
+
+    function cycleRoomTheme() {
+      const keys = Object.keys(ROOM_THEMES);
+      const next = keys[(keys.indexOf(roomState.roomTheme) + 1) % keys.length];
+      applyRoomTheme(next, true);
+    }
+
+    function triggerMjMoonwalkEaster(reasonTitle = 'Лунная походка в комнате', reasonSub = 'Серебристая перчатка сияет в темноте · Billie Jean вайб 👑✨') {
+      const layer = document.getElementById('mjEasterLayer');
+      const card = document.getElementById('mjEasterCard');
+      const tEl = document.getElementById('mjEasterTitle');
+      const sEl = document.getElementById('mjEasterSub');
+      if (!layer || !card) return;
+
+      if (tEl) tEl.textContent = reasonTitle;
+      if (sEl) sEl.textContent = reasonSub;
+
+      // Spawn golden & cyan sparkles around MJ zone
+      spawnSparkles(1175, 345, 18);
+      spawnSparkles(1135, 488, 12);
+      vibeEngine.playSoftChime(783.99);
+
+      layer.classList.remove('hidden');
+      layer.classList.add('flex');
+
+      // Restart CSS keyframe animation cleanly
+      card.classList.remove('mj-moonwalk-anim');
+      void card.offsetWidth;
+      card.classList.add('mj-moonwalk-anim');
+
+      if (roomState.mjEasterTimeout) clearTimeout(roomState.mjEasterTimeout);
+      roomState.mjEasterTimeout = setTimeout(() => {
+        layer.classList.add('hidden');
+        layer.classList.remove('flex');
+      }, 3450);
+    }
+
+    function applyRandomCozyVibe() {
+      vibeEngine.ensureInit();
+      const weathers = ['sunset', 'night', 'rain', 'snow'];
+      const themes = ['sunset', 'amber', 'velvet'];
+
+      const wPick = weathers[Math.floor(Math.random() * weathers.length)];
+      const tPick = themes[Math.floor(Math.random() * themes.length)];
+      const lampPick = Math.random() < 0.72 ? 1 : 2; // Cozy dim or warm
+
+      roomState.weather = wPick;
+      roomState.lampLevel = lampPick;
+      roomState.candlesOn = true;
+      roomState.fairyMode = 1;
+      roomState.neonOn = true;
+
+      const wMeta = {
+        sunset: { icon: '🌇', label: 'Закат',  name: 'тёплый закат' },
+        night:  { icon: '🌌', label: 'Звёзды', name: 'звёздную ночь' },
+        rain:   { icon: '🌧️', label: 'Дождь',  name: 'дождь за окном' },
+        snow:   { icon: '❄️', label: 'Снег',    name: 'тихий снег' }
+      }[wPick];
+
+      const wIcon = document.getElementById('weatherIcon');
+      const wLbl = document.getElementById('weatherLabel');
+      if (wIcon) wIcon.textContent = wMeta.icon;
+      if (wLbl) wLbl.textContent = wMeta.label;
+
+      applyRoomTheme(tPick, false);
+
+      // Mix a cozy soundscape
+      const mode = Math.floor(Math.random() * 3);
+      if (mode === 0) {
+        setMixerSlider('beat', 68);
+        setMixerSlider('rain', wPick === 'rain' ? 50 : 25);
+        setMixerSlider('vinyl', 28);
+        setMixerSlider('train', 0);
+        setMixerSlider('night', 18);
+      } else if (mode === 1) {
+        setMixerSlider('beat', 45);
+        setMixerSlider('rain', 0);
+        setMixerSlider('vinyl', 22);
+        setMixerSlider('train', 55);
+        setMixerSlider('night', 20);
+      } else {
+        setMixerSlider('beat', 0);
+        setMixerSlider('rain', wPick === 'rain' ? 60 : 30);
+        setMixerSlider('vinyl', 30);
+        setMixerSlider('train', 0);
+        setMixerSlider('night', 28);
+      }
+
+      const comp = COCOA_COMPLIMENTS[Math.floor(Math.random() * COCOA_COMPLIMENTS.length)];
+      showToast(`Случайный уют: ${wMeta.name}, тема «${ROOM_THEMES[tPick].label}». ${comp}`, '🎲', null, 5500);
+    }
+
     function cycleWeather() {
       const order = ['sunset', 'night', 'rain', 'snow'];
       const next = order[(order.indexOf(roomState.weather) + 1) % order.length];
@@ -4386,10 +4753,20 @@
         }
         case 'neonMJ':
           roomState.neonOn = !roomState.neonOn;
+          roomState.mjNightClicks = (roomState.mjNightClicks || 0) + 1;
           vibeEngine.playSoftChime(783.99);
-          showToast(roomState.neonOn ? 'Неон «MJ» светится! Король поп-музыки в комнате 👑' : 'Неон «MJ» выключен', '⚡');
+          if (roomState.mjNightClicks % 3 === 0) {
+            triggerMjMoonwalkEaster('Постер MJ оживает!', 'Лунная походка и золотые искорки в твоей комнате 👑✨');
+          } else {
+            showToast(roomState.neonOn ? 'Неон «MJ» светится! Король поп-музыки в комнате 👑' : 'Неон «MJ» выключен', '⚡');
+          }
           break;
         case 'turntable':
+          musicPlayer.togglePlayPause();
+          if (roomState.weather === 'night' && roomState.lampLevel === 0) {
+            triggerMjMoonwalkEaster('Ночной лунный танец ✨', 'В темноте под звёздами появляется сияющий силуэт MJ 🌙👑');
+          }
+          break;
         case 'speaker':
           musicPlayer.togglePlayPause();
           break;
@@ -4546,7 +4923,8 @@
         rain:  ['mixRain',  'valRain'],
         vinyl: ['mixVinyl', 'valVinyl'],
         purr:  ['mixPurr',  'valPurr'],
-        night: ['mixNight', 'valNight']
+        night: ['mixNight', 'valNight'],
+        train: ['mixTrain', 'valTrain']
       };
       const pair = ids[channel];
       if (!pair) return;
@@ -4558,9 +4936,24 @@
     }
 
     function wireUIEvents() {
+      // Welcome Splash
+      document.getElementById('btnEnterRoom')?.addEventListener('click', () => {
+        vibeEngine.ensureInit();
+        vibeEngine.playSoftChime(587.33);
+        const sp = document.getElementById('welcomeSplash');
+        if (sp) sp.classList.add('splash-hidden');
+        setTimeout(() => { if (sp) sp.style.display = 'none'; }, 480);
+      });
+
       // Top HUD
       document.getElementById('btnHudCounters')?.addEventListener('click', () => openIpad('notes'));
       document.getElementById('hudSleepBadge')?.addEventListener('click', () => openIpad('mixer'));
+      document.getElementById('btnRandomCozy')?.addEventListener('click', applyRandomCozyVibe);
+      document.getElementById('btnMixerRandomCozy')?.addEventListener('click', applyRandomCozyVibe);
+      document.getElementById('btnTheme')?.addEventListener('click', cycleRoomTheme);
+      document.querySelectorAll('.room-theme-btn').forEach((btn) => {
+        btn.addEventListener('click', () => applyRoomTheme(btn.getAttribute('data-room-theme'), true));
+      });
       document.getElementById('btnWeather')?.addEventListener('click', cycleWeather);
       document.getElementById('btnLight')?.addEventListener('click', cycleLamp);
       document.getElementById('btnOpenIpad')?.addEventListener('click', () => openIpad('playlist'));
@@ -4666,7 +5059,8 @@
         ['mixRain',  'rain'],
         ['mixVinyl', 'vinyl'],
         ['mixPurr',  'purr'],
-        ['mixNight', 'night']
+        ['mixNight', 'night'],
+        ['mixTrain', 'train']
       ].forEach(([id, ch]) => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -4678,13 +5072,15 @@
         btn.addEventListener('click', () => {
           const p = btn.getAttribute('data-preset');
           if (p === 'lofiEvening') {
-            setMixerSlider('beat', 72); setMixerSlider('rain', 35); setMixerSlider('vinyl', 30); setMixerSlider('purr', 0); setMixerSlider('night', 20);
+            setMixerSlider('beat', 72); setMixerSlider('rain', 35); setMixerSlider('vinyl', 30); setMixerSlider('purr', 0); setMixerSlider('night', 20); setMixerSlider('train', 0);
           } else if (p === 'rainy') {
-            setMixerSlider('beat', 0); setMixerSlider('rain', 65); setMixerSlider('vinyl', 35); setMixerSlider('purr', 0); setMixerSlider('night', 25);
+            setMixerSlider('beat', 0); setMixerSlider('rain', 65); setMixerSlider('vinyl', 35); setMixerSlider('purr', 0); setMixerSlider('night', 25); setMixerSlider('train', 0);
+          } else if (p === 'trainJourney') {
+            setMixerSlider('beat', 40); setMixerSlider('rain', 0); setMixerSlider('vinyl', 20); setMixerSlider('purr', 0); setMixerSlider('night', 20); setMixerSlider('train', 65);
           } else if (p === 'cat') {
-            setMixerSlider('beat', 0); setMixerSlider('rain', 20); setMixerSlider('vinyl', 15); setMixerSlider('purr', 65); setMixerSlider('night', 20);
+            setMixerSlider('beat', 0); setMixerSlider('rain', 20); setMixerSlider('vinyl', 15); setMixerSlider('purr', 65); setMixerSlider('night', 20); setMixerSlider('train', 0);
           } else {
-            setMixerSlider('beat', 0); setMixerSlider('rain', 0); setMixerSlider('vinyl', 0); setMixerSlider('purr', 0); setMixerSlider('night', 0);
+            setMixerSlider('beat', 0); setMixerSlider('rain', 0); setMixerSlider('vinyl', 0); setMixerSlider('purr', 0); setMixerSlider('night', 0); setMixerSlider('train', 0);
           }
         });
       });
@@ -4702,6 +5098,7 @@
       polaroidsStore.init();
       secretLetter.init();
       updateRelationshipCounters();
+      applyRoomTheme('sunset', false);
       renderPlaylistUI();
       updateClock();
       setInterval(() => { updateClock(); updateRelationshipCounters(); }, 30000);
