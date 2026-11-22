@@ -271,6 +271,16 @@
     .glove-shimmer-anim {
       animation: gloveTwinkle 0.55s ease-in-out infinite;
     }
+    /* Warm Hug / Miss You Fullscreen Glow Pulse */
+    @keyframes hugGlowPulse {
+      0% { opacity: 0; }
+      22% { opacity: 1; }
+      75% { opacity: 0.85; }
+      100% { opacity: 0; }
+    }
+    .hug-glow-anim {
+      animation: hugGlowPulse 2.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
   </style>
 </head>
 <body>
@@ -278,6 +288,10 @@
     <!-- Room Color Theme Tint Overlay -->
   <div id="roomThemeLayer" class="fixed inset-0 z-[2] pointer-events-none"
     style="background: radial-gradient(circle at 50% 42%, rgba(244, 162, 97, 0.08), rgba(20, 14, 22, 0.14));"></div>
+
+  <!-- Warm Golden-Rose Hug Pulse Overlay -->
+  <div id="hugGlowOverlay" class="fixed inset-0 z-[44] pointer-events-none hidden"
+    style="background: radial-gradient(circle at 50% 50%, rgba(255, 198, 150, 0.36), rgba(242, 132, 130, 0.28) 55%, rgba(244, 162, 97, 0.08));"></div>
 
   <!-- Flying Sparkling Glove (photos/7 with SVG fallback) -->
   <div id="mjMoonwalkOverlay" class="fixed inset-0 z-[45] hidden items-center justify-center pointer-events-none overflow-hidden px-4">
@@ -299,28 +313,45 @@
     </div>
   </div>
 
-  <!-- Girl's Wardrobe Modal (Outfits, Accessories, Hair & Mood) -->
+  <!-- Girl's Wardrobe & Room Design Studio Modal -->
   <div id="wardrobeOverlay" class="modal-closed fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-3 sm:p-5">
-    <div class="w-full max-w-xl max-h-[86vh] rounded-3xl bg-gradient-to-b from-[#231828] via-[#1b1220] to-[#140e18] border border-amber-200/20 shadow-[0_24px_80px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden">
+    <div class="w-full max-w-2xl h-[88vh] max-h-[780px] rounded-3xl bg-gradient-to-b from-[#231828] via-[#1b1220] to-[#140e18] border border-amber-200/20 shadow-[0_24px_80px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden">
       <div class="px-4 py-3 border-b border-amber-200/10 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-2">
           <span class="text-lg">👗</span>
           <div>
-            <div class="text-sm font-bold text-amber-100">Гардероб и образ</div>
-            <div class="text-[10px] text-amber-200/65">Переодевай девочку в комнате — образ сразу меняется на холсте</div>
+            <div class="text-sm font-bold text-amber-100">Гардероб и редактор комнаты</div>
+            <div class="text-[10px] text-amber-200/65">Настраивай образ, котика и интерьер — всё сохраняется автоматически</div>
           </div>
         </div>
         <button id="btnCloseWardrobe" type="button" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-amber-100 flex items-center justify-center active:scale-90 transition">✕</button>
       </div>
 
-      <div class="cozy-scroll flex-1 overflow-y-auto p-4 space-y-4">
-        <!-- Outfits (8 options) -->
+      <!-- Studio 2 Sub-tabs -->
+      <div class="px-4 pt-2.5 pb-2 shrink-0">
+        <div class="grid grid-cols-2 gap-1.5 bg-black/35 p-1 rounded-2xl border border-white/5">
+          <button data-studio-tab="character" type="button" class="studio-tab py-1.5 px-2 rounded-xl text-xs font-semibold bg-amber-400/25 border border-amber-300/35 text-amber-100 transition">
+            👧 Девушка и котик
+          </button>
+          <button data-studio-tab="room" type="button" class="studio-tab py-1.5 px-2 rounded-xl text-xs font-medium text-amber-200/75 hover:text-amber-100 transition">
+            🏠 Редактор комнаты
+          </button>
+        </div>
+      </div>
+
+      <!-- STUDIO TAB 1: GIRL + CAT CUSTOMIZATION -->
+      <div id="studio-panel-character" class="studio-panel cozy-scroll flex-1 overflow-y-auto px-4 pb-4 space-y-4">
+        <!-- Outfits (9 options including Heart Pajama) -->
         <div class="space-y-2">
-          <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">Наряды и свитеры (8 вариантов)</div>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">Наряды и свитеры (9 вариантов)</div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
             <button data-outfit="beige" type="button" class="outfit-btn rounded-2xl p-2.5 text-left border border-amber-300/45 bg-amber-400/20 transition">
               <div class="text-xs font-bold text-amber-50">🧸 Бежевый свитер</div>
               <div class="text-[10px] text-amber-200/70 mt-0.5">Тёплая вязка</div>
+            </button>
+            <button data-outfit="heartPajama" type="button" class="outfit-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">💖 Пижама в сердечко</div>
+              <div class="text-[10px] text-amber-200/70 mt-0.5">Уютная домашняя</div>
             </button>
             <button data-outfit="rose" type="button" class="outfit-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
               <div class="text-xs font-bold text-amber-50">🌸 Пудровый</div>
@@ -353,51 +384,77 @@
           </div>
         </div>
 
-        <!-- Socks Picker (6 cozy options) -->
+        <!-- Socks & Slippers Picker (7 options including Paw Slippers) -->
         <div class="space-y-2">
-          <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">Носочки (6 вариантов)</div>
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            <button data-socks="whiteHeart" type="button" class="socks-btn rounded-2xl p-2.5 text-left border border-amber-300/45 bg-amber-400/20 transition">
+          <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">Носочки и тапочки (7 вариантов)</div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button data-socks="whiteHeart" type="button" class="socks-btn rounded-2xl p-2 text-left border border-amber-300/45 bg-amber-400/20 transition">
               <div class="text-xs font-bold text-amber-50">🤍 С сердечками</div>
-              <div class="text-[10px] text-amber-200/70 mt-0.5">Белые уютные</div>
+              <div class="text-[10px] text-amber-200/70">Белые уютные</div>
             </button>
-            <button data-socks="pinkCozy" type="button" class="socks-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+            <button data-socks="pawSlippers" type="button" class="socks-btn rounded-2xl p-2 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">🐾 Тапочки-лапки</div>
+              <div class="text-[10px] text-amber-200/70">Пушистые мягкие</div>
+            </button>
+            <button data-socks="pinkCozy" type="button" class="socks-btn rounded-2xl p-2 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
               <div class="text-xs font-bold text-amber-50">🌸 Пудровые</div>
-              <div class="text-[10px] text-amber-200/70 mt-0.5">Мягкие розовые</div>
+              <div class="text-[10px] text-amber-200/70">Мягкие розовые</div>
             </button>
-            <button data-socks="striped" type="button" class="socks-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+            <button data-socks="striped" type="button" class="socks-btn rounded-2xl p-2 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
               <div class="text-xs font-bold text-amber-50">🧦 Полосатые</div>
-              <div class="text-[10px] text-amber-200/70 mt-0.5">Тёплые домашние</div>
+              <div class="text-[10px] text-amber-200/70">Тёплые домашние</div>
             </button>
-            <button data-socks="beigeKnit" type="button" class="socks-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+            <button data-socks="beigeKnit" type="button" class="socks-btn rounded-2xl p-2 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
               <div class="text-xs font-bold text-amber-50">🧸 Вязаные</div>
-              <div class="text-[10px] text-amber-200/70 mt-0.5">Бежевый кашемир</div>
+              <div class="text-[10px] text-amber-200/70">Бежевый кашемир</div>
             </button>
-            <button data-socks="mjGlitter" type="button" class="socks-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+            <button data-socks="mjGlitter" type="button" class="socks-btn rounded-2xl p-2 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
               <div class="text-xs font-bold text-amber-50">✨ Стиль MJ</div>
-              <div class="text-[10px] text-amber-200/70 mt-0.5">Белые со стразами</div>
+              <div class="text-[10px] text-amber-200/70">Со стразами</div>
             </button>
-            <button data-socks="barefoot" type="button" class="socks-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+            <button data-socks="barefoot" type="button" class="socks-btn rounded-2xl p-2 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
               <div class="text-xs font-bold text-amber-50">🦶 Босиком</div>
-              <div class="text-[10px] text-amber-200/70 mt-0.5">Без носочков</div>
+              <div class="text-[10px] text-amber-200/70">Без носочков</div>
             </button>
           </div>
         </div>
 
-        <!-- Accessories & Hair -->
+        <!-- Glasses Frame + Headwear -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div class="rounded-2xl p-3 bg-white/[0.03] border border-amber-200/12 space-y-2">
-            <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">Аксессуары</div>
+            <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">👓 Оправа очков</div>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button data-glasses="none" type="button" class="glasses-btn py-1.5 px-2 rounded-xl text-xs font-semibold bg-amber-400/20 border border-amber-300/40 text-amber-100 transition">Без очков</button>
+              <button data-glasses="round" type="button" class="glasses-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">Круглые</button>
+              <button data-glasses="goldThin" type="button" class="glasses-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">Тонкие золотые</button>
+              <button data-glasses="catEye" type="button" class="glasses-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">Кошачий глаз</button>
+            </div>
+          </div>
+
+          <div class="rounded-2xl p-3 bg-white/[0.03] border border-amber-200/12 space-y-2">
+            <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">🎀 На голову</div>
+            <div class="grid grid-cols-3 gap-1.5">
+              <button data-headwear="none" type="button" class="headwear-btn py-1.5 px-1.5 rounded-xl text-xs font-semibold bg-amber-400/20 border border-amber-300/40 text-amber-100 transition">Нет</button>
+              <button data-headwear="catEars" type="button" class="headwear-btn py-1.5 px-1.5 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">🐱 Ушки</button>
+              <button data-headwear="hairBow" type="button" class="headwear-btn py-1.5 px-1.5 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">🎀 Бантик</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accessories, Freckles, Hair & Mood -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="rounded-2xl p-3 bg-white/[0.03] border border-amber-200/12 space-y-1.5">
+            <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">Детали образа</div>
             <label class="flex items-center justify-between text-xs text-amber-100 cursor-pointer py-1">
               <span>🎧 Беспроводные наушники</span>
               <input id="toggleHeadphones" type="checkbox" class="accent-amber-400 w-4 h-4" />
             </label>
             <label class="flex items-center justify-between text-xs text-amber-100 cursor-pointer py-1">
-              <span>👓 Тонкие очки для уюта</span>
-              <input id="toggleGlasses" type="checkbox" class="accent-amber-400 w-4 h-4" />
+              <span>✨ Милые веснушки</span>
+              <input id="toggleFreckles" type="checkbox" class="accent-amber-400 w-4 h-4" />
             </label>
             <label class="flex items-center justify-between text-xs text-amber-100 cursor-pointer py-1">
-              <span>✨ Кулон-сердечко</span>
+              <span>🤍 Кулон-сердечко</span>
               <input id="togglePendant" type="checkbox" checked class="accent-amber-400 w-4 h-4" />
             </label>
           </div>
@@ -413,6 +470,121 @@
               <span id="girlMoodLabel" class="text-amber-300">Нежная улыбка</span>
             </button>
           </div>
+        </div>
+
+        <!-- Cat Customization (Fur Color & Accessory) -->
+        <div class="rounded-2xl p-3 bg-white/[0.03] border border-amber-200/15 space-y-3">
+          <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">🐱 Кастомизация котика</div>
+          <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5">
+            <button data-cat-fur="ginger" type="button" class="cat-fur-btn py-1.5 px-2 rounded-xl text-xs font-semibold bg-amber-400/20 border border-amber-300/40 text-amber-100 transition">🧡 Рыжий</button>
+            <button data-cat-fur="black" type="button" class="cat-fur-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">🖤 Чёрный</button>
+            <button data-cat-fur="white" type="button" class="cat-fur-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">🤍 Белый</button>
+            <button data-cat-fur="calico" type="button" class="cat-fur-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">🎨 Трёхцв.</button>
+            <button data-cat-fur="grayTabby" type="button" class="cat-fur-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">🩶 Серый</button>
+          </div>
+          <div class="grid grid-cols-3 gap-1.5">
+            <button data-cat-acc="none" type="button" class="cat-acc-btn py-1.5 px-2 rounded-xl text-xs font-semibold bg-amber-400/20 border border-amber-300/40 text-amber-100 transition">Без шапочки</button>
+            <button data-cat-acc="mjHat" type="button" class="cat-acc-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">🎩 Шляпа MJ</button>
+            <button data-cat-acc="bow" type="button" class="cat-acc-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">🎀 Бантик</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STUDIO TAB 2: ROOM DESIGN EDITOR -->
+      <div id="studio-panel-room" class="studio-panel hidden cozy-scroll flex-1 overflow-y-auto px-4 pb-4 space-y-4">
+        <!-- Bedding & Blanket Style -->
+        <div class="space-y-2">
+          <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">🛏️ Постельное бельё и плед</div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <button data-bedding="dustyRose" type="button" class="bedding-btn rounded-2xl p-2.5 text-left border border-amber-300/45 bg-amber-400/20 transition">
+              <div class="text-xs font-bold text-amber-50">🌹 Пыльная роза</div>
+              <div class="text-[10px] text-amber-200/70">Классический плед</div>
+            </button>
+            <button data-bedding="darkEmerald" type="button" class="bedding-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">🌲 Тёмный изумруд</div>
+              <div class="text-[10px] text-amber-200/70">Глубокий бархат</div>
+            </button>
+            <button data-bedding="plaid" type="button" class="bedding-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">🧣 Клетчатый плед</div>
+              <div class="text-[10px] text-amber-200/70">Тёплая шотландка</div>
+            </button>
+            <button data-bedding="starry" type="button" class="bedding-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">✨ Звёздный принт</div>
+              <div class="text-[10px] text-amber-200/70">Ночь и золотые звёзды</div>
+            </button>
+            <button data-bedding="milkLinen" type="button" class="bedding-btn rounded-2xl p-2.5 text-left border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition">
+              <div class="text-xs font-bold text-amber-50">☁️ Молочный лён</div>
+              <div class="text-[10px] text-amber-200/70">Нежный светлый</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Walls & Wallpaper -->
+        <div class="space-y-2">
+          <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">🎨 Стены и обои</div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <button data-wall="plum" type="button" class="wall-btn rounded-2xl p-2 text-left border border-amber-300/45 bg-amber-400/20 transition text-xs font-semibold text-amber-50">🍷 Тёплая слива</button>
+            <button data-wall="cream" type="button" class="wall-btn rounded-2xl p-2 text-left border border-white/10 bg-white/[0.04] transition text-xs font-medium text-amber-50">🍦 Кремовый уют</button>
+            <button data-wall="indigo" type="button" class="wall-btn rounded-2xl p-2 text-left border border-white/10 bg-white/[0.04] transition text-xs font-medium text-amber-50">🌌 Ночной индиго</button>
+            <button data-wall="vintage" type="button" class="wall-btn rounded-2xl p-2 text-left border border-white/10 bg-white/[0.04] transition text-xs font-medium text-amber-50">📜 Винтажная полоска</button>
+            <button data-wall="forest" type="button" class="wall-btn rounded-2xl p-2 text-left border border-white/10 bg-white/[0.04] transition text-xs font-medium text-amber-50">🌿 Лесной бархат</button>
+          </div>
+        </div>
+
+        <!-- Furniture Wood + Rug Style -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="rounded-2xl p-3 bg-white/[0.03] border border-amber-200/12 space-y-2">
+            <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">🪵 Дерево мебели</div>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button data-wood="walnut" type="button" class="wood-btn py-1.5 px-2 rounded-xl text-xs font-semibold bg-amber-400/20 border border-amber-300/40 text-amber-100 transition">Орех</button>
+              <button data-wood="oak" type="button" class="wood-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">Светлый дуб</button>
+              <button data-wood="wenge" type="button" class="wood-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">Тёмный венге</button>
+              <button data-wood="white" type="button" class="wood-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">Белый прованс</button>
+            </div>
+          </div>
+
+          <div class="rounded-2xl p-3 bg-white/[0.03] border border-amber-200/12 space-y-2">
+            <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">🧶 Ковёр на полу</div>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button data-rug="burgundy" type="button" class="rug-btn py-1.5 px-2 rounded-xl text-xs font-semibold bg-amber-400/20 border border-amber-300/40 text-amber-100 transition">Бордовый</button>
+              <button data-rug="cream" type="button" class="rug-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">Кремовый</button>
+              <button data-rug="starry" type="button" class="rug-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">Звёздный</button>
+              <button data-rug="emerald" type="button" class="rug-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">Изумрудный</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fairy Lights Color + Drink in Mug + Room Gadgets -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="rounded-2xl p-3 bg-white/[0.03] border border-amber-200/12 space-y-2">
+            <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">✨ Цвет гирлянды</div>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button data-fairy-col="warm" type="button" class="fairy-col-btn py-1.5 px-2 rounded-xl text-xs font-semibold bg-amber-400/20 border border-amber-300/40 text-amber-100 transition">Золото</button>
+              <button data-fairy-col="rose" type="button" class="fairy-col-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">Розовый</button>
+              <button data-fairy-col="rainbow" type="button" class="fairy-col-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">Разноцветная</button>
+              <button data-fairy-col="ice" type="button" class="fairy-col-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">Голубой лёд</button>
+            </div>
+          </div>
+
+          <div class="rounded-2xl p-3 bg-white/[0.03] border border-amber-200/12 space-y-2">
+            <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-300/90">☕ Напиток в кружке</div>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button data-drink="cocoa" type="button" class="drink-btn py-1.5 px-2 rounded-xl text-xs font-semibold bg-amber-400/20 border border-amber-300/40 text-amber-100 transition">🍫 Какао</button>
+              <button data-drink="tea" type="button" class="drink-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">🫖 Чай</button>
+              <button data-drink="latte" type="button" class="drink-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">☕ Латте</button>
+              <button data-drink="matcha" type="button" class="drink-btn py-1.5 px-2 rounded-xl text-xs font-medium bg-white/[0.04] border border-white/10 text-amber-100 transition">🍵 Матча</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Room Magic Effects -->
+        <div class="rounded-2xl p-3 bg-gradient-to-r from-indigo-500/15 via-purple-500/12 to-rose-500/10 border border-indigo-300/25 grid grid-cols-2 gap-2">
+          <button id="btnToggleProjectorStudio" type="button" class="py-2 px-3 rounded-xl bg-white/10 hover:bg-indigo-400/25 border border-white/15 text-xs font-semibold text-amber-100 transition">
+            🌌 Проектор неба: <span id="studioProjectorState">Выкл</span>
+          </button>
+          <button id="btnToggleDiscoStudio" type="button" class="py-2 px-3 rounded-xl bg-white/10 hover:bg-rose-400/25 border border-white/15 text-xs font-semibold text-amber-100 transition">
+            🪩 Диско-шар MJ: <span id="studioDiscoState">Выкл</span>
+          </button>
         </div>
       </div>
     </div>
@@ -473,8 +645,17 @@
           <span class="text-xs text-amber-300 shrink-0">Вытянуть</span>
         </button>
 
+        <button data-treasure="discoBall" type="button" class="w-full rounded-2xl p-3 bg-white/[0.04] hover:bg-amber-400/15 border border-amber-200/12 text-left flex items-center gap-3 transition">
+          <span class="text-2xl shrink-0">🪩</span>
+          <div class="min-w-0 flex-1">
+            <div class="text-xs sm:text-sm font-bold text-amber-50">Диско-шар Майкла Джексона</div>
+            <div class="text-[11px] text-amber-200/70">Опустить зеркальный шар и зажечь блики под музыку</div>
+          </div>
+          <span class="text-xs text-amber-300 shrink-0">Вкл/Выкл ✨</span>
+        </button>
+
         <button data-treasure="brianQuote" type="button" class="w-full rounded-2xl p-3 bg-white/[0.04] hover:bg-amber-400/15 border border-amber-200/12 text-left flex items-center gap-3 transition">
-          <span class="text-2xl shrink-0">🥕</span>
+          <span class="text-2xl shrink-0">🎬</span>
           <div class="min-w-0 flex-1">
             <div class="text-xs sm:text-sm font-bold text-amber-50">Цитатник Брайана Мапса</div>
             <div class="text-[11px] text-amber-200/70">Вытянуть легендарную фразу из скетчей</div>
@@ -512,16 +693,21 @@
       </div>
 
       <div class="space-y-1.5">
-        <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-amber-50">
-          Добро пожаловать в твою комнату, <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#ffd6a5] to-[#f28482]">Даша</span> 💛
+        <h1 id="splashGreetingTitle" class="text-xl sm:text-2xl font-extrabold tracking-tight text-amber-50">
+          Уютного вечера, <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#ffd6a5] to-[#f28482]">Даша</span> 💛
         </h1>
-        <p class="text-xs sm:text-sm text-amber-200/80 leading-relaxed">
-          Тёплый закат, любимые треки Майкла Джексона, мурлыкающий котик и записки — всё готово к твоему приходу.
+        <p id="splashGreetingSub" class="text-xs sm:text-sm text-amber-200/80 leading-relaxed">
+          Любимые треки Майкла Джексона, мурлыкающий котик и твоя комната уже ждут тебя.
         </p>
       </div>
 
-      <div id="splashTogetherPill" class="rounded-2xl py-2 px-3 bg-white/[0.04] border border-amber-200/12 text-xs text-amber-100/90">
-        💕 Вместе с 5 октября 2026 года
+      <div class="space-y-1.5">
+        <div id="splashWeatherPill" class="rounded-2xl py-2 px-3 bg-amber-400/10 border border-amber-300/20 text-xs text-amber-100/95">
+          🌡️ Загружаем погоду в Челябинске и Сочи…
+        </div>
+        <div id="splashTogetherPill" class="rounded-2xl py-2 px-3 bg-white/[0.04] border border-amber-200/12 text-xs text-amber-100/90">
+          💕 Вместе с 5 октября 2026 года
+        </div>
       </div>
 
       <button id="btnEnterRoom" type="button"
@@ -591,9 +777,9 @@
           ?
         </button>
 
-        <button id="btnOpenWardrobe" type="button" title="Открыть гардероб"
+        <button id="btnOpenWardrobe" type="button" title="Гардероб и редактор комнаты"
           class="glass-panel rounded-xl px-2.5 h-9 text-xs font-semibold text-amber-100 hover:bg-amber-400/25 border-amber-300/30 active:scale-95 transition flex items-center gap-1">
-          <span>👗</span><span class="hidden sm:inline">Образ</span>
+          <span>👗</span><span class="hidden sm:inline">Дизайн</span>
         </button>
 
         <button id="btnOpenIpad" type="button"
@@ -806,8 +992,9 @@
           <div class="grid grid-cols-2 gap-2 shrink-0">
             <div class="rounded-2xl p-2.5 bg-gradient-to-br from-sky-500/15 to-indigo-500/10 border border-sky-300/25 flex items-center justify-between gap-2">
               <div class="min-w-0">
-                <div class="text-[10px] uppercase tracking-wider text-sky-200/85 font-semibold truncate">🕒 У Антона (МСК)</div>
+                <div class="text-[10px] uppercase tracking-wider text-sky-200/85 font-semibold truncate">🌴 Антон · Сочи</div>
                 <div id="clockAntonDate" class="text-[10px] text-amber-200/70 truncate mt-0.5">—</div>
+                <div id="clockAntonWeather" class="text-[10px] font-medium text-sky-100/90 truncate mt-0.5">Погода загружается…</div>
               </div>
               <div id="clockAntonTime" class="text-base sm:text-lg font-mono font-extrabold text-amber-50 shrink-0">--:--</div>
             </div>
@@ -845,12 +1032,43 @@
             </div>
           </div>
 
-          <!-- Polaroid Gallery from Corkboard -->
-          <div class="rounded-2xl p-3 bg-white/[0.03] border border-amber-200/12 shrink-0">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-[11px] uppercase tracking-wider font-semibold text-amber-200/90">📸 Полароиды на доске</span>
-              <span class="text-[10px] text-amber-200/55">Нажми, чтобы увеличить</span>
+          <!-- Warm "Hug / Miss You" Button -->
+          <button id="btnHugMissYou" type="button"
+            class="w-full rounded-2xl p-3 bg-gradient-to-r from-[#f28482]/30 via-[#f4a261]/25 to-[#ffd6a5]/25 border border-rose-300/40 hover:brightness-110 active:scale-[0.98] transition flex items-center justify-between gap-2 text-left shrink-0 shadow-[0_6px_22px_rgba(242,132,130,0.2)]">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="text-2xl shrink-0">🤗</span>
+              <div class="min-w-0">
+                <div class="text-xs sm:text-sm font-bold text-amber-50">Обнять / Скучаю по тебе</div>
+                <div class="text-[10px] sm:text-[11px] text-amber-200/80 truncate">Нажми — и комната наполнится теплом и сердечками</div>
+              </div>
             </div>
+            <span id="hugCounterBadge" class="px-2.5 py-1 rounded-xl bg-black/30 border border-rose-200/30 text-[11px] font-bold text-rose-100 shrink-0">💛 0</span>
+          </button>
+
+          <!-- Polaroid Gallery from Corkboard (+ Upload Custom Photo) -->
+          <div class="rounded-2xl p-3 bg-white/[0.03] border border-amber-200/12 shrink-0 space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[11px] uppercase tracking-wider font-semibold text-amber-200/90">📸 Полароиды на доске</span>
+              <button id="btnTogglePolaroidUpload" type="button"
+                class="px-2.5 py-1 rounded-xl text-[11px] font-semibold bg-amber-400/20 hover:bg-amber-400/30 border border-amber-300/35 text-amber-100 active:scale-95 transition">
+                + Повесить фото
+              </button>
+            </div>
+
+            <!-- Inline Upload Form (hidden until clicked) -->
+            <div id="polaroidUploadBox" class="hidden rounded-xl p-2.5 bg-black/35 border border-amber-200/15 space-y-2">
+              <input id="polaroidCaptionInput" type="text" maxlength="40" placeholder="Подпись к фото (например: Наш вечер 💛)"
+                class="w-full rounded-lg bg-black/40 border border-amber-200/15 px-2.5 py-1.5 text-xs text-amber-50 placeholder-amber-200/40 focus:outline-none focus:border-amber-400/60" />
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[10px] text-amber-200/60">Сразу появится на пробковой доске</span>
+                <label for="polaroidFileInput"
+                  class="cursor-pointer px-3 py-1.5 rounded-lg text-xs font-semibold text-[#23151e] bg-gradient-to-r from-[#ffd6a5] to-[#f4a261] hover:brightness-105 active:scale-95 transition shrink-0">
+                  Выбрать фото 📷
+                </label>
+                <input id="polaroidFileInput" type="file" accept="image/*" class="hidden" />
+              </div>
+            </div>
+
             <div id="polaroidGrid" class="grid grid-cols-3 gap-2.5"></div>
           </div>
 
@@ -919,6 +1137,7 @@
             <button data-preset="lofiEvening" type="button" class="mixer-preset px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-400/25 to-rose-400/20 border border-amber-300/30 hover:brightness-110 text-xs font-semibold text-amber-100 transition">🎹 Уютный Lo-Fi вечер</button>
             <button data-preset="rainy" type="button" class="mixer-preset px-3 py-1.5 rounded-xl bg-white/10 hover:bg-amber-400/20 text-xs font-medium text-amber-100 transition">🌧️ Дождь + винил</button>
             <button data-preset="trainJourney" type="button" class="mixer-preset px-3 py-1.5 rounded-xl bg-white/10 hover:bg-amber-400/20 text-xs font-medium text-amber-100 transition">🚂 Дальняя дорога</button>
+            <button data-preset="studyEge" type="button" class="mixer-preset px-3 py-1.5 rounded-xl bg-white/10 hover:bg-amber-400/20 text-xs font-medium text-amber-100 transition">📚 Учёба к ЕГЭ</button>
             <button data-preset="cat" type="button" class="mixer-preset px-3 py-1.5 rounded-xl bg-white/10 hover:bg-amber-400/20 text-xs font-medium text-amber-100 transition">🐱 Спящий котик</button>
             <button data-preset="silent" type="button" class="mixer-preset px-3 py-1.5 rounded-xl bg-white/5 hover:bg-rose-400/20 text-xs font-medium text-amber-200/75 transition">🔇 Тишина</button>
           </div>
@@ -984,6 +1203,62 @@
               </div>
               <input id="mixTrain" type="range" min="0" max="100" value="0" class="warm-slider w-full" />
             </div>
+
+            <div class="rounded-2xl p-3.5 bg-white/[0.04] border border-white/10">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-lg">🔥</span>
+                  <div>
+                    <div class="text-sm font-medium text-amber-50">Треск камина</div>
+                    <div class="text-[10px] text-amber-200/65">Тёплые угли и уютное потрескивание</div>
+                  </div>
+                </div>
+                <span id="valFireplace" class="text-xs font-mono text-amber-300">0%</span>
+              </div>
+              <input id="mixFireplace" type="range" min="0" max="100" value="0" class="warm-slider w-full" />
+            </div>
+
+            <div class="rounded-2xl p-3.5 bg-white/[0.04] border border-white/10">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-lg">🌃</span>
+                  <div>
+                    <div class="text-sm font-medium text-amber-50">Шум ночного города</div>
+                    <div class="text-[10px] text-amber-200/65">Далёкий мягкий гул за окном</div>
+                  </div>
+                </div>
+                <span id="valCity" class="text-xs font-mono text-amber-300">0%</span>
+              </div>
+              <input id="mixCity" type="range" min="0" max="100" value="0" class="warm-slider w-full" />
+            </div>
+
+            <div class="rounded-2xl p-3.5 bg-white/[0.04] border border-white/10">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-lg">🐦</span>
+                  <div>
+                    <div class="text-sm font-medium text-amber-50">Утренние птицы</div>
+                    <div class="text-[10px] text-amber-200/65">Нежное пение за открытым окном</div>
+                  </div>
+                </div>
+                <span id="valBirds" class="text-xs font-mono text-amber-300">0%</span>
+              </div>
+              <input id="mixBirds" type="range" min="0" max="100" value="0" class="warm-slider w-full" />
+            </div>
+
+            <div class="rounded-2xl p-3.5 bg-white/[0.04] border border-white/10">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-lg">📖</span>
+                  <div>
+                    <div class="text-sm font-medium text-amber-50">Шуршание страниц и письмо</div>
+                    <div class="text-[10px] text-amber-200/65">Идеальный фоновый ритм для подготовки к ЕГЭ</div>
+                  </div>
+                </div>
+                <span id="valStudy" class="text-xs font-mono text-amber-300">0%</span>
+              </div>
+              <input id="mixStudy" type="range" min="0" max="100" value="0" class="warm-slider w-full" />
+            </div>
           </div>
         </section>
 
@@ -1034,6 +1309,12 @@
         <div id="polaroidModalMedia" class="w-full aspect-square rounded-md overflow-hidden bg-[#241724] flex items-center justify-center"></div>
         <div id="polaroidModalCaption" class="text-center text-sm font-semibold text-[#3a2724] mt-3.5">Наш момент ✨</div>
         <div id="polaroidModalSub" class="text-center text-[11px] text-[#7c5c52] mt-0.5">2026</div>
+        <div id="polaroidDeleteWrap" class="hidden mt-3 flex justify-center">
+          <button id="btnDeleteCustomPolaroid" type="button"
+            class="px-3 py-1 rounded-lg bg-rose-600/15 hover:bg-rose-600/25 text-rose-800 text-[11px] font-semibold transition">
+            Снять это фото с доски
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -1166,20 +1447,51 @@
       'Пусть на экзамене попадутся знакомые темы и слова, которые ты уже знаешь наизусть 🌟'
     ];
 
+    const HUG_MESSAGES = [
+      'Обнимаю тебя крепко-крепко через все километры между Сочи и Челябинском 💛🤗',
+      'Я тоже очень скучаю по тебе, солнышко. Скоро обниму по-настоящему ✨💕',
+      'Мысленно укутываю тебя в самый тёплый плед и целую в макушку 🌙🤍',
+      'Даже на расстоянии ты — самый близкий мне человек на свете 💫💛',
+      'Шлю тебе миллион тёплых обнимашек из Сочи прямо в твою комнату 🌴❤️'
+    ];
+
     const roomState = {
-      weather: 'sunset',       // 'sunset' | 'night' | 'rain' | 'snow'
+      weather: 'sunset',        // 'sunset' | 'night' | 'rain' | 'snow'
       userOverrodeWeather: false,
       chelyabinskWeather: null, // { tempStr, icon, label, roomWeather }
+      sochiWeather: null,       // { tempStr, icon, label }
       windowNoteTimer: 0,       // countdown seconds for finger-drawn heart + "Д + А" on foggy glass
       windowNoteAlpha: 0,       // smooth fade 0..1
-      roomTheme: 'sunset',     // 'sunset' | 'amber' | 'velvet'
-      outfit: 'beige',         // 'beige' | 'rose' | 'mjJacket' | 'midnight' | 'sage' | 'berry' | 'creamHoodie' | 'skyBlue'
-      socks: 'whiteHeart',     // 'whiteHeart' | 'pinkCozy' | 'striped' | 'beigeKnit' | 'mjGlitter' | 'barefoot'
-      hairStyle: 'loose',      // 'loose' | 'curly' | 'halfUp' | 'ponytail'
-      girlMood: 'smile',       // 'smile' | 'dreamy' | 'wink'
+      roomTheme: 'sunset',      // 'sunset' | 'amber' | 'velvet'
+      // Girl Wardrobe
+      outfit: 'beige',          // 'beige' | 'heartPajama' | 'rose' | 'mjJacket' | 'midnight' | 'sage' | 'berry' | 'creamHoodie' | 'skyBlue'
+      socks: 'whiteHeart',      // 'whiteHeart' | 'pawSlippers' | 'pinkCozy' | 'striped' | 'beigeKnit' | 'mjGlitter' | 'barefoot'
+      hairStyle: 'loose',       // 'loose' | 'curly' | 'halfUp' | 'ponytail'
+      girlMood: 'smile',        // 'smile' | 'dreamy' | 'wink'
       headphones: false,
-      glasses: false,
+      glassesStyle: 'none',     // 'none' | 'round' | 'goldThin' | 'catEye'
+      headwear: 'none',         // 'none' | 'catEars' | 'hairBow'
+      freckles: false,
       pendant: true,
+      // Cat Customization & Awake Treats Action
+      catFur: 'ginger',         // 'ginger' | 'black' | 'white' | 'calico' | 'grayTabby'
+      catAccessory: 'none',     // 'none' | 'mjHat' | 'bow'
+      catAction: 'sleep',       // 'sleep' | 'stretch' | 'happySquint' | 'bellyUp'
+      catActionTimer: 0,
+      catActionIdx: 0,
+      // Room Design Editor + Interactive Room Props
+      wallStyle: 'plum',        // 'plum' | 'cream' | 'indigo' | 'vintage' | 'forest'
+      bedding: 'dustyRose',     // 'dustyRose' | 'darkEmerald' | 'plaid' | 'starry' | 'milkLinen'
+      woodTone: 'walnut',       // 'walnut' | 'oak' | 'wenge' | 'white'
+      rugStyle: 'burgundy',     // 'burgundy' | 'cream' | 'starry' | 'emerald'
+      fairyColor: 'warm',       // 'warm' | 'rose' | 'rainbow' | 'ice'
+      drink: 'cocoa',           // 'cocoa' | 'tea' | 'latte' | 'matcha'
+      projectorOn: false,
+      projectorAlpha: 0,
+      discoBallOn: false,
+      discoBallDrop: 0,         // smooth drop 0..1
+      plantStage: 0,            // 0..4 growing from watering
+      plantWaterCount: 0,
       blanketTapCount: 0,
       boyfriendState: 'none',  // 'none' | 'lyingBack' | 'betweenLegs'
       boyfriendAlpha: 0,       // smooth fade in/out 0..1
@@ -1232,7 +1544,9 @@
       steam: [],
       hearts: [],
       notes: [],
-      sparkles: []
+      sparkles: [],
+      waterDrops: [],
+      projectorStars: []
     };
 
     /* =========================================================================
@@ -1335,10 +1649,56 @@
 
       const sub = document.getElementById('statusSubtitle');
       if (sub) {
-        const w = roomState.chelyabinskWeather;
-        sub.textContent = w
-          ? `Антон ${anton.time} · Даша ${dasha.time} (${w.tempStr} ${w.icon})`
-          : `Антон ${anton.time} · Даша ${dasha.time}`;
+        const sw = roomState.sochiWeather;
+        const cw = roomState.chelyabinskWeather;
+        const aPart = sw ? `Сочи ${anton.time} ${sw.tempStr}${sw.icon}` : `Антон ${anton.time}`;
+        const dPart = cw ? `Чел. ${dasha.time} ${cw.tempStr}${cw.icon}` : `Даша ${dasha.time}`;
+        sub.textContent = `${aPart} · ${dPart}`;
+      }
+    }
+
+    function updateSmartSplashGreeting() {
+      const dashaHour = new Date(Date.now() + 5 * 3600000).getUTCHours(); // Челябинск (UTC+5)
+      const titleEl = document.getElementById('splashGreetingTitle');
+      const subEl = document.getElementById('splashGreetingSub');
+      const pillEl = document.getElementById('splashWeatherPill');
+
+      let greet = 'Уютного вечера,';
+      let sub = 'Тёплый свет, любимые треки Майкла Джексона и мурлыкающий котик уже ждут тебя.';
+      let emoji = '🌇';
+      if (dashaHour >= 5 && dashaHour < 12) {
+        greet = 'Доброе утро, солнышко';
+        sub = 'Пусть твой день начнётся мягко и тепло — загляни к котику и завари любимый напиток ☕';
+        emoji = '☀️';
+      } else if (dashaHour >= 12 && dashaHour < 17) {
+        greet = 'Хорошего дня,';
+        sub = 'Заходи передохнуть между делами и учёбой — здесь всегда спокойно и уютно ✨';
+        emoji = '🌤️';
+      } else if (dashaHour >= 23 || dashaHour < 5) {
+        greet = 'Поздновато уже, отдыхай, родная';
+        sub = 'Приглуши ночник, включи дождь или тихий трек MJ и поскорее высыпайся 🌙💛';
+        emoji = '🌙';
+      }
+
+      if (titleEl) {
+        if (greet.includes('солнышко') || greet.includes('родная')) {
+          titleEl.innerHTML = `${greet} <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#ffd6a5] to-[#f28482]">${emoji}</span>`;
+        } else {
+          titleEl.innerHTML = `${greet} <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#ffd6a5] to-[#f28482]">Даша</span> ${emoji}`;
+        }
+      }
+      if (subEl) subEl.textContent = sub;
+
+      if (pillEl) {
+        const cw = roomState.chelyabinskWeather;
+        const sw = roomState.sochiWeather;
+        if (cw && sw) {
+          pillEl.textContent = `🌸 Челябинск: ${cw.tempStr} ${cw.icon} ${cw.label}  ·  🌴 Сочи: ${sw.tempStr} ${sw.icon}`;
+        } else if (cw) {
+          pillEl.textContent = `🌸 В Челябинске сейчас ${cw.tempStr} ${cw.icon} · ${cw.label}`;
+        } else if (sw) {
+          pillEl.textContent = `🌴 В Сочи сейчас ${sw.tempStr} ${sw.icon} · ${sw.label}`;
+        }
       }
     }
 
@@ -1361,9 +1721,10 @@
       roomState.weather = isNight ? 'night' : 'sunset';
       roomState.lampLevel = isNight ? 1 : 2;
       syncWeatherHudBadge(roomState.weather);
+      updateSmartSplashGreeting();
     }
 
-    function decodeChelyabinskWmo(code, isDay) {
+    function decodeWmoWeather(code, isDay) {
       if ([71, 73, 75, 77, 85, 86].includes(code)) return { icon: '❄️', label: 'Снег', roomWeather: 'snow' };
       if ([95, 96, 99].includes(code)) return { icon: '⛈️', label: 'Гроза', roomWeather: 'rain' };
       if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return { icon: '🌧️', label: 'Дождь', roomWeather: 'rain' };
@@ -1373,39 +1734,58 @@
       return { icon: isDay ? '☀️' : '🌙', label: 'Ясно', roomWeather: null };
     }
 
-    async function fetchChelyabinskWeather() {
-      try {
-        const url = 'https://api.open-meteo.com/v1/forecast?latitude=55.1644&longitude=61.4368&current=temperature_2m,weather_code,is_day&timezone=Asia%2FYekaterinburg';
+    async function fetchBothCitiesWeather() {
+      const fetchCity = async (lat, lon, tz) => {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,is_day&timezone=${encodeURIComponent(tz)}`;
         const res = await fetch(url, { cache: 'no-store' });
-        if (!res.ok) return;
+        if (!res.ok) return null;
         const data = await res.json();
         const cur = data && data.current;
-        if (!cur || typeof cur.temperature_2m !== 'number') return;
-
+        if (!cur || typeof cur.temperature_2m !== 'number') return null;
         const rounded = Math.round(cur.temperature_2m);
         const tempStr = rounded > 0 ? `+${rounded}°` : `${rounded}°`;
-        const info = decodeChelyabinskWmo(cur.weather_code, cur.is_day === 1);
-        roomState.chelyabinskWeather = { tempStr, icon: info.icon, label: info.label, roomWeather: info.roomWeather };
+        const info = decodeWmoWeather(cur.weather_code, cur.is_day === 1);
+        return { tempStr, icon: info.icon, label: info.label, roomWeather: info.roomWeather };
+      };
 
-        const wEl = document.getElementById('clockDashaWeather');
-        if (wEl) wEl.textContent = `${info.icon} ${tempStr} · ${info.label}`;
-        updateClock();
+      try {
+        const [chel, sochi] = await Promise.all([
+          fetchCity(55.1644, 61.4368, 'Asia/Yekaterinburg').catch(() => null),
+          fetchCity(43.5855, 39.7231, 'Europe/Moscow').catch(() => null)
+        ]);
 
-        // Sync room window weather automatically if user hasn't manually changed it
-        if (!roomState.userOverrodeWeather) {
-          if (info.roomWeather) {
-            roomState.weather = info.roomWeather;
-            syncWeatherHudBadge(roomState.weather);
-          } else {
-            const dashaHour = new Date(Date.now() + 5 * 3600000).getUTCHours();
-            roomState.weather = (dashaHour >= 21 || dashaHour < 6) ? 'night' : 'sunset';
-            syncWeatherHudBadge(roomState.weather);
+        if (chel) {
+          roomState.chelyabinskWeather = chel;
+          const dEl = document.getElementById('clockDashaWeather');
+          if (dEl) dEl.textContent = `${chel.icon} ${chel.tempStr} · ${chel.label}`;
+
+          if (!roomState.userOverrodeWeather) {
+            if (chel.roomWeather) {
+              roomState.weather = chel.roomWeather;
+              syncWeatherHudBadge(roomState.weather);
+            } else {
+              const dashaHour = new Date(Date.now() + 5 * 3600000).getUTCHours();
+              roomState.weather = (dashaHour >= 21 || dashaHour < 6) ? 'night' : 'sunset';
+              syncWeatherHudBadge(roomState.weather);
+            }
           }
+        } else {
+          const dEl = document.getElementById('clockDashaWeather');
+          if (dEl && !roomState.chelyabinskWeather) dEl.textContent = 'Челябинск · МСК+2';
         }
-      } catch (_) {
-        const wEl = document.getElementById('clockDashaWeather');
-        if (wEl && !roomState.chelyabinskWeather) wEl.textContent = 'Челябинск · МСК+2';
-      }
+
+        if (sochi) {
+          roomState.sochiWeather = sochi;
+          const aEl = document.getElementById('clockAntonWeather');
+          if (aEl) aEl.textContent = `${sochi.icon} ${sochi.tempStr} · ${sochi.label}`;
+        } else {
+          const aEl = document.getElementById('clockAntonWeather');
+          if (aEl && !roomState.sochiWeather) aEl.textContent = 'Сочи · МСК';
+        }
+
+        updateClock();
+        updateSmartSplashGreeting();
+      } catch (_) {}
     }
 
     // If user uploads a custom photos/icon.png, prefer it over the built-in icon
@@ -1426,8 +1806,13 @@
     const vibeEngine = {
       ctx: null,
       initialized: false,
-      levels: { beat: 0, rain: 0, vinyl: 0, purr: 0, night: 0, train: 0 },
+      levels: { beat: 0, rain: 0, vinyl: 0, purr: 0, night: 0, train: 0, fireplace: 0, city: 0, birds: 0, study: 0 },
       trainTimer: null,
+      birdsTimer: null,
+      studyTimer: null,
+      analyser: null,
+      freqData: null,
+      mediaSourceAttached: false,
       gains: {},
       purrBurstGain: null,
       noiseBuf: null,
@@ -1461,8 +1846,14 @@
 
           const master = ctx.createGain();
           master.gain.value = 0.88;
-          master.connect(ctx.destination);
+          const analyser = ctx.createAnalyser();
+          analyser.fftSize = 256;
+          analyser.smoothingTimeConstant = 0.78;
+          master.connect(analyser);
+          analyser.connect(ctx.destination);
           this.masterGain = master;
+          this.analyser = analyser;
+          this.freqData = new Uint8Array(analyser.frequencyBinCount);
 
           // Shared 3s pink noise buffer for rain & lo-fi snare/hat
           const bufferSize = ctx.sampleRate * 3;
@@ -1602,7 +1993,77 @@
           trainSrc.start();
           this.gains.train = trainGain;
 
+          // 7) FIREPLACE CRACKLE & WARM RUMBLE
+          const fireGain = ctx.createGain();
+          fireGain.gain.value = 0;
+          const fireRumble = ctx.createBufferSource();
+          fireRumble.buffer = pinkBuf;
+          fireRumble.loop = true;
+          const fireLp = ctx.createBiquadFilter();
+          fireLp.type = 'lowpass';
+          fireLp.frequency.value = 240;
+          const fireRumbleVol = ctx.createGain();
+          fireRumbleVol.gain.value = 0.45;
+          fireRumble.connect(fireLp).connect(fireRumbleVol).connect(fireGain);
+          fireRumble.start();
+
+          const firePopBuf = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+          const fpData = firePopBuf.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            const r = Math.random();
+            let s = 0;
+            if (r < 0.00075) s = (Math.random() * 0.85 + 0.15) * (Math.random() > 0.5 ? 1 : -1);
+            else if (r < 0.0022) s = (Math.random() * 0.28) * (Math.random() > 0.5 ? 1 : -1);
+            fpData[i] = s;
+          }
+          const firePopSrc = ctx.createBufferSource();
+          firePopSrc.buffer = firePopBuf;
+          firePopSrc.loop = true;
+          const fireBp = ctx.createBiquadFilter();
+          fireBp.type = 'bandpass';
+          fireBp.frequency.value = 1850;
+          fireBp.Q.value = 0.9;
+          firePopSrc.connect(fireBp).connect(fireGain);
+          firePopSrc.start();
+          fireGain.connect(master);
+          this.gains.fireplace = fireGain;
+
+          // 8) DISTANT NIGHT CITY HUM
+          const cityGain = ctx.createGain();
+          cityGain.gain.value = 0;
+          const citySrc = ctx.createBufferSource();
+          citySrc.buffer = pinkBuf;
+          citySrc.loop = true;
+          const cityBp = ctx.createBiquadFilter();
+          cityBp.type = 'bandpass';
+          cityBp.frequency.value = 280;
+          cityBp.Q.value = 0.65;
+          const cityLfo = ctx.createOscillator();
+          cityLfo.frequency.value = 0.11;
+          const cityLfoG = ctx.createGain();
+          cityLfoG.gain.value = 0.18;
+          const cityMod = ctx.createGain();
+          cityMod.gain.value = 0.82;
+          cityLfo.connect(cityLfoG).connect(cityMod.gain);
+          citySrc.connect(cityBp).connect(cityMod).connect(cityGain).connect(master);
+          citySrc.start();
+          cityLfo.start();
+          this.gains.city = cityGain;
+
+          // 9) MORNING BIRDS BUS (Procedural gentle chirps)
+          const birdsGain = ctx.createGain();
+          birdsGain.gain.value = 0;
+          birdsGain.connect(master);
+          this.gains.birds = birdsGain;
+
+          // 10) PAGE RUSTLE & WRITING PEN BUS (Study background)
+          const studyGain = ctx.createGain();
+          studyGain.gain.value = 0;
+          studyGain.connect(master);
+          this.gains.study = studyGain;
+
           this.initialized = true;
+          this.attachAudioElementAnalyser();
           this.applyLevels();
           return true;
         } catch (err) {
@@ -1626,6 +2087,110 @@
           if (val > 0) this.startTrainLoop();
           else this.stopTrainLoop();
         }
+        if (channel === 'birds') {
+          if (val > 0) this.startBirdsLoop();
+          else this.stopBirdsLoop();
+        }
+        if (channel === 'study') {
+          if (val > 0) this.startStudyLoop();
+          else this.stopStudyLoop();
+        }
+      },
+
+      attachAudioElementAnalyser() {
+        // Safely wire HTML5 <audio> into Web Audio AnalyserNode on http(s) origins (GitHub Pages)
+        // Skip on file:// protocol so local offline preview never gets CORS-muted by browser security
+        if (this.mediaSourceAttached || !this.ctx || !this.masterGain) return;
+        if (window.location.protocol === 'file:') return;
+        const audioEl = document.getElementById('mainAudio');
+        if (!audioEl) return;
+        try {
+          const src = this.ctx.createMediaElementSource(audioEl);
+          src.connect(this.masterGain);
+          this.mediaSourceAttached = true;
+        } catch (err) {
+          console.warn('MediaElementSource attach skipped:', err);
+        }
+      },
+
+      getRealBassEnergy() {
+        if (!this.initialized || !this.analyser || !this.freqData) return null;
+        try {
+          this.analyser.getByteFrequencyData(this.freqData);
+          // Focus on bass & kick drums: bins 0..10 (~0..1.7 kHz)
+          let sum = 0;
+          const bins = 10;
+          for (let i = 0; i < bins; i++) sum += this.freqData[i];
+          const avg = sum / (bins * 255);
+          return avg > 0.015 ? Math.min(1, avg * 1.45) : 0;
+        } catch (_) {
+          return null;
+        }
+      },
+
+      startBirdsLoop() {
+        if (this.birdsTimer) return;
+        const chirp = () => {
+          if (!this.initialized || !this.ctx || !this.gains.birds || this.levels.birds <= 0) return;
+          const now = this.ctx.currentTime + 0.02;
+          const notesCount = 2 + Math.floor(Math.random() * 3);
+          const baseFreq = 2600 + Math.random() * 1400;
+          for (let i = 0; i < notesCount; i++) {
+            const st = now + i * (0.095 + Math.random() * 0.05);
+            const osc = this.ctx.createOscillator();
+            const g = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(baseFreq, st);
+            osc.frequency.exponentialRampToValueAtTime(baseFreq * (1.2 + Math.random() * 0.25), st + 0.045);
+            osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.92, st + 0.085);
+            g.gain.setValueAtTime(0.0001, st);
+            g.gain.linearRampToValueAtTime(0.16, st + 0.015);
+            g.gain.exponentialRampToValueAtTime(0.0008, st + 0.09);
+            osc.connect(g).connect(this.gains.birds);
+            osc.start(st);
+            osc.stop(st + 0.1);
+          }
+        };
+        chirp();
+        this.birdsTimer = setInterval(() => {
+          if (Math.random() < 0.72) chirp();
+        }, 1650);
+      },
+
+      stopBirdsLoop() {
+        if (this.birdsTimer) { clearInterval(this.birdsTimer); this.birdsTimer = null; }
+      },
+
+      startStudyLoop() {
+        if (this.studyTimer) return;
+        let stepIdx = 0;
+        const tickStudy = () => {
+          if (!this.initialized || !this.ctx || !this.gains.study || !this.noiseBuf || this.levels.study <= 0) return;
+          const now = this.ctx.currentTime + 0.01;
+          const isPageTurn = (stepIdx % 7 === 6);
+          const src = this.ctx.createBufferSource();
+          src.buffer = this.noiseBuf;
+          const bp = this.ctx.createBiquadFilter();
+          bp.type = 'bandpass';
+          bp.frequency.value = isPageTurn ? 1650 : (2900 + Math.random() * 900);
+          bp.Q.value = isPageTurn ? 0.8 : 2.1;
+          const g = this.ctx.createGain();
+          const dur = isPageTurn ? 0.36 : (0.09 + Math.random() * 0.09);
+          g.gain.setValueAtTime(0.0001, now);
+          g.gain.linearRampToValueAtTime(isPageTurn ? 0.55 : 0.28, now + dur * 0.35);
+          g.gain.exponentialRampToValueAtTime(0.0008, now + dur);
+          src.connect(bp).connect(g).connect(this.gains.study);
+          src.start(now, Math.random() * 1.5, dur + 0.03);
+          stepIdx++;
+        };
+        tickStudy();
+        this.studyTimer = setInterval(() => {
+          if (Math.random() < 0.8) tickStudy();
+        }, 560);
+      },
+
+      stopStudyLoop() {
+        if (this.studyTimer) { clearInterval(this.studyTimer); this.studyTimer = null; }
       },
 
       startTrainLoop() {
@@ -1671,8 +2236,12 @@
           rain:  (this.levels.rain / 100) * 0.52,
           vinyl: (this.levels.vinyl / 100) * 0.42,
           purr:  (this.levels.purr / 100) * 0.36,
-          night: (this.levels.night / 100) * 0.32,
-          train: (this.levels.train / 100) * 0.48
+          night:     (this.levels.night / 100) * 0.32,
+          train:     (this.levels.train / 100) * 0.48,
+          fireplace: (this.levels.fireplace / 100) * 0.56,
+          city:      (this.levels.city / 100) * 0.44,
+          birds:     (this.levels.birds / 100) * 0.34,
+          study:     (this.levels.study / 100) * 0.52
         };
         Object.keys(map).forEach((k) => {
           if (this.gains[k]) {
@@ -1884,7 +2453,7 @@
           osc.frequency.exponentialRampToValueAtTime(freq * 1.25, now + 0.18);
           gain.gain.setValueAtTime(0.055, now);
           gain.gain.exponentialRampToValueAtTime(0.0008, now + 0.42);
-          osc.connect(gain).connect(this.ctx.destination);
+          osc.connect(gain).connect(this.masterGain || this.ctx.destination);
           osc.start(now);
           osc.stop(now + 0.44);
         } catch (_) {}
@@ -1974,7 +2543,7 @@
           if (t.keywords && t.keywords.some((kw) => {
             const k = kw.toLowerCase().replace(/[’'`]/g, '');
             // Avoid false positive for very short 'bad' inside 'badminton'
-            if (k === 'bad') return /(^|\s)bad(\s|$)/.test(clean) && !clean.includes('michael') ? true : /(^|\s)bad(\s|$)/.test(clean);
+            if (k === 'bad') return /(^|\s)bad(\s|$)/.test(clean);
             return clean.includes(k);
           })) {
             return t;
@@ -2091,6 +2660,7 @@
       currentTrack: MJ_PLAYLIST[0],
       candidateUrls: [],
       candidateIdx: 0,
+      loadToken: 0,
       hasLoadedCurrent: false,
       shuffle: false,
       repeatOne: false,
@@ -2163,6 +2733,7 @@
         this.hasLoadedCurrent = false;
         this.candidateUrls = this.buildCandidatesForTrack(track);
         this.candidateIdx = 0;
+        this.loadToken++;
 
         this.updateTrackDisplay();
         this.updateMediaSessionMetadata(track);
@@ -2177,6 +2748,8 @@
           return;
         }
         const url = this.candidateUrls[this.candidateIdx];
+        const token = this.loadToken;
+        this.audioEl.dataset.loadToken = String(token);
         this.audioEl.src = url;
         this.audioEl.load();
 
@@ -2195,6 +2768,7 @@
 
       tryNextCandidateSource() {
         if (!this.audioEl || !this.audioEl.src) return;
+        if (this.audioEl.dataset.loadToken !== String(this.loadToken)) return;
         this.candidateIdx++;
         if (this.candidateIdx < this.candidateUrls.length) {
           this.loadCurrentCandidate(true);
@@ -2552,6 +3126,88 @@
       if (cHisSub) cHisSub.textContent = `2 дек · исполн. ${his.turning}`;
     }
 
+    // Brian Maps face sticker photo loader (photos/8 with .jpg/.jpeg/.png/.webp)
+    const brianPhotoStore = {
+      img: null,
+      loadedUrl: null,
+      init() {
+        const exts = ['.jpg', '.jpeg', '.png', '.webp'];
+        let extIdx = 0;
+        const tryLoad = () => {
+          if (extIdx >= exts.length) return;
+          const url = `./photos/8${exts[extIdx]}`;
+          const img = new Image();
+          img.onload = () => {
+            this.img = img;
+            this.loadedUrl = url;
+          };
+          img.onerror = () => {
+            extIdx++;
+            tryLoad();
+          };
+          img.src = url;
+        };
+        tryLoad();
+      }
+    };
+
+    // Hug / Miss You Counter & Warm Glow Pulse Module
+    const hugStore = {
+      KEY: 'mj_cozy_room_hugs_v1',
+      count: 0,
+      lastMsgIdx: -1,
+      glowTimer: null,
+      init() {
+        try { this.count = Math.max(0, parseInt(localStorage.getItem(this.KEY) || '0', 10) || 0); } catch (_) {}
+        this.syncUI();
+      },
+      syncUI() {
+        const el = document.getElementById('hugCounterBadge');
+        if (el) el.textContent = `💛 ${this.count}`;
+      },
+      trigger() {
+        vibeEngine.ensureInit();
+        this.count++;
+        try { localStorage.setItem(this.KEY, String(this.count)); } catch (_) {}
+        this.syncUI();
+
+        // Warm chord chime
+        vibeEngine.playSoftChime(523.25);
+        setTimeout(() => vibeEngine.playSoftChime(659.25), 90);
+        setTimeout(() => vibeEngine.playSoftChime(783.99), 180);
+
+        // Fullscreen golden-rose glow pulse
+        const ov = document.getElementById('hugGlowOverlay');
+        if (ov) {
+          ov.classList.remove('hidden', 'hug-glow-anim');
+          void ov.offsetWidth;
+          ov.classList.add('hug-glow-anim');
+          if (this.glowTimer) clearTimeout(this.glowTimer);
+          this.glowTimer = setTimeout(() => {
+            ov.classList.add('hidden');
+            ov.classList.remove('hug-glow-anim');
+          }, 2350);
+        }
+
+        // Launch 26 hearts from all across the room!
+        for (let i = 0; i < 26; i++) {
+          particles.hearts.push({
+            x: 180 + Math.random() * 1080,
+            y: 440 + Math.random() * 340,
+            vy: -38 - Math.random() * 44,
+            size: 6 + Math.random() * 7.5,
+            age: 0,
+            col: i % 3 === 0 ? '#ff8fa3' : i % 3 === 1 ? '#ffd166' : '#fda4af'
+          });
+        }
+
+        let idx = Math.floor(Math.random() * HUG_MESSAGES.length);
+        if (idx === this.lastMsgIdx) idx = (idx + 1) % HUG_MESSAGES.length;
+        this.lastMsgIdx = idx;
+        showToast(`${HUG_MESSAGES[idx]} (Обнимашек: ${this.count})`, '🤗', null, 5500);
+      }
+    };
+
     // MJ Glove image loader (photos/7 with .png/.jpg/.jpeg/.webp)
     const mjGloveStore = {
       loadedUrl: null,
@@ -2609,11 +3265,32 @@
       }
     };
 
-    // Polaroids loader (automatically tries .jpg, .jpeg, .png, .webp from photos/)
+    // Polaroids loader (built-in photos/1..3 + custom phone uploads persisted in localStorage)
     const polaroidsStore = {
-      items: POLAROIDS_CONFIG.map((p) => ({ ...p, img: null, loadedUrl: null })),
+      CUSTOM_KEY: 'mj_cozy_room_custom_polaroids_v1',
+      items: POLAROIDS_CONFIG.map((p) => ({ ...p, img: null, loadedUrl: null, isCustom: false })),
+      customItems: [],
+      activeLightboxItem: null,
 
       init() {
+        // 1) Load custom uploaded polaroids from localStorage
+        try {
+          const raw = localStorage.getItem(this.CUSTOM_KEY);
+          const saved = raw ? JSON.parse(raw) : [];
+          if (Array.isArray(saved)) {
+            this.customItems = saved.map((c) => {
+              const entry = { ...c, img: null, loadedUrl: c.dataUrl, isCustom: true };
+              const im = new Image();
+              im.onload = () => { entry.img = im; };
+              im.src = c.dataUrl;
+              return entry;
+            });
+          }
+        } catch (_) {
+          this.customItems = [];
+        }
+
+        // 2) Load built-in photos/1..3
         const exts = ['.jpg', '.jpeg', '.png', '.webp'];
         this.items.forEach((item) => {
           let extIdx = 0;
@@ -2637,15 +3314,90 @@
         this.renderGrid();
       },
 
+      getAll() {
+        return [...this.customItems, ...this.items];
+      },
+
+      saveCustom() {
+        try {
+          const payload = this.customItems.map((c) => ({
+            id: c.id,
+            caption: c.caption,
+            sub: c.sub,
+            rot: c.rot,
+            dataUrl: c.dataUrl
+          }));
+          localStorage.setItem(this.CUSTOM_KEY, JSON.stringify(payload));
+        } catch (err) {
+          showToast('Память браузера заполнена — попробуй удалить старое загруженное фото', '⚠️');
+        }
+      },
+
+      addFromFile(file, captionRaw) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const srcImg = new Image();
+          srcImg.onload = () => {
+            // Compress neatly to max 640px JPEG so it saves cleanly in localStorage
+            const maxDim = 640;
+            let w = srcImg.width, h = srcImg.height;
+            if (w > maxDim || h > maxDim) {
+              const sc = maxDim / Math.max(w, h);
+              w = Math.round(w * sc);
+              h = Math.round(h * sc);
+            }
+            const off = document.createElement('canvas');
+            off.width = w;
+            off.height = h;
+            const octx = off.getContext('2d');
+            octx.drawImage(srcImg, 0, 0, w, h);
+            const dataUrl = off.toDataURL('image/jpeg', 0.82);
+
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+            const caption = (captionRaw || '').trim() || 'Наш тёплый момент 💛';
+            const rot = Number(((Math.random() - 0.5) * 6).toFixed(1));
+            const entry = {
+              id: 'cp-' + Date.now(),
+              caption,
+              sub: dateStr,
+              rot,
+              dataUrl,
+              loadedUrl: dataUrl,
+              img: srcImg,
+              isCustom: true
+            };
+            this.customItems.unshift(entry);
+            if (this.customItems.length > 12) this.customItems.pop();
+            this.saveCustom();
+            this.renderGrid();
+            vibeEngine.playSoftChime(659.25);
+            showToast('Новое фото прикреплено к пробковой доске! 📸✨', '📌');
+          };
+          srcImg.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      },
+
+      removeCustom(id) {
+        this.customItems = this.customItems.filter((c) => c.id !== id);
+        this.saveCustom();
+        this.closeLightbox();
+        this.renderGrid();
+        showToast('Фото снято с доски', '📌');
+      },
+
       renderGrid() {
         const grid = document.getElementById('polaroidGrid');
         if (!grid) return;
-        grid.innerHTML = this.items.map((p) => {
+        const all = this.getAll();
+        grid.innerHTML = all.map((p) => {
           const media = p.loadedUrl
             ? `<img src="${p.loadedUrl}" alt="${escapeHtml(p.caption)}" class="w-full h-full object-cover" />`
             : `<div class="w-full h-full flex flex-col items-center justify-center text-white/90" style="background:linear-gradient(135deg,${p.grad[0]},${p.grad[1]})"><span class="text-xl sm:text-2xl drop-shadow">${p.icon}</span></div>`;
           return `
-            <button data-open-polaroid="${p.id}" type="button" style="transform:rotate(${p.rot}deg)"
+            <button data-open-polaroid="${escapeHtml(String(p.id))}" type="button" style="transform:rotate(${p.rot}deg)"
               class="polaroid-card rounded-lg p-1.5 pb-2.5 text-left flex flex-col">
               <div class="w-full aspect-square rounded-[4px] overflow-hidden bg-[#241724]">${media}</div>
               <div class="text-[9px] sm:text-[10px] font-semibold text-[#3a2724] text-center mt-1.5 leading-tight truncate">${escapeHtml(p.caption)}</div>
@@ -2655,8 +3407,8 @@
 
         grid.querySelectorAll('[data-open-polaroid]').forEach((btn) => {
           btn.addEventListener('click', () => {
-            const id = Number(btn.getAttribute('data-open-polaroid'));
-            const found = this.items.find((x) => x.id === id);
+            const id = btn.getAttribute('data-open-polaroid');
+            const found = this.getAll().find((x) => String(x.id) === id);
             if (found) this.openLightbox(found);
           });
         });
@@ -2667,8 +3419,10 @@
         const media = document.getElementById('polaroidModalMedia');
         const cap = document.getElementById('polaroidModalCaption');
         const sub = document.getElementById('polaroidModalSub');
+        const delWrap = document.getElementById('polaroidDeleteWrap');
         if (!overlay || !media) return;
 
+        this.activeLightboxItem = item;
         if (item.loadedUrl) {
           media.innerHTML = `<img src="${item.loadedUrl}" alt="${escapeHtml(item.caption)}" class="w-full h-full object-cover" />`;
         } else {
@@ -2676,6 +3430,7 @@
         }
         if (cap) cap.textContent = item.caption;
         if (sub) sub.textContent = item.sub;
+        if (delWrap) delWrap.classList.toggle('hidden', !item.isCustom);
 
         overlay.classList.remove('modal-closed');
         overlay.classList.add('modal-open');
@@ -2821,7 +3576,7 @@
         if (musicPlayer.audioEl && !musicPlayer.audioEl.paused) {
           musicPlayer.audioEl.pause();
         }
-        ['beat', 'rain', 'vinyl', 'purr', 'night', 'train'].forEach((ch) => setMixerSlider(ch, 0));
+        ['beat', 'rain', 'vinyl', 'purr', 'night', 'train', 'fireplace', 'city', 'birds', 'study'].forEach((ch) => setMixerSlider(ch, 0));
 
         // Restore master volumes for next time she presses Play
         setTimeout(() => {
@@ -2971,20 +3726,23 @@
     const ctx = canvas.getContext('2d', { alpha: false });
 
     const HOTSPOTS = [
-      { id: 'window',       label: 'Окно · Погода',        x: 82,   y: 112, w: 296, h: 368 },
-      { id: 'corkboard',    label: 'Полароиды · Записки',  x: 405,  y: 165, w: 120, h: 155 },
-      { id: 'fairyLights',  label: 'Гирлянда',             x: 520,  y: 235, w: 430, h: 85  },
-      { id: 'lamp',         label: 'Ночник · Свет',        x: 382,  y: 452, w: 86,  h: 110 },
-      { id: 'nightstand',   label: 'Тумбочка · Секреты',   x: 374,  y: 566, w: 136, h: 162 },
-      { id: 'cocoa',        label: 'Какао · Комплимент',   x: 468,  y: 524, w: 46,  h: 42  },
-      { id: 'tablet',       label: 'Планшет iPad',         x: 648,  y: 488, w: 108, h: 84  },
-      { id: 'blanket',      label: 'Одеяло · Секрет',      x: 510,  y: 565, w: 280, h: 135 },
-      { id: 'cat',          label: 'Котик',                x: 805,  y: 562, w: 132, h: 86  },
-      { id: 'neonMJ',       label: 'Неон MJ · Перчатка',   x: 1090, y: 290, w: 170, h: 95  },
-      { id: 'candles',      label: 'Свечи',                x: 1005, y: 452, w: 72,  h: 72  },
-      { id: 'turntable',    label: 'Винил',                x: 1088, y: 450, w: 160, h: 92  },
-      { id: 'speaker',      label: 'Колонка · Плей/Пауза', x: 1262, y: 398, w: 116, h: 122 },
-      { id: 'brianSticker', label: 'Стикер Брайана 🥕',    x: 1238, y: 568, w: 88,  h: 78  }
+      { id: 'window',        label: 'Окно · Погода',        x: 82,   y: 112, w: 296, h: 368 },
+      { id: 'plant',         label: 'Цветок · Полить 💧',   x: 108,  y: 382, w: 80,  h: 92  },
+      { id: 'starProjector', label: 'Проектор неба 🌌',     x: 288,  y: 416, w: 62,  h: 56  },
+      { id: 'corkboard',     label: 'Полароиды · Записки',  x: 405,  y: 165, w: 120, h: 155 },
+      { id: 'fairyLights',   label: 'Гирлянда',             x: 520,  y: 235, w: 430, h: 85  },
+      { id: 'lamp',          label: 'Ночник · Свет',        x: 382,  y: 452, w: 86,  h: 110 },
+      { id: 'nightstand',    label: 'Тумбочка · Секреты',   x: 374,  y: 566, w: 136, h: 162 },
+      { id: 'cocoa',         label: 'Напиток · Комплимент', x: 464,  y: 520, w: 54,  h: 48  },
+      { id: 'tablet',        label: 'Планшет iPad',         x: 648,  y: 488, w: 108, h: 84  },
+      { id: 'blanket',       label: 'Одеяло · Секрет',      x: 510,  y: 565, w: 280, h: 135 },
+      { id: 'cat',           label: 'Котик',                x: 805,  y: 560, w: 134, h: 90  },
+      { id: 'catTreats',     label: 'Вкусняшка котику 🐟',  x: 944,  y: 662, w: 64,  h: 68  },
+      { id: 'neonMJ',        label: 'Неон MJ · Секреты',    x: 1090, y: 290, w: 170, h: 95  },
+      { id: 'candles',       label: 'Свечи',                x: 1005, y: 452, w: 72,  h: 72  },
+      { id: 'turntable',     label: 'Винил',                x: 1088, y: 450, w: 160, h: 92  },
+      { id: 'speaker',       label: 'Колонка · Плей/Пауза', x: 1262, y: 398, w: 116, h: 122 },
+      { id: 'brianSticker',  label: 'Брайан Мапс 🎬',       x: 1236, y: 564, w: 94,  h: 84  }
     ];
 
     function initParticles() {
@@ -3034,6 +3792,15 @@
         y: 536 - i * 8,
         age: Math.random(),
         drift: (Math.random() - 0.5) * 12
+      }));
+
+      particles.projectorStars = Array.from({ length: 72 }, () => ({
+        x: Math.random() * SCENE_W,
+        y: 16 + Math.random() * 490,
+        r: 1.0 + Math.random() * 2.2,
+        vx: 7 + Math.random() * 12,
+        phase: Math.random() * Math.PI * 2,
+        col: ['#e0f2fe', '#f5d0fe', '#fde68a', '#a5f3fc'][Math.floor(Math.random() * 4)]
       }));
     }
 
@@ -3090,40 +3857,89 @@
       }
     }
 
-    /* ----- LAYER 1: WALLS, FLOOR & WOVEN RUG ----- */
+    function getWoodPalette() {
+      const map = {
+        walnut: { top: '#8a594c', light: '#6e453b', mid: '#53322d', dark: '#3b2121', leg: '#2d181a', knob: '#e5b887', trim: '#8c5d51' },
+        oak:    { top: '#cfa87e', light: '#b58b62', mid: '#9c734e', dark: '#735036', leg: '#573b27', knob: '#fff0d4', trim: '#deb98e' },
+        wenge:  { top: '#4a3a3e', light: '#35282c', mid: '#261c20', dark: '#181115', leg: '#110b0e', knob: '#d4a373', trim: '#5c494e' },
+        white:  { top: '#f5ece4', light: '#e3d5c8', mid: '#d1c1b4', dark: '#b3a194', leg: '#948377', knob: '#d4a373', trim: '#fff7f0' }
+      };
+      return map[roomState.woodTone] || map.walnut;
+    }
+
+    /* ----- LAYER 1: WALLS, STAR PROJECTOR NEBULAE, FLOOR & WOVEN RUG ----- */
     function drawRoomShell() {
       const w = roomState.weather;
       const lamp = roomState.lampLevel * 0.5;
+      const wp = getWoodPalette();
+
+      const wallPresets = {
+        plum:    w === 'sunset' ? ['#4d2d3f', '#3b2434', '#281927'] : ['#27203a', '#2a1d32', '#1d1424'],
+        cream:   w === 'sunset' ? ['#7d625c', '#634c49', '#4a383a'] : ['#4a3e46', '#3d333d', '#2e2630'],
+        indigo:  w === 'sunset' ? ['#2e2c5c', '#232047', '#171530'] : ['#181c40', '#141736', '#0e1026'],
+        vintage: w === 'sunset' ? ['#593c42', '#473038', '#33222b'] : ['#362834', '#2c202c', '#211824'],
+        forest:  w === 'sunset' ? ['#28423b', '#203631', '#162624'] : ['#1a2e2c', '#152524', '#0f1c1c']
+      };
+      const cols = wallPresets[roomState.wallStyle] || wallPresets.plum;
 
       const wallGrad = ctx.createLinearGradient(0, 0, SCENE_W, 650);
-      if (w === 'sunset') {
-        wallGrad.addColorStop(0, '#4d2d3f');
-        wallGrad.addColorStop(0.5, '#3b2434');
-        wallGrad.addColorStop(1, '#281927');
-      } else if (w === 'rain') {
-        wallGrad.addColorStop(0, '#221f36');
-        wallGrad.addColorStop(0.5, '#251c31');
-        wallGrad.addColorStop(1, '#1b1526');
-      } else if (w === 'snow') {
-        wallGrad.addColorStop(0, '#222844');
-        wallGrad.addColorStop(0.5, '#282038');
-        wallGrad.addColorStop(1, '#1c172a');
-      } else {
-        wallGrad.addColorStop(0, '#27203a');
-        wallGrad.addColorStop(0.5, '#2a1d32');
-        wallGrad.addColorStop(1, '#1d1424');
-      }
+      wallGrad.addColorStop(0, cols[0]);
+      wallGrad.addColorStop(0.5, cols[1]);
+      wallGrad.addColorStop(1, cols[2]);
       ctx.fillStyle = wallGrad;
       ctx.fillRect(0, 0, SCENE_W, 650);
 
-      // Subtle cozy vertical wallpaper texture
+      // Subtle wallpaper vertical pattern (richer stripes for vintage)
       ctx.save();
-      ctx.globalAlpha = 0.045;
+      ctx.globalAlpha = roomState.wallStyle === 'vintage' ? 0.1 : 0.045;
       for (let x = 0; x < SCENE_W; x += 36) {
         ctx.fillStyle = x % 72 === 0 ? '#ffd8b0' : '#000000';
         ctx.fillRect(x, 0, 18, 650);
       }
       ctx.restore();
+
+      // Star Projector Nebulae & Drifting Stars Projected onto Walls & Ceiling!
+      if (roomState.projectorAlpha > 0.01) {
+        const pa = roomState.projectorAlpha;
+        const t = roomState.time;
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = pa;
+
+        const nebulae = [
+          { x: 460 + Math.sin(t * 0.22) * 90, y: 150 + Math.cos(t * 0.18) * 35, r: 280, c1: 'rgba(139, 92, 246, 0.34)', c2: 'rgba(56, 189, 248, 0.14)' },
+          { x: 880 + Math.cos(t * 0.19) * 110, y: 180 + Math.sin(t * 0.24) * 40, r: 310, c1: 'rgba(236, 72, 153, 0.28)', c2: 'rgba(99, 102, 241, 0.12)' },
+          { x: 1180 + Math.sin(t * 0.15 + 2) * 85, y: 240 + Math.cos(t * 0.21) * 30, r: 250, c1: 'rgba(34, 211, 238, 0.28)', c2: 'rgba(168, 85, 247, 0.10)' },
+          { x: 650 + Math.cos(t * 0.17 + 1) * 95, y: 320 + Math.sin(t * 0.16) * 28, r: 240, c1: 'rgba(244, 162, 97, 0.22)', c2: 'rgba(192, 132, 252, 0.10)' }
+        ];
+        nebulae.forEach((nb) => {
+          const ng = ctx.createRadialGradient(nb.x, nb.y, 12, nb.x, nb.y, nb.r);
+          ng.addColorStop(0, nb.c1);
+          ng.addColorStop(0.55, nb.c2);
+          ng.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = ng;
+          ctx.fillRect(0, 0, SCENE_W, 560);
+        });
+
+        // Slowly drifting twinkling projected stars on the walls
+        for (const ps of particles.projectorStars) {
+          const tw = 0.4 + 0.6 * Math.abs(Math.sin(t * 2.1 + ps.phase));
+          ctx.globalAlpha = pa * tw * 0.85;
+          ctx.fillStyle = ps.col;
+          ctx.beginPath();
+          ctx.arc(ps.x, ps.y, ps.r, 0, Math.PI * 2);
+          ctx.fill();
+          if (ps.r > 2.2) {
+            ctx.strokeStyle = ps.col;
+            ctx.lineWidth = 0.9;
+            ctx.beginPath();
+            ctx.moveTo(ps.x - 5, ps.y); ctx.lineTo(ps.x + 5, ps.y);
+            ctx.moveTo(ps.x, ps.y - 5); ctx.lineTo(ps.x, ps.y + 5);
+            ctx.stroke();
+          }
+        }
+        ctx.restore();
+      }
 
       // Lower wooden wall paneling
       const panelGrad = ctx.createLinearGradient(0, 520, 0, 650);
@@ -3135,7 +3951,7 @@
       ctx.fillRect(0, 524, SCENE_W, 3);
 
       // Baseboard trim
-      ctx.fillStyle = '#3b252a';
+      ctx.fillStyle = wp.dark;
       ctx.fillRect(0, 636, SCENE_W, 16);
       ctx.fillStyle = 'rgba(255, 224, 194, 0.15)';
       ctx.fillRect(0, 636, SCENE_W, 2);
@@ -3166,17 +3982,25 @@
         ctx.stroke();
       }
 
-      // Plush oval braided rug under bed
+      // Plush oval braided rug under bed (4 customizable styles)
+      const rugPalettes = {
+        burgundy: [lamp > 0 ? '#6e4951' : '#4a323c', '#4c323b', '#362129', 'rgba(255, 224, 190, 0.16)'],
+        cream:    [lamp > 0 ? '#b8a396' : '#8a7870', '#968277', '#6e5c55', 'rgba(255, 245, 232, 0.25)'],
+        starry:   [lamp > 0 ? '#31305c' : '#202042', '#232347', '#161630', 'rgba(253, 230, 138, 0.26)'],
+        emerald:  [lamp > 0 ? '#2b594d' : '#1d3d36', '#1e423a', '#132b26', 'rgba(255, 224, 178, 0.18)']
+      };
+      const rp = rugPalettes[roomState.rugStyle] || rugPalettes.burgundy;
+
       ctx.save();
       const rugGrad = ctx.createRadialGradient(720, 775, 40, 720, 775, 390);
-      rugGrad.addColorStop(0, lamp > 0 ? '#6e4951' : '#4a323c');
-      rugGrad.addColorStop(0.7, '#4c323b');
-      rugGrad.addColorStop(1, '#362129');
+      rugGrad.addColorStop(0, rp[0]);
+      rugGrad.addColorStop(0.7, rp[1]);
+      rugGrad.addColorStop(1, rp[2]);
       ctx.fillStyle = rugGrad;
       ctx.beginPath();
       ctx.ellipse(720, 780, 395, 78, 0, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = 'rgba(255, 224, 190, 0.14)';
+      ctx.strokeStyle = rp[3];
       ctx.lineWidth = 3;
       ctx.setLineDash([12, 8]);
       ctx.beginPath();
@@ -3185,6 +4009,16 @@
       ctx.beginPath();
       ctx.ellipse(720, 780, 290, 50, 0, 0, Math.PI * 2);
       ctx.stroke();
+
+      if (roomState.rugStyle === 'starry') {
+        ctx.setLineDash([]);
+        ctx.fillStyle = 'rgba(253, 230, 138, 0.52)';
+        [[460, 778], [560, 755], [640, 818], [800, 814], [895, 762], [985, 782]].forEach(([sx, sy]) => {
+          ctx.beginPath();
+          ctx.arc(sx, sy, 2.8, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
       ctx.restore();
     }
 
@@ -3479,8 +4313,9 @@
       ctx.arc(wx + ww + 42, wy - 24, 7, 0, Math.PI * 2);
       ctx.fill();
 
-      // Potted plant on windowsill
+      // Growing Waterable Potted Plant on Left Windowsill (stages 0..4!)
       const px = wx + 54, py = wy + wh + 2;
+      const stage = roomState.plantStage || 0;
       const potGrad = ctx.createLinearGradient(px - 22, py - 38, px + 22, py);
       potGrad.addColorStop(0, '#c86d51');
       potGrad.addColorStop(1, '#843e2d');
@@ -3496,18 +4331,23 @@
       drawRoundRect(ctx, px - 25, py - 44, 50, 9, 3);
       ctx.fill();
 
-      [
+      const leafScale = 1 + stage * 0.085;
+      const baseLeaves = [
         [-22, -62, -0.7, 18, 9], [-6, -78, -0.2, 20, 10], [16, -72, 0.4, 19, 9],
         [28, -54, 0.9, 17, 8], [-28, -44, -1.1, 15, 7], [4, -56, 0.15, 16, 8]
-      ].forEach(([lx, ly, ang, rx, ry], idx) => {
+      ];
+      if (stage >= 1) {
+        baseLeaves.push([-16, -92, -0.45, 17, 8.5], [14, -90, 0.5, 17, 8.5]);
+      }
+      baseLeaves.forEach(([lx, ly, ang, rx, ry], idx) => {
         ctx.save();
-        ctx.translate(px + lx, py + ly + Math.sin(t * 1.1 + idx) * 1.4);
+        ctx.translate(px + lx * (1 + stage * 0.04), py + ly * (1 + stage * 0.05) + Math.sin(t * 1.1 + idx) * 1.4);
         ctx.rotate(ang);
-        ctx.fillStyle = idx % 2 === 0 ? '#3e6e4c' : '#2d553b';
+        ctx.fillStyle = idx % 2 === 0 ? '#437d53' : '#2f5e41';
         ctx.beginPath();
-        ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+        ctx.ellipse(0, 0, rx * leafScale, ry * leafScale, 0, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = 'rgba(170, 230, 175, 0.25)';
+        ctx.strokeStyle = 'rgba(170, 230, 175, 0.28)';
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(-rx * 0.7, 0);
@@ -3515,6 +4355,117 @@
         ctx.stroke();
         ctx.restore();
       });
+
+      // Stage 2+: Graceful stems + flower buds; Stage 3+: Blooming warm peach/rose flowers!
+      if (stage >= 2) {
+        const stems = [
+          { bx: -12, by: -64, tx: -24, ty: -104, col: '#fda4af' },
+          { bx: 0,   by: -70, tx: 2,   ty: -116, col: '#ffd6a5' },
+          { bx: 12,  by: -62, tx: 26,  ty: -100, col: '#f9a8d4' }
+        ];
+        stems.forEach((st, idx) => {
+          const sw = Math.sin(t * 1.5 + idx) * 2.2;
+          ctx.strokeStyle = '#4e8b5c';
+          ctx.lineWidth = 2.4;
+          ctx.beginPath();
+          ctx.moveTo(px + st.bx, py + st.by);
+          ctx.quadraticCurveTo(px + (st.bx + st.tx) * 0.5 + sw, py + (st.by + st.ty) * 0.5, px + st.tx + sw, py + st.ty);
+          ctx.stroke();
+
+          const fx = px + st.tx + sw;
+          const fy = py + st.ty;
+          if (stage === 2) {
+            // Closed rosebud
+            ctx.fillStyle = st.col;
+            ctx.beginPath();
+            ctx.ellipse(fx, fy, 4.5, 6.2, 0, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // Full blooming 5-petal blossom!
+            const pRad = stage >= 4 ? 5.6 : 4.5;
+            for (let p = 0; p < 5; p++) {
+              const a = (p / 5) * Math.PI * 2 + t * 0.15;
+              ctx.fillStyle = st.col;
+              ctx.beginPath();
+              ctx.arc(fx + Math.cos(a) * pRad * 0.9, fy + Math.sin(a) * pRad * 0.9, pRad, 0, Math.PI * 2);
+              ctx.fill();
+            }
+            ctx.fillStyle = '#fef08a';
+            ctx.beginPath();
+            ctx.arc(fx, fy, 3.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        });
+
+        // Stage 4: Tiny golden pollen glow around full-bloom plant
+        if (stage >= 4) {
+          ctx.save();
+          for (let g = 0; g < 4; g++) {
+            const gx = px + Math.sin(t * 1.3 + g * 1.8) * 32;
+            const gy = py - 95 + Math.cos(t * 1.6 + g * 2.1) * 18;
+            ctx.fillStyle = `rgba(254, 240, 138, ${(0.45 + 0.45 * Math.sin(t * 3 + g)).toFixed(2)})`;
+            ctx.beginPath();
+            ctx.arc(gx, gy, 2.1, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+      }
+
+      // Falling water droplets animation when watered
+      for (const wd of particles.waterDrops) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, 1 - wd.age);
+        ctx.fillStyle = '#7dd3fc';
+        ctx.beginPath();
+        ctx.ellipse(wd.x, wd.y, 2.2, 4.0, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Star Sky Projector Sphere on Right Windowsill
+      const spx = wx + 226, spy = wy + wh + 2;
+      ctx.save();
+      // Base stand
+      ctx.fillStyle = '#2d2336';
+      drawRoundRect(ctx, spx - 16, spy - 10, 32, 10, 4);
+      ctx.fill();
+      ctx.fillStyle = '#d4a373';
+      ctx.fillRect(spx - 12, spy - 11, 24, 2);
+
+      // Projector glowing orb
+      const orbGrad = ctx.createRadialGradient(spx - 4, spy - 28, 3, spx, spy - 24, 18);
+      if (roomState.projectorOn) {
+        orbGrad.addColorStop(0, '#e0f2fe');
+        orbGrad.addColorStop(0.45, '#a855f7');
+        orbGrad.addColorStop(1, '#312e81');
+      } else {
+        orbGrad.addColorStop(0, '#6d5d7a');
+        orbGrad.addColorStop(1, '#2a2136');
+      }
+      ctx.fillStyle = orbGrad;
+      ctx.beginPath();
+      ctx.arc(spx, spy - 24, 16, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (roomState.projectorOn) {
+        const pGlow = ctx.createRadialGradient(spx, spy - 24, 4, spx, spy - 24, 44);
+        pGlow.addColorStop(0, 'rgba(192, 132, 252, 0.55)');
+        pGlow.addColorStop(0.5, 'rgba(56, 189, 248, 0.22)');
+        pGlow.addColorStop(1, 'rgba(56, 189, 248, 0)');
+        ctx.fillStyle = pGlow;
+        ctx.beginPath();
+        ctx.arc(spx, spy - 24, 44, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // Tiny star cutouts on the sphere
+      ctx.fillStyle = roomState.projectorOn ? '#fef08a' : 'rgba(255,255,255,0.22)';
+      [[-5, -28], [4, -31], [7, -21], [-6, -18], [0, -24]].forEach(([ox, oy]) => {
+        ctx.beginPath();
+        ctx.arc(spx + ox, spy + oy, 1.3, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
     }
 
     /* ----- LAYER 3: WALL DECOR (CORKBOARD, MJ POSTERS, PINK/CYAN NEON "MJ") ----- */
@@ -3531,14 +4482,18 @@
       drawRoundRect(ctx, cx + 7, cy + 7, cw - 14, ch - 14, 4);
       ctx.fill();
 
-      // 3 Pinned Polaroids + 1 Sticky Note on Corkboard
+      // Pinned Polaroids on Corkboard (shows custom uploaded photos first + built-in polaroids!)
+      const allPols = polaroidsStore.getAll();
       const corkSlots = [
         { x: cx + 14, y: cy + 16, w: 40, h: 48, rot: -0.09, pIdx: 0 },
         { x: cx + 57, y: cy + 22, w: 40, h: 48, rot:  0.07, pIdx: 1 },
         { x: cx + 20, y: cy + 74, w: 42, h: 48, rot:  0.04, pIdx: 2 }
       ];
+      if (allPols.length >= 4) {
+        corkSlots.push({ x: cx + 62, y: cy + 76, w: 36, h: 44, rot: -0.06, pIdx: 3 });
+      }
       corkSlots.forEach((slot) => {
-        const pItem = polaroidsStore.items[slot.pIdx];
+        const pItem = allPols[slot.pIdx];
         ctx.save();
         ctx.translate(slot.x + slot.w / 2, slot.y + slot.h / 2);
         ctx.rotate(slot.rot);
@@ -3581,7 +4536,8 @@
         ctx.restore();
       });
 
-      // Small yellow sticky note in bottom right of corkboard
+      // Small yellow sticky note in bottom right of corkboard (unless 4th polaroid is pinned there)
+      if (allPols.length < 4) {
       ctx.save();
       ctx.translate(cx + 81, cy + 98);
       ctx.rotate(-0.08);
@@ -3593,6 +4549,7 @@
       drawHeart(ctx, -1, 1, 4.5);
       ctx.fill();
       ctx.restore();
+      }
 
       // 2) Michael Jackson Framed Posters (photos/4, photos/5, photos/6 with fallback art)
       const p4 = wallPostersStore.items[0];
@@ -3732,27 +4689,28 @@
       ctx.ellipse(nx + nw / 2, ny + nh + 4, 72, 12, 0, 0, Math.PI * 2);
       ctx.fill();
 
+      const wp = getWoodPalette();
       const wood = ctx.createLinearGradient(nx, ny, nx + nw, ny + nh);
-      wood.addColorStop(0, '#6b453e');
-      wood.addColorStop(1, '#3e2524');
+      wood.addColorStop(0, wp.light);
+      wood.addColorStop(1, wp.dark);
       ctx.fillStyle = wood;
       drawRoundRect(ctx, nx, ny, nw, nh - 14, 8);
       ctx.fill();
-      ctx.fillStyle = '#82564c';
+      ctx.fillStyle = wp.top;
       drawRoundRect(ctx, nx - 6, ny - 4, nw + 12, 14, 4);
       ctx.fill();
-      ctx.fillStyle = '#331d1d';
+      ctx.fillStyle = wp.leg;
       ctx.fillRect(nx + 10, ny + nh - 16, 10, 18);
       ctx.fillRect(nx + nw - 20, ny + nh - 16, 10, 18);
 
       [ny + 22, ny + 82].forEach((dy) => {
-        ctx.fillStyle = '#53332f';
+        ctx.fillStyle = wp.mid;
         drawRoundRect(ctx, nx + 10, dy, nw - 20, 48, 5);
         ctx.fill();
         ctx.strokeStyle = 'rgba(255, 210, 180, 0.14)';
         ctx.lineWidth = 1.5;
         ctx.stroke();
-        ctx.fillStyle = '#e5b887';
+        ctx.fillStyle = wp.knob;
         ctx.beginPath();
         ctx.arc(nx + nw / 2, dy + 24, 5, 0, Math.PI * 2);
         ctx.fill();
@@ -3802,29 +4760,78 @@
         ctx.restore();
       }
 
-      // Steaming Mug of Hot Cocoa
+      // Steaming Mug with 4 Selectable Drinks (Cocoa + marshmallows, Tea + tag, Latte + heart, Matcha)
       const mx = 486, my = 562;
-      ctx.strokeStyle = '#f3d5c0';
+      const drink = roomState.drink || 'cocoa';
+      ctx.strokeStyle = drink === 'matcha' ? '#e8f0e4' : '#f3d5c0';
       ctx.lineWidth = 4;
       ctx.beginPath();
       ctx.arc(mx + 14, my - 15, 7, -Math.PI * 0.45, Math.PI * 0.45);
       ctx.stroke();
 
       const mugGrad = ctx.createLinearGradient(mx - 14, my - 30, mx + 14, my);
-      mugGrad.addColorStop(0, '#faebd7');
-      mugGrad.addColorStop(1, '#c8a995');
+      if (drink === 'matcha') {
+        mugGrad.addColorStop(0, '#f4f7f0');
+        mugGrad.addColorStop(1, '#c5d1be');
+      } else if (drink === 'tea') {
+        mugGrad.addColorStop(0, '#fff5e8');
+        mugGrad.addColorStop(1, '#dfb9a4');
+      } else {
+        mugGrad.addColorStop(0, '#faebd7');
+        mugGrad.addColorStop(1, '#c8a995');
+      }
       ctx.fillStyle = mugGrad;
       drawRoundRect(ctx, mx - 14, my - 30, 28, 30, 6);
       ctx.fill();
 
-      ctx.fillStyle = '#e07a5f';
+      ctx.fillStyle = drink === 'matcha' ? '#588157' : '#e07a5f';
       drawHeart(ctx, mx, my - 13, 5.5);
       ctx.fill();
 
-      ctx.fillStyle = '#5a3222';
+      // Liquid surface
+      const liquidCols = { cocoa: '#5a3222', tea: '#b45309', latte: '#c28b5e', matcha: '#74a85a' };
+      ctx.fillStyle = liquidCols[drink] || '#5a3222';
       ctx.beginPath();
-      ctx.ellipse(mx, my - 29, 12, 3.5, 0, 0, Math.PI * 2);
+      ctx.ellipse(mx, my - 29, 12, 3.8, 0, 0, Math.PI * 2);
       ctx.fill();
+
+      if (drink === 'cocoa') {
+        // Floating mini marshmallows bobbing gently
+        const mb = Math.sin(t * 2.2) * 0.6;
+        ctx.fillStyle = '#fff9f2';
+        ctx.beginPath();
+        ctx.ellipse(mx - 4.5, my - 29.5 + mb, 2.8, 2.0, 0.2, 0, Math.PI * 2);
+        ctx.ellipse(mx + 1.5, my - 30.2 - mb, 2.6, 1.9, -0.1, 0, Math.PI * 2);
+        ctx.ellipse(mx + 6.0, my - 28.8 + mb * 0.6, 2.2, 1.6, 0.1, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (drink === 'tea') {
+        // Hanging teabag string & cute yellow tag over mug rim
+        ctx.strokeStyle = '#f5ebe0';
+        ctx.lineWidth = 1.1;
+        ctx.beginPath();
+        ctx.moveTo(mx - 6, my - 29);
+        ctx.quadraticCurveTo(mx - 12, my - 25, mx - 11, my - 13);
+        ctx.stroke();
+        ctx.fillStyle = '#fbbf24';
+        drawRoundRect(ctx, mx - 14, my - 14, 6, 7, 1.2);
+        ctx.fill();
+      } else if (drink === 'latte') {
+        // Creamy foam & mini latte heart on top
+        ctx.fillStyle = '#fff4e6';
+        ctx.beginPath();
+        ctx.ellipse(mx, my - 29, 9.5, 2.6, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#a46b42';
+        drawHeart(ctx, mx, my - 28.5, 2.6);
+        ctx.fill();
+      } else if (drink === 'matcha') {
+        // Creamy milk swirl in matcha
+        ctx.strokeStyle = '#f8faf2';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.arc(mx, my - 29, 5, 0.2, Math.PI * 1.4);
+        ctx.stroke();
+      }
 
       for (const s of particles.steam) {
         const a = Math.sin(s.age * Math.PI) * (0.28 + roomState.cocoaSteamBoost * 0.35);
@@ -3849,18 +4856,19 @@
       ctx.ellipse(cx + cw / 2, cy + ch + 5, 205, 15, 0, 0, Math.PI * 2);
       ctx.fill();
 
+      const wp = getWoodPalette();
       const cabGrad = ctx.createLinearGradient(cx, cy, cx, cy + ch);
-      cabGrad.addColorStop(0, '#6e453b');
-      cabGrad.addColorStop(1, '#3b2121');
+      cabGrad.addColorStop(0, wp.light);
+      cabGrad.addColorStop(1, wp.dark);
       ctx.fillStyle = cabGrad;
       drawRoundRect(ctx, cx, cy, cw, ch - 20, 9);
       ctx.fill();
 
-      ctx.fillStyle = '#8a594c';
+      ctx.fillStyle = wp.top;
       drawRoundRect(ctx, cx - 6, cy - 5, cw + 12, 13, 4);
       ctx.fill();
 
-      ctx.fillStyle = '#2d181a';
+      ctx.fillStyle = wp.leg;
       ctx.fillRect(cx + 18, cy + ch - 22, 12, 26);
       ctx.fillRect(cx + cw - 30, cy + ch - 22, 12, 26);
 
@@ -3931,7 +4939,7 @@
       });
 
       // Right cabinet door
-      ctx.fillStyle = '#53322d';
+      ctx.fillStyle = wp.mid;
       drawRoundRect(ctx, cx + 206, cy + 20, 162, ch - 56, 5);
       ctx.fill();
       ctx.strokeStyle = 'rgba(0,0,0,0.22)';
@@ -3943,39 +4951,52 @@
         ctx.stroke();
       }
 
-      // Cute Brian Maps Carrot Sticker on Right Cabinet Door
+      // Brian Maps Photo Sticker on Right Cabinet Door (loads photos/8, clean retro fallback)
       ctx.save();
       ctx.translate(cx + 286, cy + 88);
-      ctx.rotate(-0.07);
-      ctx.fillStyle = 'rgba(0,0,0,0.26)';
-      drawRoundRect(ctx, -25, -23, 54, 50, 9);
+      ctx.rotate(-0.06);
+      // Drop shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.32)';
+      drawRoundRect(ctx, -31, -33, 66, 72, 8);
       ctx.fill();
-      ctx.fillStyle = '#fff5e4';
-      drawRoundRect(ctx, -27, -25, 54, 50, 9);
+      // White glossy sticker border
+      ctx.fillStyle = '#fff9f2';
+      drawRoundRect(ctx, -33, -35, 66, 72, 8);
       ctx.fill();
-      ctx.strokeStyle = '#f4a261';
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgba(244, 162, 97, 0.55)';
+      ctx.lineWidth = 1.6;
       ctx.stroke();
-      // Mini carrot doodle
-      ctx.fillStyle = '#f97316';
-      ctx.beginPath();
-      ctx.moveTo(-4, -8);
-      ctx.lineTo(6, -10);
-      ctx.lineTo(1, 8);
-      ctx.closePath();
-      ctx.fill();
-      ctx.strokeStyle = '#22c55e';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(1, -10); ctx.lineTo(-3, -16);
-      ctx.moveTo(1, -10); ctx.lineTo(2, -17);
-      ctx.moveTo(1, -10); ctx.lineTo(6, -15);
-      ctx.stroke();
-      // "BM" caption
-      ctx.fillStyle = '#3b2121';
-      ctx.font = '800 10px Inter, sans-serif';
+
+      const bx = -28, by = -30, bw = 56, bh = 50;
+      if (brianPhotoStore.img) {
+        ctx.save();
+        drawRoundRect(ctx, bx, by, bw, bh, 5);
+        ctx.clip();
+        const sc = Math.max(bw / brianPhotoStore.img.width, bh / brianPhotoStore.img.height);
+        const dw = brianPhotoStore.img.width * sc;
+        const dh = brianPhotoStore.img.height * sc;
+        ctx.drawImage(brianPhotoStore.img, bx + (bw - dw) / 2, by + (bh - dh) / 2, dw, dh);
+        ctx.restore();
+      } else {
+        const bg = ctx.createLinearGradient(bx, by, bx + bw, by + bh);
+        bg.addColorStop(0, '#312e81');
+        bg.addColorStop(1, '#9d174d');
+        ctx.fillStyle = bg;
+        drawRoundRect(ctx, bx, by, bw, bh, 5);
+        ctx.fill();
+        ctx.fillStyle = '#fef3c7';
+        ctx.font = '800 18px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('BM', 0, -5);
+      }
+
+      // Caption strip at bottom of sticker
+      ctx.fillStyle = '#2d1c1c';
+      ctx.font = '800 9.5px Inter, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('BRIAN', 0, 20);
+      ctx.textBaseline = 'middle';
+      ctx.fillText('BRIAN', 0, 29);
       ctx.restore();
 
       // 1) Flickering Aromatic Candles
@@ -4137,13 +5158,14 @@
       ctx.ellipse(732, 742, 248, 26, 0, 0, Math.PI * 2);
       ctx.fill();
 
+      const wp = getWoodPalette();
       const hbGrad = ctx.createLinearGradient(bx, by, bx, by + 230);
-      hbGrad.addColorStop(0, '#6e453d');
-      hbGrad.addColorStop(1, '#3b2121');
+      hbGrad.addColorStop(0, wp.light);
+      hbGrad.addColorStop(1, wp.dark);
       ctx.fillStyle = hbGrad;
       drawRoundRect(ctx, bx, by, bw, 220, 26);
       ctx.fill();
-      ctx.strokeStyle = '#8c5d51';
+      ctx.strokeStyle = wp.trim;
       ctx.lineWidth = 3;
       ctx.stroke();
 
@@ -4222,16 +5244,25 @@
         }
 
         const tw = mode === 1 ? (0.68 + 0.32 * Math.sin(t * 2.4 + i * 1.15)) : 1.0;
+        const fColMode = roomState.fairyColor || 'warm';
+        const rainbowRgb = [
+          [255, 128, 168], [255, 204, 112], [110, 231, 183], [103, 232, 249], [192, 132, 252]
+        ];
+        let rgb = [255, 200, 125], core = '#fff9e6';
+        if (fColMode === 'rose') { rgb = [255, 138, 175]; core = '#fff1f5'; }
+        else if (fColMode === 'ice') { rgb = [125, 211, 252]; core = '#f0f9ff'; }
+        else if (fColMode === 'rainbow') { rgb = rainbowRgb[i % rainbowRgb.length]; core = '#ffffff'; }
+
         const glow = ctx.createRadialGradient(bx, by + 3, 1, bx, by + 3, 28 * tw);
-        glow.addColorStop(0, `rgba(255, 240, 195, ${0.85 * tw})`);
-        glow.addColorStop(0.35, `rgba(255, 190, 110, ${0.35 * tw})`);
-        glow.addColorStop(1, 'rgba(255, 160, 90, 0)');
+        glow.addColorStop(0, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${(0.88 * tw).toFixed(3)})`);
+        glow.addColorStop(0.38, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${(0.36 * tw).toFixed(3)})`);
+        glow.addColorStop(1, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0)`);
         ctx.fillStyle = glow;
         ctx.beginPath();
         ctx.arc(bx, by + 3, 28, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = '#fff9e6';
+        ctx.fillStyle = core;
         ctx.beginPath();
         ctx.arc(bx, by + 3, 3.6, 0, Math.PI * 2);
         ctx.fill();
@@ -4325,6 +5356,7 @@
 
       const outfitPalettes = {
         beige:       ['#e3ceb5', '#cfb497', '#a98c70', '#dfcab1'],
+        heartPajama: ['#fff1f4', '#f9d6df', '#e3b2c0', '#f472b6'],
         rose:        ['#f6c9cf', '#e4a4ae', '#b87682', '#f0b8c0'],
         mjJacket:    ['#dc2626', '#991b1b', '#5c1118', '#f59e0b'],
         midnight:    ['#6374d4', '#4656b8', '#2b3785', '#8292e8'],
@@ -4353,7 +5385,32 @@
 
       ctx.save();
       ctx.clip();
-      ctx.strokeStyle = 'rgba(116, 86, 62, 0.24)';
+      if (roomState.outfit === 'heartPajama') {
+        // Cute home heart-print pajama pattern + center button placket
+        ctx.fillStyle = '#e11d48';
+        [
+          [-34, 4], [-14, 16], [16, 12], [36, 4],
+          [-40, 32], [-18, 42], [22, 38], [42, 28],
+          [-32, 64], [-12, 74], [18, 68], [36, 60],
+          [-24, 92], [16, 94]
+        ].forEach(([hx, hy]) => {
+          drawHeart(ctx, hx, hy, 4.3);
+          ctx.fill();
+        });
+        // Delicate pink piping placket & mini pearl buttons
+        ctx.strokeStyle = 'rgba(225, 29, 72, 0.35)';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(0, 14); ctx.lineTo(0, 112);
+        ctx.stroke();
+        [28, 48, 68, 88].forEach((by) => {
+          ctx.fillStyle = '#fff5f7';
+          ctx.beginPath();
+          ctx.arc(0, by, 2.3, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      } else {
+        ctx.strokeStyle = 'rgba(116, 86, 62, 0.24)';
       ctx.lineWidth = 2;
       for (let rx = -76; rx <= 76; rx += 7.5) {
         ctx.beginPath();
@@ -4368,6 +5425,7 @@
         ctx.moveTo(rx, -28);
         ctx.quadraticCurveTo(rx * 1.04, 42, rx * 0.96, 112);
         ctx.stroke();
+      }
       }
       // Screen glow on sweater
       const tabChestGlow = ctx.createRadialGradient(-8, 42, 8, -8, 42, 78);
@@ -4466,6 +5524,20 @@
         ctx.ellipse(bx, 12, 11, 6.5, 0, 0, Math.PI * 2);
         ctx.fill();
       });
+
+      // Optional cute warm freckles across nose bridge & cheeks
+      if (roomState.freckles) {
+        ctx.fillStyle = 'rgba(156, 88, 60, 0.56)';
+        [
+          [-19, 10.5], [-15.5, 12.2], [-12, 10.8], [-17, 14],
+          [-4, 10.2], [0, 9.8], [4, 10.4],
+          [12, 10.8], [15.5, 12.2], [19, 10.5], [17, 14]
+        ].forEach(([fx, fy]) => {
+          ctx.beginPath();
+          ctx.arc(fx, fy, 0.95, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
 
       // Soft arched eyebrows
       ctx.strokeStyle = '#4a2b1d';
@@ -4657,52 +5729,119 @@
         ctx.fill();
       }
 
-      // Optional cozy glasses (clear dark-bronze frames + soft lens tint + white glint)
-      if (roomState.glasses) {
+      // Optional stylish glasses (round / goldThin / catEye)
+      if (roomState.glassesStyle && roomState.glassesStyle !== 'none') {
+        const gs = roomState.glassesStyle;
         ctx.save();
+        const frameCol = gs === 'goldThin' ? '#f6c978' : gs === 'catEye' ? '#3d1726' : '#2d1a14';
+        const frameW = gs === 'goldThin' ? 1.55 : 2.3;
+
         // Temples going back to ears
-        ctx.strokeStyle = '#3a2219';
-        ctx.lineWidth = 1.8;
+        ctx.strokeStyle = frameCol;
+        ctx.lineWidth = gs === 'goldThin' ? 1.4 : 1.9;
         ctx.beginPath();
-        ctx.moveTo(-24, 1.5); ctx.lineTo(-31, -0.5);
-        ctx.moveTo(24, 1.5);  ctx.lineTo(31, -0.5);
+        ctx.moveTo(-24, 1.2); ctx.lineTo(-31, -0.8);
+        ctx.moveTo(24, 1.2);  ctx.lineTo(31, -0.8);
         ctx.stroke();
 
-        // Soft translucent lens fill
-        ctx.fillStyle = 'rgba(215, 238, 255, 0.18)';
-        ctx.beginPath();
-        ctx.ellipse(-13.5, 3, 10.2, 8.2, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.ellipse(13.5, 3, 10.2, 8.2, 0, 0, Math.PI * 2);
-        ctx.fill();
+        const drawLens = (side) => {
+          ctx.save();
+          ctx.scale(side, 1);
+          if (gs === 'catEye') {
+            ctx.beginPath();
+            ctx.moveTo(4, -1);
+            ctx.bezierCurveTo(10, -5.5, 19, -7, 25.5, -5.5);
+            ctx.bezierCurveTo(25.5, 4, 21, 11, 13.5, 11);
+            ctx.bezierCurveTo(6.5, 11, 3.2, 5.5, 4, -1);
+            ctx.closePath();
+          } else if (gs === 'goldThin') {
+            drawRoundRect(ctx, 3.8, -5.2, 20.4, 15.8, 6.2);
+          } else {
+            ctx.beginPath();
+            ctx.ellipse(13.5, 3, 10.2, 8.8, 0, 0, Math.PI * 2);
+          }
+          ctx.fillStyle = 'rgba(215, 238, 255, 0.18)';
+          ctx.fill();
+          ctx.strokeStyle = frameCol;
+          ctx.lineWidth = frameW;
+          ctx.stroke();
+          ctx.restore();
+        };
 
-        // Crisp dark-espresso rims with subtle warm gold inner highlight
-        ctx.strokeStyle = '#2d1a14';
-        ctx.lineWidth = 2.2;
-        ctx.beginPath();
-        ctx.ellipse(-13.5, 3, 10.2, 8.2, 0, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.ellipse(13.5, 3, 10.2, 8.2, 0, 0, Math.PI * 2);
-        ctx.stroke();
+        drawLens(-1);
+        drawLens(1);
 
         // Nose bridge
-        ctx.strokeStyle = '#b08968';
-        ctx.lineWidth = 1.8;
+        ctx.strokeStyle = gs === 'goldThin' ? '#f6c978' : '#b08968';
+        ctx.lineWidth = 1.7;
         ctx.beginPath();
-        ctx.moveTo(-3.3, 1.8);
-        ctx.quadraticCurveTo(0, -0.2, 3.3, 1.8);
+        ctx.moveTo(-3.6, 1.8);
+        ctx.quadraticCurveTo(0, -0.3, 3.6, 1.8);
         ctx.stroke();
 
-        // Diagonal lens specular reflection glints
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.52)';
-        ctx.lineWidth = 1.5;
+        // Diagonal lens reflection glints
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.54)';
+        ctx.lineWidth = 1.4;
         ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.moveTo(-18.5, -1); ctx.lineTo(-14.5, 2.5);
-        ctx.moveTo(8.5, -1);   ctx.lineTo(12.5, 2.5);
+        ctx.moveTo(-18.5, -1.2); ctx.lineTo(-14.5, 2.3);
+        ctx.moveTo(8.5, -1.2);   ctx.lineTo(12.5, 2.3);
         ctx.stroke();
+        ctx.restore();
+      }
+
+      // Optional Headwear: Fluffy Cat Ears Headband OR Cute Silk Hair Bow
+      if (roomState.headwear === 'catEars') {
+        ctx.save();
+        ctx.strokeStyle = '#332230';
+        ctx.lineWidth = 3.2;
+        ctx.beginPath();
+        ctx.arc(0, -10, 32, Math.PI * 1.15, Math.PI * 1.85);
+        ctx.stroke();
+
+        [[-22, -33, -0.32], [22, -33, 0.32]].forEach(([ex, ey, rot]) => {
+          ctx.save();
+          ctx.translate(ex, ey);
+          ctx.rotate(rot);
+          ctx.fillStyle = '#362332';
+          ctx.beginPath();
+          ctx.moveTo(-10, 6); ctx.lineTo(0, -16); ctx.lineTo(10, 6);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = '#f9a8d4';
+          ctx.beginPath();
+          ctx.moveTo(-5.5, 4); ctx.lineTo(0, -9); ctx.lineTo(5.5, 4);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        });
+        ctx.restore();
+      } else if (roomState.headwear === 'hairBow') {
+        ctx.save();
+        ctx.translate(16, -34);
+        ctx.rotate(0.26);
+        // Ribbon tails
+        ctx.strokeStyle = '#f472b6';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(-2, 3); ctx.quadraticCurveTo(-8, 12, -11, 18);
+        ctx.moveTo(2, 3);  ctx.quadraticCurveTo(7, 12, 10, 17);
+        ctx.stroke();
+        // Bow loops
+        const bowG = ctx.createLinearGradient(-15, -8, 15, 8);
+        bowG.addColorStop(0, '#fbcfe8');
+        bowG.addColorStop(0.5, '#f472b6');
+        bowG.addColorStop(1, '#db2777');
+        ctx.fillStyle = bowG;
+        ctx.beginPath();
+        ctx.ellipse(-9, 0, 10.5, 6.2, -0.22, 0, Math.PI * 2);
+        ctx.ellipse(9, 0, 10.5, 6.2, 0.22, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#fce7f3';
+        ctx.beginPath();
+        ctx.arc(0, 0, 4.2, 0, Math.PI * 2);
+        ctx.fill();
         ctx.restore();
       }
 
@@ -4850,7 +5989,39 @@
       ctx.ellipse(4, 22, 18, 6, 0.1, 0, Math.PI * 2);
       ctx.fill();
 
-      if (socksStyle === 'barefoot') {
+      if (socksStyle === 'pawSlippers') {
+        // Fluffy plush animal paw slippers with pink toe beans!
+        const slipGrad = ctx.createRadialGradient(2, 2, 4, 4, 4, 28);
+        slipGrad.addColorStop(0, '#fff7ed');
+        slipGrad.addColorStop(0.7, '#eed9c4');
+        slipGrad.addColorStop(1, '#c9ae96');
+        ctx.fillStyle = slipGrad;
+        ctx.beginPath();
+        ctx.ellipse(4, 4, 21, 24, 0.16, 0, Math.PI * 2);
+        ctx.fill();
+        // Fluffy cuff around ankle
+        ctx.fillStyle = '#fffaf3';
+        [[-8, -17], [0, -20], [8, -18], [-11, -11], [11, -12]].forEach(([fx, fy]) => {
+          ctx.beginPath();
+          ctx.arc(fx, fy, 6.2, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        // Cute pink paw pad + 3 tiny toe beans
+        ctx.fillStyle = '#f9a8d4';
+        ctx.beginPath();
+        ctx.ellipse(4, 10, 7.5, 6, 0.15, 0, Math.PI * 2);
+        ctx.fill();
+        [[14, 2], [9, -4], [1, -3]].forEach(([bx, by]) => {
+          ctx.beginPath();
+          ctx.arc(bx, by, 3.2, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.strokeStyle = 'rgba(110, 78, 60, 0.25)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.ellipse(4, 4, 21, 24, 0.16, 0, Math.PI * 2);
+        ctx.stroke();
+      } else if (socksStyle === 'barefoot') {
         const skinGrad = ctx.createLinearGradient(-10, -22, 20, 24);
         skinGrad.addColorStop(0, '#f6ccb3');
         skinGrad.addColorStop(0.6, '#ecc0a5');
@@ -4954,65 +6125,423 @@
       ctx.restore();
     }
 
-    function drawGirlLegsAndFeet(t, revealBlend) {
-      const socks = roomState.socks || 'whiteHeart';
-      const legBreath = Math.sin(t * 1.75) * 1.2;
+    function drawGirlLegsOnly(revealBlend) {
+      if (revealBlend <= 0.02) return;
+      ctx.save();
+      ctx.globalAlpha = Math.min(1, revealBlend * 1.25);
+
+      const drawLeg = (side) => {
+        const hipX = 716 + side * 34;
+        const kneeX = 716 + side * 88;
+        const ankleX = 716 + side * 74;
+
+        const legGrad = ctx.createLinearGradient(hipX, 558, kneeX, 668);
+        legGrad.addColorStop(0, '#f3c7ad');
+        legGrad.addColorStop(0.65, '#e8b79b');
+        legGrad.addColorStop(1, '#d9a487');
+        ctx.fillStyle = legGrad;
+
+        ctx.beginPath();
+        ctx.moveTo(hipX - side * 14, 562);
+        ctx.bezierCurveTo(hipX + side * 26, 566, kneeX + side * 22, 608, kneeX + side * 10, 646);
+        ctx.bezierCurveTo(ankleX + side * 16, 668, ankleX + side * 10, 682, ankleX - side * 10, 682);
+        ctx.bezierCurveTo(ankleX - side * 14, 666, kneeX - side * 22, 636, hipX - side * 20, 594);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = 'rgba(148, 86, 68, 0.22)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      };
+
+      drawLeg(-1);
+      drawLeg(1);
+      ctx.restore();
+    }
+
+    function drawCatAccessory(headX, headY, rot) {
+      const acc = roomState.catAccessory || 'none';
+      if (acc === 'none') return;
+      ctx.save();
+      ctx.translate(headX, headY);
+      ctx.rotate(rot);
+      if (acc === 'mjHat') {
+        // Iconic tiny black MJ Fedora with white ribbon band!
+        ctx.fillStyle = '#18181b';
+        ctx.beginPath();
+        ctx.ellipse(0, -14, 18, 4.8, -0.06, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(-11, -15);
+        ctx.lineTo(-8, -28);
+        ctx.quadraticCurveTo(0, -25, 8, -28);
+        ctx.lineTo(11, -15);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillRect(-10, -19, 20, 3);
+      } else if (acc === 'bow') {
+        // Cute pastel pink bow between ears
+        ctx.fillStyle = '#f472b6';
+        ctx.beginPath();
+        ctx.ellipse(-6, -15, 6.2, 3.8, -0.25, 0, Math.PI * 2);
+        ctx.ellipse(6, -15, 6.2, 3.8, 0.25, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#fce7f3';
+        ctx.beginPath();
+        ctx.arc(0, -15, 2.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function drawCustomizedCat(cx, cy, t) {
+      const furMap = {
+        ginger:    { light: '#f4bc84', mid: '#da8e56', dark: '#a96237', tail: '#d9935a', belly: '#fbe5cc', stripe: 'rgba(130, 68, 32, 0.38)', earIn: '#f4b5b0', eye: '#5a2e1a' },
+        black:     { light: '#474352', mid: '#2c2836', dark: '#17141f', tail: '#272330', belly: '#524d5e', stripe: 'rgba(15, 10, 20, 0.35)',   earIn: '#c98896', eye: '#fbbf24' },
+        white:     { light: '#ffffff', mid: '#f1ece8', dark: '#d6cdc6', tail: '#ebe4de', belly: '#ffffff', stripe: 'rgba(180, 165, 155, 0.2)', earIn: '#fbcfe8', eye: '#4a3530' },
+        calico:    { light: '#fff9f2', mid: '#f2e4d5', dark: '#d9c5b2', tail: '#d98245', belly: '#ffffff', stripe: 'rgba(40, 28, 22, 0.72)',   earIn: '#f4b5b0', eye: '#4a2a1c' },
+        grayTabby: { light: '#cbd5e1', mid: '#94a3b8', dark: '#64748b', tail: '#8494a7', belly: '#f1f5f9', stripe: 'rgba(51, 65, 85, 0.45)',   earIn: '#f4b5b0', eye: '#334155' }
+      };
+      const f = furMap[roomState.catFur] || furMap.ginger;
+      const action = roomState.catAction || 'sleep';
+      const happyWiggle = roomState.catPurrTimer > 0 ? Math.sin(t * 24) * 1.8 : 0;
+      const catBreath = Math.sin(t * 2.1) * 2.3 + happyWiggle * 0.4;
+      const tailWag = Math.sin(t * (action !== 'sleep' || roomState.catPurrTimer > 0 ? 5.0 : 1.4)) * 6.0;
 
       ctx.save();
-      if (revealBlend > 0.02) {
-        // Legs comfortably parted on the bedsheet when duvet shifts back for boyfriend's head
-        ctx.save();
-        ctx.globalAlpha = Math.min(1, revealBlend * 1.25);
+      ctx.translate(cx, cy + happyWiggle * 0.3);
 
-        const drawLeg = (side) => {
-          // side = -1 (left leg), +1 (right leg)
-          const hipX = 716 + side * 34;
-          const kneeX = 716 + side * 88;
-          const ankleX = 716 + side * 74;
+      // Soft contact shadow
+      ctx.fillStyle = 'rgba(45, 22, 28, 0.34)';
+      ctx.beginPath();
+      ctx.ellipse(0, 19, 56, 15, 0, 0, Math.PI * 2);
+      ctx.fill();
 
-          // Cozy thigh & knee in soft home shorts/skin
-          const legGrad = ctx.createLinearGradient(hipX, 558, kneeX, 668);
-          legGrad.addColorStop(0, '#f3c7ad');
-          legGrad.addColorStop(0.65, '#e8b79b');
-          legGrad.addColorStop(1, '#d9a487');
-          ctx.fillStyle = legGrad;
+      const catGrad = ctx.createRadialGradient(-10, -10, 6, 4, 2, 54);
+      catGrad.addColorStop(0, f.light);
+      catGrad.addColorStop(0.65, f.mid);
+      catGrad.addColorStop(1, f.dark);
 
+      if (action === 'stretch') {
+        // Pose: Awake & stretching with high arched back & tall curled tail!
+        ctx.strokeStyle = f.tail;
+        ctx.lineWidth = 11;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(32, -8);
+        ctx.bezierCurveTo(54, -26, 48 + tailWag, -46, 30 + tailWag * 0.7, -48);
+        ctx.stroke();
+
+        // Back legs & outstretched front paws
+        ctx.fillStyle = f.mid;
+        drawRoundRect(ctx, 18, -6, 14, 28, 6); ctx.fill();
+        ctx.fillStyle = f.belly;
+        ctx.beginPath();
+        ctx.ellipse(-44, 15, 13, 5.5, 0, 0, Math.PI * 2);
+        ctx.ellipse(-34, 18, 12, 5, 0.1, 0, Math.PI * 2);
+        ctx.fill();
+
+        // High arched stretching torso
+        ctx.fillStyle = catGrad;
+        ctx.beginPath();
+        ctx.moveTo(-36, 12);
+        ctx.bezierCurveTo(-18, 4, 2, -26, 26, -16);
+        ctx.bezierCurveTo(42, -8, 40, 10, 26, 12);
+        ctx.bezierCurveTo(6, 4, -14, 16, -36, 12);
+        ctx.closePath();
+        ctx.fill();
+
+        if (roomState.catFur === 'calico') {
+          ctx.fillStyle = '#d97736';
+          ctx.beginPath(); ctx.ellipse(12, -10, 11, 7, 0.3, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#292226';
+          ctx.beginPath(); ctx.ellipse(26, -4, 9, 7, -0.2, 0, Math.PI * 2); ctx.fill();
+        }
+
+        // Low stretching head looking happily forward
+        ctx.fillStyle = f.light;
+        ctx.beginPath();
+        ctx.ellipse(-28, 3, 20, 16, 0.12, 0, Math.PI * 2);
+        ctx.fill();
+        // Ears
+        ctx.fillStyle = f.mid;
+        ctx.beginPath();
+        ctx.moveTo(-42, -5); ctx.lineTo(-39, -20); ctx.lineTo(-29, -11); ctx.closePath();
+        ctx.moveTo(-24, -11); ctx.lineTo(-14, -20); ctx.lineTo(-12, -4); ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = f.earIn;
+        ctx.beginPath();
+        ctx.moveTo(-40, -7); ctx.lineTo(-38, -15); ctx.lineTo(-32, -10); ctx.closePath();
+        ctx.moveTo(-22, -10); ctx.lineTo(-16, -16); ctx.lineTo(-14, -6); ctx.closePath();
+        ctx.fill();
+        // Happy squinting ^ ^ eyes
+        ctx.strokeStyle = f.eye;
+        ctx.lineWidth = 2.1;
+        ctx.beginPath();
+        ctx.arc(-36, 4, 3.8, Math.PI * 1.15, Math.PI * 1.85); ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(-22, 4, 3.8, Math.PI * 1.15, Math.PI * 1.85); ctx.stroke();
+        ctx.fillStyle = '#e58a8a';
+        ctx.beginPath(); ctx.arc(-29, 8, 2.2, 0, Math.PI * 2); ctx.fill();
+        drawCatAccessory(-28, 0, 0.1);
+
+      } else if (action === 'bellyUp') {
+        // Pose: Rolled playfully on back, soft belly & tiny paws in the air!
+        ctx.strokeStyle = f.tail;
+        ctx.lineWidth = 11;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(38, 8);
+        ctx.quadraticCurveTo(60, 2 + tailWag, 54, -14 + tailWag * 0.5);
+        ctx.stroke();
+
+        ctx.fillStyle = catGrad;
+        ctx.beginPath();
+        ctx.ellipse(4, 5, 48, 23, -0.05, 0, Math.PI * 2);
+        ctx.fill();
+        // Fluffy pale belly facing up
+        ctx.fillStyle = f.belly;
+        ctx.beginPath();
+        ctx.ellipse(6, -1, 32, 14, -0.05, 0, Math.PI * 2);
+        ctx.fill();
+        // 4 little curled paws up in the air!
+        const pawWig = Math.sin(t * 6) * 2.2;
+        [[-14, -14 + pawWig], [-2, -17 - pawWig], [20, -15 + pawWig], [32, -11 - pawWig]].forEach(([px, py]) => {
+          ctx.fillStyle = f.belly;
           ctx.beginPath();
-          ctx.moveTo(hipX - side * 14, 562);
-          ctx.bezierCurveTo(hipX + side * 26, 566, kneeX + side * 22, 608, kneeX + side * 10, 646);
-          ctx.bezierCurveTo(ankleX + side * 16, 668, ankleX + side * 10, 682, ankleX - side * 10, 682);
-          ctx.bezierCurveTo(ankleX - side * 14, 666, kneeX - side * 22, 636, hipX - side * 20, 594);
-          ctx.closePath();
+          ctx.ellipse(px, py, 6.2, 8.2, 0.2, 0, Math.PI * 2);
           ctx.fill();
+          ctx.fillStyle = '#f9a8d4';
+          ctx.beginPath();
+          ctx.arc(px, py - 2, 2.4, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        // Tilted blissful head
+        ctx.fillStyle = f.light;
+        ctx.beginPath();
+        ctx.ellipse(-34, 4, 20, 17, -0.25, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = f.mid;
+        ctx.beginPath();
+        ctx.moveTo(-48, -2); ctx.lineTo(-47, -18); ctx.lineTo(-35, -10); ctx.closePath();
+        ctx.moveTo(-29, -11); ctx.lineTo(-19, -20); ctx.lineTo(-17, -3); ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = f.eye;
+        ctx.lineWidth = 2.0;
+        ctx.beginPath();
+        ctx.arc(-41, 4, 3.6, Math.PI * 1.15, Math.PI * 1.85); ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(-28, 5, 3.6, Math.PI * 1.15, Math.PI * 1.85); ctx.stroke();
+        ctx.fillStyle = '#e58a8a';
+        ctx.beginPath(); ctx.arc(-35, 9, 2.2, 0, Math.PI * 2); ctx.fill();
+        drawCatAccessory(-34, 2, -0.22);
 
-          // Soft shadow along inner thigh
-          ctx.strokeStyle = 'rgba(148, 86, 68, 0.22)';
-          ctx.lineWidth = 2;
+      } else if (action === 'happySquint') {
+        // Pose: Sitting up proudly after treats, squinting happily ^ ^ & wagging tail!
+        ctx.strokeStyle = f.tail;
+        ctx.lineWidth = 11;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(22, 14);
+        ctx.bezierCurveTo(48, 12, 54 + tailWag, -8, 40 + tailWag * 0.6, -24);
+        ctx.stroke();
+
+        // Sitting body
+        ctx.fillStyle = catGrad;
+        ctx.beginPath();
+        ctx.ellipse(2, 0 - catBreath * 0.25, 30, 32, 0.08, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = f.belly;
+        ctx.beginPath();
+        ctx.ellipse(-4, 6, 15, 19, 0.08, 0, Math.PI * 2);
+        ctx.fill();
+        if (roomState.catFur === 'calico') {
+          ctx.fillStyle = '#d97736';
+          ctx.beginPath(); ctx.arc(16, -6, 10, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#292226';
+          ctx.beginPath(); ctx.arc(14, 12, 9, 0, Math.PI * 2); ctx.fill();
+        }
+        // Front paws neatly together
+        ctx.fillStyle = f.belly;
+        ctx.beginPath();
+        ctx.ellipse(-12, 24, 8, 5, 0, 0, Math.PI * 2);
+        ctx.ellipse(4, 24, 8, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Upright happy head
+        ctx.fillStyle = f.light;
+        ctx.beginPath();
+        ctx.ellipse(-4, -30, 21, 18, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = f.mid;
+        ctx.beginPath();
+        ctx.moveTo(-21, -39); ctx.lineTo(-18, -56); ctx.lineTo(-6, -46); ctx.closePath();
+        ctx.moveTo(-2, -46);  ctx.lineTo(10, -56);  ctx.lineTo(13, -39); ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = f.earIn;
+        ctx.beginPath();
+        ctx.moveTo(-18, -41); ctx.lineTo(-16, -51); ctx.lineTo(-9, -45); ctx.closePath();
+        ctx.moveTo(0, -45);   ctx.lineTo(8, -51);   ctx.lineTo(10, -41); ctx.closePath();
+        ctx.fill();
+        // Happy squinting ^ ^ eyes & cute :3 mouth
+        ctx.strokeStyle = f.eye;
+        ctx.lineWidth = 2.1;
+        ctx.beginPath();
+        ctx.arc(-12, -30, 4, Math.PI * 1.15, Math.PI * 1.85); ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(4, -30, 4, Math.PI * 1.15, Math.PI * 1.85); ctx.stroke();
+        ctx.fillStyle = '#e58a8a';
+        ctx.beginPath(); ctx.arc(-4, -25, 2.3, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = f.eye;
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.arc(-7, -22, 3, 0, Math.PI); ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(-1, -22, 3, 0, Math.PI); ctx.stroke();
+        drawCatAccessory(-4, -34, 0.04);
+
+      } else {
+        // Default Pose: Curled up peacefully asleep
+        ctx.strokeStyle = f.tail;
+        ctx.lineWidth = 13;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(34, 8);
+        ctx.bezierCurveTo(64, 16, 52, 30 + tailWag * 0.3, 14, 24 + tailWag * 0.25);
+        ctx.stroke();
+
+        ctx.fillStyle = catGrad;
+        ctx.beginPath();
+        ctx.ellipse(4, 2 - catBreath * 0.4, 48, 28 + catBreath * 0.45, 0.05, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (roomState.catFur === 'calico') {
+          ctx.fillStyle = '#d97736';
+          ctx.beginPath(); ctx.ellipse(-4, -10, 14, 10, 0.2, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#292226';
+          ctx.beginPath(); ctx.ellipse(24, -4, 13, 11, -0.2, 0, Math.PI * 2); ctx.fill();
+        } else {
+          ctx.strokeStyle = f.stripe;
+          ctx.lineWidth = 4;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(-6, -22); ctx.quadraticCurveTo(2, -8, -4, 4);
+          ctx.moveTo(10, -23); ctx.quadraticCurveTo(18, -9, 12, 5);
+          ctx.moveTo(25, -18); ctx.quadraticCurveTo(32, -6, 26, 6);
           ctx.stroke();
-        };
+        }
 
-        drawLeg(-1);
-        drawLeg(1);
-        ctx.restore();
+        ctx.fillStyle = f.light;
+        ctx.beginPath();
+        ctx.ellipse(-28, 6, 22, 18, -0.1, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = f.belly;
+        ctx.beginPath();
+        ctx.ellipse(-34, 12, 11, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = f.mid;
+        ctx.beginPath();
+        ctx.moveTo(-45, -4); ctx.lineTo(-42, -20); ctx.lineTo(-30, -10); ctx.closePath();
+        ctx.moveTo(-25, -10); ctx.lineTo(-14, -21); ctx.lineTo(-10, -3); ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = f.earIn;
+        ctx.beginPath();
+        ctx.moveTo(-42, -6); ctx.lineTo(-40, -15); ctx.lineTo(-33, -9); ctx.closePath();
+        ctx.moveTo(-22, -9); ctx.lineTo(-15, -16); ctx.lineTo(-13, -5); ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = f.eye;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(-37, 7, 4, 0.15 * Math.PI, 0.85 * Math.PI);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(-23, 8, 4, 0.15 * Math.PI, 0.85 * Math.PI);
+        ctx.stroke();
+        ctx.fillStyle = '#e58a8a';
+        ctx.beginPath();
+        ctx.arc(-32, 12, 2.3, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = f.belly;
+        ctx.beginPath();
+        ctx.ellipse(-44, 18, 9, 5.5, 0.2, 0, Math.PI * 2);
+        ctx.fill();
+        drawCatAccessory(-28, 2, -0.08);
       }
 
-      // Feet always visible at the lower part of the bed (slightly wider apart when boyfriend is between her legs)
-      const spread = revealBlend * 22;
-      const footY = 678 + legBreath * 0.4 + (1 - revealBlend) * 6;
-      drawGirlFoot(650 - spread, footY, -1, socks);
-      drawGirlFoot(782 + spread, footY, 1, socks);
+      ctx.restore();
+    }
+
+    function drawCatTreatsJar(t) {
+      const tx = 976, ty = 716;
+      ctx.save();
+      // Floor shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.38)';
+      ctx.beginPath();
+      ctx.ellipse(tx, ty + 3, 24, 7, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Ceramic cozy treats jar
+      const jGrad = ctx.createLinearGradient(tx - 16, ty - 34, tx + 16, ty);
+      jGrad.addColorStop(0, '#fff4e6');
+      jGrad.addColorStop(1, '#d8beaa');
+      ctx.fillStyle = jGrad;
+      drawRoundRect(ctx, tx - 16, ty - 34, 32, 34, 9);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(92, 56, 44, 0.28)';
+      ctx.lineWidth = 1.4;
+      ctx.stroke();
+
+      // Cork lid
+      ctx.fillStyle = '#a47148';
+      drawRoundRect(ctx, tx - 13, ty - 41, 26, 9, 3);
+      ctx.fill();
+      ctx.fillStyle = '#c49066';
+      ctx.beginPath();
+      ctx.arc(tx, ty - 42, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Cute little fish icon on the jar
+      ctx.fillStyle = '#e07a5f';
+      ctx.beginPath();
+      ctx.ellipse(tx - 2, ty - 16, 7.5, 4.2, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(tx + 4, ty - 16);
+      ctx.lineTo(tx + 10, ty - 20);
+      ctx.lineTo(tx + 10, ty - 12);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#fff5ea';
+      ctx.beginPath();
+      ctx.arc(tx - 5, ty - 17, 1.2, 0, Math.PI * 2);
+      ctx.fill();
       ctx.restore();
     }
 
     function drawBlanketAndCat(t) {
-      const p = roomState.boyfriendPoseBlend || 0; // 0 = normal duvet, 1 = shifted open showing her legs & him between them
+      const p = roomState.boyfriendPoseBlend || 0;
       const a = roomState.boyfriendAlpha || 0;
+      const wp = getWoodPalette();
+      const bedStyle = roomState.bedding || 'dustyRose';
 
-      // 0) Soft bedsheet underneath the duvet (becomes visible as duvet shifts back)
+      const beddingPalettes = {
+        dustyRose:   { duv: ['#c78c84', '#a86b6c', '#6e3f49'], thr: ['#ecd8c4', '#cfb39b', '#9d7f6c'], sheet: ['#f4e6dc', '#dec9bc', '#b89f93'] },
+        darkEmerald: { duv: ['#2c6b5a', '#1e4d42', '#123029'], thr: ['#e8c68e', '#c99f62', '#8f6c3c'], sheet: ['#edf2ee', '#d1dcd4', '#a9bab0'] },
+        plaid:       { duv: ['#a83844', '#852834', '#571922'], thr: ['#f2dfca', '#d6bc9f', '#a68b6e'], sheet: ['#faf2e8', '#e3d5c6', '#c2b1a0'] },
+        starry:      { duv: ['#34356b', '#23244f', '#151536'], thr: ['#d9c8e8', '#b59ec9', '#836c99'], sheet: ['#ebeaf5', '#cfd0e6', '#a7a8c7'] },
+        milkLinen:   { duv: ['#f5ece2', '#dfd2c3', '#b8a897'], thr: ['#d8c5b4', '#bfa895', '#967f6d'], sheet: ['#fffaf5', '#eee4d8', '#d4c6b8'] }
+      };
+      const bp = beddingPalettes[bedStyle] || beddingPalettes.dustyRose;
+
+      // 0) Soft bedsheet underneath the duvet
       const sheetGrad = ctx.createLinearGradient(500, 540, 960, 720);
-      sheetGrad.addColorStop(0, '#f4e6dc');
-      sheetGrad.addColorStop(0.55, '#dec9bc');
-      sheetGrad.addColorStop(1, '#b89f93');
+      sheetGrad.addColorStop(0, bp.sheet[0]);
+      sheetGrad.addColorStop(0.55, bp.sheet[1]);
+      sheetGrad.addColorStop(1, bp.sheet[2]);
       ctx.fillStyle = sheetGrad;
       ctx.beginPath();
       ctx.moveTo(504, 574);
@@ -5022,25 +6551,64 @@
       ctx.closePath();
       ctx.fill();
 
-      // 1) Girl's legs (revealed smoothly when p > 0) + cute feet in chosen socks
-      drawGirlLegsAndFeet(t, p);
+      // 1) Girl's legs revealed smoothly when duvet shifts open
+      drawGirlLegsOnly(p);
 
-      // 2) Main Duvet (smoothly shifts & parts open when p -> 1 so her legs & his head between them are clearly visible)
-      const topDrop = p * 98; // shifts top edge down when boyfriend is between her legs
+      // 2) Main Duvet (shifts smoothly when boyfriend is between legs)
+      const topDrop = p * 98;
+      const duvPath = () => {
+        ctx.beginPath();
+        ctx.moveTo(504, 578 + topDrop * 0.45);
+        ctx.bezierCurveTo(605, 538 + topDrop * 1.15, 770, 540 + topDrop * 1.15, 956, 578 + topDrop * 0.25);
+        ctx.lineTo(966, 706);
+        ctx.quadraticCurveTo(732, 728, 494, 706);
+        ctx.closePath();
+      };
+
       const duvGrad = ctx.createLinearGradient(500, 540 + topDrop, 960, 730);
-      duvGrad.addColorStop(0, '#c78c84');
-      duvGrad.addColorStop(0.45, '#a86b6c');
-      duvGrad.addColorStop(1, '#6e3f49');
+      duvGrad.addColorStop(0, bp.duv[0]);
+      duvGrad.addColorStop(0.45, bp.duv[1]);
+      duvGrad.addColorStop(1, bp.duv[2]);
       ctx.fillStyle = duvGrad;
-      ctx.beginPath();
-      ctx.moveTo(504, 578 + topDrop * 0.45);
-      ctx.bezierCurveTo(605, 538 + topDrop * 1.15, 770, 540 + topDrop * 1.15, 956, 578 + topDrop * 0.25);
-      ctx.lineTo(966, 706);
-      ctx.quadraticCurveTo(732, 728, 494, 706);
-      ctx.closePath();
+      duvPath();
       ctx.fill();
 
-      // Cozy duvet fold rim along the shifted edge
+      // Special bedding patterns (Plaid tartan OR Starry print!)
+      if (bedStyle === 'plaid' || bedStyle === 'starry') {
+        ctx.save();
+        duvPath();
+        ctx.clip();
+        if (bedStyle === 'plaid') {
+          ctx.strokeStyle = 'rgba(255, 224, 178, 0.22)';
+          ctx.lineWidth = 4;
+          for (let px = 510; px < 970; px += 38) {
+            ctx.beginPath(); ctx.moveTo(px, 530); ctx.lineTo(px - 18, 740); ctx.stroke();
+          }
+          for (let py = 560; py < 730; py += 30) {
+            ctx.beginPath(); ctx.moveTo(490, py); ctx.lineTo(975, py + 8); ctx.stroke();
+          }
+          ctx.strokeStyle = 'rgba(22, 48, 38, 0.32)';
+          ctx.lineWidth = 8;
+          for (let px = 528; px < 970; px += 76) {
+            ctx.beginPath(); ctx.moveTo(px, 530); ctx.lineTo(px - 18, 740); ctx.stroke();
+          }
+        } else {
+          // Starry gold constellations & tiny crescents
+          const stars = [
+            [545, 608], [602, 588], [665, 622], [728, 594], [790, 616], [858, 596], [912, 620],
+            [565, 668], [638, 676], [712, 658], [776, 682], [848, 666], [918, 678]
+          ];
+          stars.forEach(([sx, sy], idx) => {
+            ctx.fillStyle = idx % 3 === 0 ? 'rgba(253, 230, 138, 0.8)' : 'rgba(224, 242, 254, 0.65)';
+            ctx.beginPath();
+            ctx.arc(sx, sy + topDrop * 0.45, idx % 3 === 0 ? 3.0 : 2.0, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+        ctx.restore();
+      }
+
+      // Cozy duvet fold rim
       ctx.strokeStyle = 'rgba(255, 225, 210, 0.24)';
       ctx.lineWidth = 4;
       ctx.beginPath();
@@ -5051,7 +6619,7 @@
       if (p < 0.7) {
         ctx.save();
         ctx.globalAlpha = 1 - p / 0.7;
-        ctx.strokeStyle = 'rgba(58, 25, 36, 0.26)';
+        ctx.strokeStyle = 'rgba(58, 25, 36, 0.22)';
         ctx.lineWidth = 5;
         ctx.beginPath();
         ctx.moveTo(525, 628); ctx.quadraticCurveTo(665, 608, 790, 655);
@@ -5059,12 +6627,12 @@
         ctx.restore();
       }
 
-      // Chunky cream knitted throw on right side (slides slightly right when open)
+      // Chunky knitted throw on right side
       const throwShift = p * 42;
       const throwGrad = ctx.createLinearGradient(740 + throwShift, 575, 965, 725);
-      throwGrad.addColorStop(0, '#ecd8c4');
-      throwGrad.addColorStop(0.6, '#cfb39b');
-      throwGrad.addColorStop(1, '#9d7f6c');
+      throwGrad.addColorStop(0, bp.thr[0]);
+      throwGrad.addColorStop(0.6, bp.thr[1]);
+      throwGrad.addColorStop(1, bp.thr[2]);
       ctx.fillStyle = throwGrad;
       ctx.beginPath();
       ctx.moveTo(748 + throwShift, 588);
@@ -5084,17 +6652,16 @@
         ctx.stroke();
       }
 
-      // Re-draw feet over the bottom duvet rim so socks stay crisp and visible!
+      // Draw feet ONCE cleanly over the duvet rim (fixed double-draw bug!)
       const spread = p * 22;
       const footY = 678 + Math.sin(t * 1.75) * 0.5 + (1 - p) * 6;
       drawGirlFoot(650 - spread, footY, -1, roomState.socks || 'whiteHeart');
       drawGirlFoot(782 + spread, footY, 1, roomState.socks || 'whiteHeart');
 
-      // 3) Full-Sized Boyfriend Easter Egg (normal human proportions matching the girl!)
+      // 3) Full-Sized Boyfriend Easter Egg
       if (a > 0.01) {
         const bfBreath = Math.sin(t * 1.65) * 2.0;
 
-        // Pose 1: Lying on stomach facing away on left/center blanket (normal full human scale)
         if (p < 0.99) {
           ctx.save();
           ctx.globalAlpha = a * (1 - p);
@@ -5102,13 +6669,11 @@
           const by = 636 - p * 20 + bfBreath * 0.6;
           ctx.translate(bx, by);
 
-          // Soft blanket contact shadow
           ctx.fillStyle = 'rgba(30, 12, 22, 0.44)';
           ctx.beginPath();
           ctx.ellipse(2, 28, 108, 24, 0.03, 0, Math.PI * 2);
           ctx.fill();
 
-          // Relaxed arms resting forward toward pillows
           ctx.fillStyle = '#343952';
           ctx.beginPath();
           ctx.moveTo(32, -26);
@@ -5123,7 +6688,6 @@
           ctx.closePath();
           ctx.fill();
 
-          // Broad oversized dark hoodie back (realistic human torso scale)
           const backGrad = ctx.createLinearGradient(-98, -36, 56, 36);
           backGrad.addColorStop(0, '#24283b');
           backGrad.addColorStop(0.42, '#3a405a');
@@ -5139,7 +6703,6 @@
           ctx.closePath();
           ctx.fill();
 
-          // Rim highlight & natural fabric folds
           ctx.strokeStyle = 'rgba(255, 224, 195, 0.2)';
           ctx.lineWidth = 2.6;
           ctx.beginPath();
@@ -5153,7 +6716,6 @@
           ctx.moveTo(-26, -12); ctx.quadraticCurveTo(-2, -4, 14, -16);
           ctx.stroke();
 
-          // Relaxed hood folded at nape
           ctx.fillStyle = '#30354c';
           ctx.beginPath();
           ctx.ellipse(42, 0, 16, 26, 0.08, 0, Math.PI * 2);
@@ -5162,10 +6724,9 @@
           ctx.lineWidth = 1.6;
           ctx.stroke();
 
-          // Blanket corner draped over his waist/legs
           const drapeGrad = ctx.createLinearGradient(-108, -14, -60, 38);
-          drapeGrad.addColorStop(0, '#ba7c78');
-          drapeGrad.addColorStop(1, '#7a454f');
+          drapeGrad.addColorStop(0, bp.duv[0]);
+          drapeGrad.addColorStop(1, bp.duv[2]);
           ctx.fillStyle = drapeGrad;
           ctx.beginPath();
           ctx.moveTo(-108, 22);
@@ -5174,7 +6735,6 @@
           ctx.closePath();
           ctx.fill();
 
-          // Full-sized head (r ~ 27px) facing away with rich layered dark-brown curls
           const hx = 74, hy = -2;
           ctx.fillStyle = '#291710';
           ctx.beginPath();
@@ -5204,7 +6764,6 @@
           ctx.restore();
         }
 
-        // Pose 2: Full-sized boyfriend nestled right between her legs (head clearly resting between her thighs/knees)
         if (p > 0.01) {
           ctx.save();
           ctx.globalAlpha = a * p;
@@ -5212,13 +6771,11 @@
           const by = 616 + (1 - p) * 20 + bfBreath * 0.55;
           ctx.translate(bx, by);
 
-          // Soft shadow on sheet between her legs
           ctx.fillStyle = 'rgba(30, 12, 22, 0.38)';
           ctx.beginPath();
           ctx.ellipse(0, 34, 64, 28, 0, 0, Math.PI * 2);
           ctx.fill();
 
-          // Broad hoodie shoulders & upper back extending down between her legs
           const shGrad = ctx.createLinearGradient(-58, 12, 58, 86);
           shGrad.addColorStop(0, '#454b68');
           shGrad.addColorStop(0.55, '#333850');
@@ -5232,34 +6789,29 @@
           ctx.closePath();
           ctx.fill();
 
-          // Relaxed arms resting cozily along her thighs/blanket
           ctx.fillStyle = '#393f59';
           ctx.beginPath();
           ctx.ellipse(-44, 40, 16, 26, 0.36, 0, Math.PI * 2);
           ctx.ellipse(44, 40, 16, 26, -0.36, 0, Math.PI * 2);
           ctx.fill();
 
-          // Soft hoodie collar/hood folds
           ctx.strokeStyle = 'rgba(255, 224, 195, 0.16)';
           ctx.lineWidth = 2;
           ctx.beginPath();
           ctx.arc(0, 18, 24, 0.15 * Math.PI, 0.85 * Math.PI);
           ctx.stroke();
 
-          // Full-sized head (r ~ 26px) resting comfortably between her legs
           ctx.fillStyle = '#ebbfa4';
           ctx.beginPath();
           ctx.ellipse(0, 4, 25, 22, 0, 0, Math.PI * 2);
           ctx.fill();
 
-          // Soft warm blush on cheeks
           ctx.fillStyle = 'rgba(242, 132, 130, 0.25)';
           ctx.beginPath();
           ctx.ellipse(-12, 8, 7, 4.2, 0, 0, Math.PI * 2);
           ctx.ellipse(12, 8, 7, 4.2, 0, 0, Math.PI * 2);
           ctx.fill();
 
-          // Peaceful happy closed eyes
           ctx.strokeStyle = '#331c13';
           ctx.lineWidth = 2.1;
           ctx.lineCap = 'round';
@@ -5270,7 +6822,6 @@
           ctx.arc(9, 6, 4.5, 0.15 * Math.PI, 0.85 * Math.PI);
           ctx.stroke();
 
-          // Gentle content smile
           ctx.strokeStyle = '#a35d58';
           ctx.lineWidth = 2.0;
           ctx.beginPath();
@@ -5278,7 +6829,6 @@
           ctx.quadraticCurveTo(0, 19, 5.5, 15);
           ctx.stroke();
 
-          // Full voluminous curly hair crown
           const topCurls = [
             [-24, -4, 10.2], [-20, -16, 11.2], [-9, -23, 12.0], [5, -24, 12.2],
             [18, -18, 11.2], [24, -5, 10.2],   [-12, -11, 11.0], [1, -12, 11.6], [13, -10, 10.8]
@@ -5293,7 +6843,6 @@
             ctx.fill();
           });
 
-          // Soft screen glow from iPad on his curls
           const padGlow = ctx.createRadialGradient(0, -18, 3, 0, -18, 34);
           padGlow.addColorStop(0, 'rgba(215, 238, 255, 0.3)');
           padGlow.addColorStop(1, 'rgba(215, 238, 255, 0)');
@@ -5302,8 +6851,7 @@
           ctx.arc(0, -16, 34, 0, Math.PI * 2);
           ctx.fill();
 
-          // Shifted lower blanket edge gently covering his lower back
-          ctx.fillStyle = '#995c61';
+          ctx.fillStyle = bp.duv[1];
           ctx.beginPath();
           ctx.moveTo(-66, 66);
           ctx.quadraticCurveTo(0, 84, 66, 66);
@@ -5316,90 +6864,98 @@
         }
       }
 
-      // 4) Bed footboard rail & legs (always on top of lower blanket edge)
-      ctx.fillStyle = '#4e2e2c';
+      // 4) Bed footboard rail & legs (matches Room Wood Tone)
+      ctx.fillStyle = wp.dark;
       drawRoundRect(ctx, 492, 696, 478, 28, 7);
       ctx.fill();
-      ctx.fillStyle = '#331c1d';
+      ctx.fillStyle = wp.leg;
       ctx.fillRect(508, 722, 16, 22);
       ctx.fillRect(938, 722, 16, 22);
 
-      // 5) Sleeping Fluffy Cat (shifts gently aside slightly when throw opens)
-      const cx = 868 + p * 18, cy = 612;
-      const happyWiggle = roomState.catPurrTimer > 0 ? Math.sin(t * 24) * 1.8 : 0;
-      const catBreath = Math.sin(t * 2.1) * 2.4 + happyWiggle * 0.4;
-      const tailWag = Math.sin(t * (roomState.catPurrTimer > 0 ? 4.5 : 1.4)) * 5.5;
+      // 5) Cat Treats Ceramic Jar next to bed
+      drawCatTreatsJar(t);
+
+      // 6) Customizable Interactive Cat (5 fur colors, 4 poses, MJ hat / bow)
+      drawCustomizedCat(868 + p * 18, 612, t);
+    }
+
+    function drawDiscoBall(t) {
+      if (roomState.discoBallDrop <= 0.01) return;
+      const d = roomState.discoBallDrop;
+      const bx = 720;
+      const by = -45 + d * 172;
+      const r = 34;
+      const beat = roomState.beatEnergy || 0;
 
       ctx.save();
-      ctx.translate(cx, cy + happyWiggle * 0.35);
-      ctx.fillStyle = 'rgba(55, 32, 35, 0.35)';
+      // Hanging cord from ceiling
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 2.5;
       ctx.beginPath();
-      ctx.ellipse(0, 18, 56, 16, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.strokeStyle = '#d9935a';
-      ctx.lineWidth = 13;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(34, 8);
-      ctx.bezierCurveTo(64, 16, 52, 30 + tailWag * 0.3, 14, 24 + tailWag * 0.25);
+      ctx.moveTo(bx, 0);
+      ctx.lineTo(bx, by - r);
       ctx.stroke();
 
-      const catGrad = ctx.createRadialGradient(-10, -10, 6, 4, 2, 54);
-      catGrad.addColorStop(0, '#f4bc84');
-      catGrad.addColorStop(0.65, '#da8e56');
-      catGrad.addColorStop(1, '#a96237');
-      ctx.fillStyle = catGrad;
+      // Swirling disco light reflections across the whole room!
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      const colors = ['rgba(255, 214, 165, 0.72)', 'rgba(255, 132, 185, 0.65)', 'rgba(103, 232, 249, 0.68)', 'rgba(254, 240, 138, 0.72)'];
+      for (let i = 0; i < 28; i++) {
+        const ang = t * (0.55 + (i % 4) * 0.12) + i * 0.78;
+        const distX = 110 + ((i * 97) % 580);
+        const distY = 60 + ((i * 73) % 520);
+        const sx = bx + Math.cos(ang) * distX;
+        const sy = 160 + Math.sin(ang * 0.75 + i) * distY * 0.55 + (i % 3) * 90;
+        const rad = (5 + (i % 4) * 2.6) * (1 + beat * 0.35);
+        ctx.globalAlpha = d * (0.45 + 0.4 * Math.abs(Math.sin(t * 3.5 + i)));
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.beginPath();
+        ctx.ellipse(sx, sy, rad * 1.2, rad * 0.75, ang * 0.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      // Glowing aura around ball
+      const aura = ctx.createRadialGradient(bx, by, r * 0.4, bx, by, r * 2.5 + beat * 16);
+      aura.addColorStop(0, `rgba(255, 250, 235, ${(0.45 + beat * 0.25).toFixed(2)})`);
+      aura.addColorStop(0.5, 'rgba(103, 232, 249, 0.18)');
+      aura.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.fillStyle = aura;
       ctx.beginPath();
-      ctx.ellipse(4, 2 - catBreath * 0.4, 48, 28 + catBreath * 0.45, 0.05, 0, Math.PI * 2);
+      ctx.arc(bx, by, r * 2.5 + beat * 16, 0, Math.PI * 2);
       ctx.fill();
 
-      ctx.strokeStyle = 'rgba(130, 68, 32, 0.38)';
-      ctx.lineWidth = 4;
-      ctx.lineCap = 'round';
+      // Mirrored sphere base
+      ctx.save();
       ctx.beginPath();
-      ctx.moveTo(-6, -22); ctx.quadraticCurveTo(2, -8, -4, 4);
-      ctx.moveTo(10, -23); ctx.quadraticCurveTo(18, -9, 12, 5);
-      ctx.moveTo(25, -18); ctx.quadraticCurveTo(32, -6, 26, 6);
+      ctx.arc(bx, by, r, 0, Math.PI * 2);
+      ctx.clip();
+
+      const sphGrad = ctx.createRadialGradient(bx - 10, by - 12, 4, bx, by, r);
+      sphGrad.addColorStop(0, '#ffffff');
+      sphGrad.addColorStop(0.55, '#94a3b8');
+      sphGrad.addColorStop(1, '#334155');
+      ctx.fillStyle = sphGrad;
+      ctx.fillRect(bx - r, by - r, r * 2, r * 2);
+
+      // Rotating mosaic mirror facets
+      const shiftX = (t * 28) % 10;
+      for (let row = -3; row <= 3; row++) {
+        for (let col = -4; col <= 4; col++) {
+          const fx = bx + col * 10 + shiftX - 5;
+          const fy = by + row * 9;
+          const shine = Math.sin(t * 4.5 + row * 2.3 + col * 1.7);
+          ctx.fillStyle = shine > 0.55 ? '#fffbeb' : shine > 0.1 ? '#e2e8f0' : shine > -0.35 ? '#94a3b8' : '#475569';
+          ctx.fillRect(fx, fy, 8.5, 7.5);
+        }
+      }
+      ctx.restore();
+
+      ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(bx, by, r, 0, Math.PI * 2);
       ctx.stroke();
-
-      ctx.fillStyle = '#f2b880';
-      ctx.beginPath();
-      ctx.ellipse(-28, 6, 22, 18, -0.1, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#fbe5cc';
-      ctx.beginPath();
-      ctx.ellipse(-34, 12, 11, 8, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = '#dc9058';
-      ctx.beginPath();
-      ctx.moveTo(-45, -4); ctx.lineTo(-42, -20); ctx.lineTo(-30, -10); ctx.closePath();
-      ctx.moveTo(-25, -10); ctx.lineTo(-14, -21); ctx.lineTo(-10, -3); ctx.closePath();
-      ctx.fill();
-      ctx.fillStyle = '#f4b5b0';
-      ctx.beginPath();
-      ctx.moveTo(-42, -6); ctx.lineTo(-40, -15); ctx.lineTo(-33, -9); ctx.closePath();
-      ctx.moveTo(-22, -9); ctx.lineTo(-15, -16); ctx.lineTo(-13, -5); ctx.closePath();
-      ctx.fill();
-
-      ctx.strokeStyle = '#5a2e1a';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(-37, 7, 4, 0.15 * Math.PI, 0.85 * Math.PI);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(-23, 8, 4, 0.15 * Math.PI, 0.85 * Math.PI);
-      ctx.stroke();
-      ctx.fillStyle = '#e58a8a';
-      ctx.beginPath();
-      ctx.arc(-32, 12, 2.3, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = '#fbe5cc';
-      ctx.beginPath();
-      ctx.ellipse(-44, 18, 9, 5.5, 0.2, 0, Math.PI * 2);
-      ctx.fill();
       ctx.restore();
     }
 
@@ -5592,11 +7148,29 @@
         roomState.vinylAngle = (roomState.vinylAngle + dt * (roomState.audioPlaying ? 2.2 : 1.55)) % (Math.PI * 2);
         roomState.tonearmAngle = Math.min(1, roomState.tonearmAngle + dt * 2.5);
 
-        const targetPulse = roomState.audioPlaying
-          ? (Math.pow(Math.abs(Math.sin(t * 6.15)), 3) * 0.72 + Math.abs(Math.sin(t * 12.3)) * 0.28)
-          : Math.max(roomState.beatKickImpulse, Math.abs(Math.sin(t * 3.8)) * 0.25);
+        const realBass = vibeEngine.getRealBassEnergy();
+        let targetPulse;
+        if (realBass !== null && realBass > 0.01) {
+          targetPulse = Math.max(realBass, roomState.beatKickImpulse * 0.7);
+        } else {
+          targetPulse = roomState.audioPlaying
+            ? (Math.pow(Math.abs(Math.sin(t * 6.15)), 3) * 0.72 + Math.abs(Math.sin(t * 12.3)) * 0.28)
+            : Math.max(roomState.beatKickImpulse, Math.abs(Math.sin(t * 3.8)) * 0.25);
+        }
 
-        roomState.beatEnergy += (targetPulse - roomState.beatEnergy) * Math.min(1, dt * 14);
+        roomState.beatEnergy += (targetPulse - roomState.beatEnergy) * Math.min(1, dt * 16);
+
+        // Live bass-reactive equalizer bars in bottom mini-player
+        if (roomState.audioPlaying) {
+          const eqBars = document.querySelectorAll('#miniEq .eq-bar');
+          if (eqBars.length === 3 && realBass !== null && realBass > 0.01) {
+            eqBars.forEach((bar, bi) => {
+              bar.style.animation = 'none';
+              const hScale = Math.max(0.22, Math.min(1, realBass * (bi === 1 ? 1.15 : 0.85) + Math.abs(Math.sin(t * 9 + bi)) * 0.2));
+              bar.style.transform = `scaleY(${hScale.toFixed(2)})`;
+            });
+          }
+        }
 
         noteSpawnAccum += dt;
         if (noteSpawnAccum > 0.72) {
@@ -5618,6 +7192,36 @@
       }
 
       if (roomState.catPurrTimer > 0) roomState.catPurrTimer = Math.max(0, roomState.catPurrTimer - dt);
+      if (roomState.mjEasterTimer > 0) roomState.mjEasterTimer = Math.max(0, roomState.mjEasterTimer - dt);
+
+      // Awake cat treats pose timer -> gently curls back to sleep after ~9.5s
+      if (roomState.catActionTimer > 0) {
+        roomState.catActionTimer = Math.max(0, roomState.catActionTimer - dt);
+        if (roomState.catActionTimer <= 0) roomState.catAction = 'sleep';
+      }
+
+      // Star projector smooth fade & drifting stars
+      const projTarget = roomState.projectorOn ? 1 : 0;
+      roomState.projectorAlpha += (projTarget - roomState.projectorAlpha) * Math.min(1, dt * 3.2);
+      if (roomState.projectorAlpha > 0.01) {
+        for (const ps of particles.projectorStars) {
+          ps.x += ps.vx * dt;
+          if (ps.x > SCENE_W + 10) ps.x = -10;
+        }
+      }
+
+      // MJ Disco Ball smooth drop
+      const discoTarget = roomState.discoBallOn ? 1 : 0;
+      roomState.discoBallDrop += (discoTarget - roomState.discoBallDrop) * Math.min(1, dt * 4.2);
+
+      // Watering droplets on windowsill plant
+      for (let i = particles.waterDrops.length - 1; i >= 0; i--) {
+        const wd = particles.waterDrops[i];
+        wd.y += wd.vy * dt;
+        wd.vy += 120 * dt;
+        wd.age += dt * 1.15;
+        if (wd.age >= 1) particles.waterDrops.splice(i, 1);
+      }
 
       // Smooth fade-in & fade-out for foggy window drawing ("Д + А" + heart)
       if (roomState.windowNoteTimer > 0) {
@@ -5761,6 +7365,7 @@
         drawBedAndHeadboard(roomState.time);
         drawGirlCharacter(roomState.time);
         drawBlanketAndCat(roomState.time);
+        drawDiscoBall(roomState.time);
         drawAtmosphereAndEffects(roomState.time);
 
         ctx.restore();
@@ -5965,6 +7570,68 @@
             cycleWeather();
           }
           break;
+        case 'plant': {
+          roomState.plantWaterCount = (roomState.plantWaterCount || 0) + 1;
+          for (let i = 0; i < 14; i++) {
+            particles.waterDrops.push({
+              x: 120 + Math.random() * 54,
+              y: 358 + Math.random() * 24,
+              vy: 45 + Math.random() * 45,
+              age: 0
+            });
+          }
+          vibeEngine.playSoftChime(587.33);
+          if (roomState.plantStage < 4) {
+            roomState.plantStage++;
+            wardrobeStore.save();
+            const stageMsgs = [
+              'Цветочек полит 💧',
+              'Листочки заметно подросли и потянулись к свету 🌱',
+              'Появились первые нежные бутоны! Полей ещё раз 🌷',
+              'Ура! На подоконнике распустились красивые цветы 🌸✨',
+              'Цветок в полном цвету и сияет золотыми искорками 🌼💛'
+            ];
+            showToast(stageMsgs[roomState.plantStage], '💧');
+          } else {
+            spawnSparkles(146, 380, 14);
+            showToast('Цветочек цветёт вовсю и тянется к тебе 🌸💛', '💧');
+          }
+          break;
+        }
+        case 'starProjector':
+          roomState.projectorOn = !roomState.projectorOn;
+          wardrobeStore.save();
+          wardrobeStore.syncUI();
+          vibeEngine.playSoftChime(roomState.projectorOn ? 659.25 : 440);
+          showToast(roomState.projectorOn ? 'Проектор звёздного неба включён — туманности плывут по стенам 🌌✨' : 'Проектор неба выключен', '🌌');
+          break;
+        case 'catTreats': {
+          const poses = ['stretch', 'happySquint', 'bellyUp'];
+          const nextPose = poses[roomState.catActionIdx % poses.length];
+          roomState.catActionIdx++;
+          roomState.catAction = nextPose;
+          roomState.catActionTimer = 9.5;
+          roomState.catPurrTimer = 3.5;
+          vibeEngine.triggerPurrBurst();
+          vibeEngine.playSoftChime(659.25);
+          for (let i = 0; i < 9; i++) {
+            particles.hearts.push({
+              x: 868 + (Math.random() - 0.5) * 70,
+              y: 585 - Math.random() * 25,
+              vy: -30 - Math.random() * 24,
+              size: 5 + Math.random() * 4.5,
+              age: 0,
+              col: i % 2 === 0 ? '#ff8fa3' : '#ffd166'
+            });
+          }
+          const poseMsgs = {
+            stretch: 'Котик учуял вкусняшку, проснулся и сладко потянулся 🐱✨',
+            happySquint: 'Котик хрумкает лакомство и счастливо жмурится ^ ^ 🐟💛',
+            bellyUp: 'Котик объелся вкусняшек и перевернулся пузиком и лапками вверх! 🐾💕'
+          };
+          showToast(poseMsgs[nextPose], '🐟');
+          break;
+        }
         case 'tablet':
           openIpad('playlist');
           break;
@@ -6030,11 +7697,22 @@
           break;
         case 'cocoa': {
           roomState.cocoaSteamBoost = 2.0;
+          const drinkOrder = ['cocoa', 'tea', 'latte', 'matcha'];
+          const nextDrink = drinkOrder[(drinkOrder.indexOf(roomState.drink) + 1) % drinkOrder.length];
+          roomState.drink = nextDrink;
+          wardrobeStore.save();
+          wardrobeStore.syncUI();
           vibeEngine.playSoftChime(659.25);
+          const drinkLabels = {
+            cocoa:  ['Какао с маршмеллоу', '🍫'],
+            tea:    ['Тёплый чай', '🫖'],
+            latte:  ['Латте с сердечком', '☕'],
+            matcha: ['Нежная матча', '🍵']
+          }[nextDrink];
           let idx = Math.floor(Math.random() * COCOA_COMPLIMENTS.length);
           if (idx === lastComplimentIdx) idx = (idx + 1) % COCOA_COMPLIMENTS.length;
           lastComplimentIdx = idx;
-          showToast(COCOA_COMPLIMENTS[idx], '☕');
+          showToast(`${drinkLabels[0]} · ${COCOA_COMPLIMENTS[idx]}`, drinkLabels[1]);
           break;
         }
         case 'lamp':
@@ -6059,10 +7737,12 @@
           roomState.neonOn = !roomState.neonOn;
           roomState.mjNightClicks = (roomState.mjNightClicks || 0) + 1;
           vibeEngine.playSoftChime(783.99);
-          if (roomState.mjNightClicks % 3 === 0) {
+          if (roomState.mjNightClicks % 5 === 0) {
+            toggleDiscoBall();
+          } else if (roomState.mjNightClicks % 3 === 0) {
             triggerMjMoonwalkEaster('Перчатка короля поп-музыки ✨', 'Искры пролетают по всей комнате 👑');
           } else {
-            showToast(roomState.neonOn ? 'Неон «MJ» светится! Король поп-музыки в комнате 👑' : 'Неон «MJ» выключен', '⚡');
+            showToast(roomState.neonOn ? 'Неон «MJ» светится! (5 кликов — секретный диско-шар 🪩)' : 'Неон «MJ» выключен', '⚡');
           }
           break;
         case 'turntable':
@@ -6120,7 +7800,7 @@
         const now = performance.now();
         const dt = Math.max(0.008, (now - camera.lastPointerTime) / 1000);
         const stepDx = clientX - camera.lastPointerX;
-        camera.vx = (stepDx / camera.scale) / dt;
+        camera.vx = Math.max(-2400, Math.min(2400, (stepDx / camera.scale) / dt));
         camera.lastPointerX = clientX;
         camera.lastPointerTime = now;
 
@@ -6226,12 +7906,16 @@
 
     function setMixerSlider(channel, value) {
       const ids = {
-        beat:  ['mixBeat',  'valBeat'],
-        rain:  ['mixRain',  'valRain'],
-        vinyl: ['mixVinyl', 'valVinyl'],
-        purr:  ['mixPurr',  'valPurr'],
-        night: ['mixNight', 'valNight'],
-        train: ['mixTrain', 'valTrain']
+        beat:      ['mixBeat',      'valBeat'],
+        rain:      ['mixRain',      'valRain'],
+        vinyl:     ['mixVinyl',     'valVinyl'],
+        purr:      ['mixPurr',      'valPurr'],
+        night:     ['mixNight',     'valNight'],
+        train:     ['mixTrain',     'valTrain'],
+        fireplace: ['mixFireplace', 'valFireplace'],
+        city:      ['mixCity',      'valCity'],
+        birds:     ['mixBirds',     'valBirds'],
+        study:     ['mixStudy',     'valStudy']
       };
       const pair = ids[channel];
       if (!pair) return;
@@ -6247,14 +7931,42 @@
       const idx = roomState.brianMapsClicks % BRIAN_MAPS_QUOTES.length;
       roomState.brianMapsClicks++;
       vibeEngine.playSoftChime(659.25);
-      showToast(BRIAN_MAPS_QUOTES[idx], '🥕', null, 5500);
+      showToast(BRIAN_MAPS_QUOTES[idx], '🎬', null, 5500);
+    }
+
+    function toggleDiscoBall() {
+      roomState.discoBallOn = !roomState.discoBallOn;
+      wardrobeStore.save();
+      wardrobeStore.syncUI();
+      vibeEngine.playSoftChime(roomState.discoBallOn ? 783.99 : 440);
+      if (roomState.discoBallOn) {
+        spawnSparkles(720, 140, 20);
+        showToast('Диско-шар Майкла Джексона спущен! Блики танцуют под ритм 🪩👑', '🪩');
+      } else {
+        showToast('Диско-шар убран', '🪩');
+      }
+    }
+
+    function switchStudioTab(tabName) {
+      document.querySelectorAll('.studio-panel').forEach((p) => {
+        p.classList.toggle('hidden', p.id !== `studio-panel-${tabName}`);
+      });
+      document.querySelectorAll('.studio-tab').forEach((b) => {
+        const active = b.getAttribute('data-studio-tab') === tabName;
+        b.className = `studio-tab py-1.5 px-2 rounded-xl text-xs transition ${
+          active
+            ? 'font-semibold bg-amber-400/25 border border-amber-300/35 text-amber-100'
+            : 'font-medium text-amber-200/75 hover:text-amber-100'
+        }`;
+      });
     }
 
     const wardrobeStore = {
-      KEY: 'mj_cozy_room_wardrobe_v1',
+      KEY: 'mj_cozy_room_wardrobe_v2',
+      LEGACY_KEY: 'mj_cozy_room_wardrobe_v1',
       load() {
         try {
-          const raw = localStorage.getItem(this.KEY);
+          const raw = localStorage.getItem(this.KEY) || localStorage.getItem(this.LEGACY_KEY);
           if (!raw) return;
           const d = JSON.parse(raw);
           if (d.outfit) roomState.outfit = d.outfit;
@@ -6262,8 +7974,23 @@
           if (d.hairStyle) roomState.hairStyle = d.hairStyle;
           if (d.girlMood) roomState.girlMood = d.girlMood;
           if (typeof d.headphones === 'boolean') roomState.headphones = d.headphones;
-          if (typeof d.glasses === 'boolean') roomState.glasses = d.glasses;
+          if (typeof d.freckles === 'boolean') roomState.freckles = d.freckles;
           if (typeof d.pendant === 'boolean') roomState.pendant = d.pendant;
+          if (d.glassesStyle) roomState.glassesStyle = d.glassesStyle;
+          else if (d.glasses === true) roomState.glassesStyle = 'round';
+          if (d.headwear) roomState.headwear = d.headwear;
+          // Cat
+          if (d.catFur) roomState.catFur = d.catFur;
+          if (d.catAccessory) roomState.catAccessory = d.catAccessory;
+          // Room Design
+          if (d.wallStyle) roomState.wallStyle = d.wallStyle;
+          if (d.bedding) roomState.bedding = d.bedding;
+          if (d.woodTone) roomState.woodTone = d.woodTone;
+          if (d.rugStyle) roomState.rugStyle = d.rugStyle;
+          if (d.fairyColor) roomState.fairyColor = d.fairyColor;
+          if (d.drink) roomState.drink = d.drink;
+          if (typeof d.projectorOn === 'boolean') roomState.projectorOn = d.projectorOn;
+          if (typeof d.plantStage === 'number') roomState.plantStage = Math.max(0, Math.min(4, d.plantStage));
         } catch (_) {}
       },
       save() {
@@ -6274,16 +8001,29 @@
             hairStyle: roomState.hairStyle,
             girlMood: roomState.girlMood,
             headphones: roomState.headphones,
-            glasses: roomState.glasses,
-            pendant: roomState.pendant
+            glassesStyle: roomState.glassesStyle,
+            headwear: roomState.headwear,
+            freckles: roomState.freckles,
+            pendant: roomState.pendant,
+            catFur: roomState.catFur,
+            catAccessory: roomState.catAccessory,
+            wallStyle: roomState.wallStyle,
+            bedding: roomState.bedding,
+            woodTone: roomState.woodTone,
+            rugStyle: roomState.rugStyle,
+            fairyColor: roomState.fairyColor,
+            drink: roomState.drink,
+            projectorOn: roomState.projectorOn,
+            plantStage: roomState.plantStage
           }));
         } catch (_) {}
       },
-      open() {
+      open(tab = 'character') {
         const ov = document.getElementById('wardrobeOverlay');
         if (!ov) return;
         ov.classList.remove('modal-closed');
         ov.classList.add('modal-open');
+        switchStudioTab(tab);
         this.syncUI();
       },
       close() {
@@ -6292,17 +8032,11 @@
         ov.classList.remove('modal-open');
         ov.classList.add('modal-closed');
       },
-      setOutfit(val) {
-        roomState.outfit = val;
+      setProp(prop, val, chime = 587.33) {
+        roomState[prop] = val;
         this.save();
         this.syncUI();
-        vibeEngine.playSoftChime(587.33);
-      },
-      setSocks(val) {
-        roomState.socks = val;
-        this.save();
-        this.syncUI();
-        vibeEngine.playSoftChime(622.25);
+        vibeEngine.playSoftChime(chime);
       },
       cycleHair() {
         const order = ['loose', 'curly', 'halfUp', 'ponytail'];
@@ -6319,22 +8053,30 @@
         vibeEngine.playSoftChime(523.25);
       },
       syncUI() {
-        document.querySelectorAll('.outfit-btn').forEach((b) => {
-          const active = b.getAttribute('data-outfit') === roomState.outfit;
-          b.className = `outfit-btn rounded-2xl p-2.5 text-left transition border ${
-            active
-              ? 'border-amber-300/45 bg-amber-400/20'
-              : 'border-white/10 bg-white/[0.04] hover:bg-white/[0.08]'
-          }`;
-        });
-        document.querySelectorAll('.socks-btn').forEach((b) => {
-          const active = b.getAttribute('data-socks') === roomState.socks;
-          b.className = `socks-btn rounded-2xl p-2.5 text-left transition border ${
-            active
-              ? 'border-amber-300/45 bg-amber-400/20'
-              : 'border-white/10 bg-white/[0.04] hover:bg-white/[0.08]'
-          }`;
-        });
+        const styleGroup = (selector, attr, curVal, baseClass) => {
+          document.querySelectorAll(selector).forEach((b) => {
+            const active = b.getAttribute(attr) === curVal;
+            b.className = `${baseClass} ${
+              active
+                ? 'border-amber-300/45 bg-amber-400/20 font-semibold text-amber-50'
+                : 'border-white/10 bg-white/[0.04] hover:bg-white/[0.08] font-medium text-amber-100'
+            }`;
+          });
+        };
+
+        styleGroup('.outfit-btn', 'data-outfit', roomState.outfit, 'outfit-btn rounded-2xl p-2.5 text-left transition border');
+        styleGroup('.socks-btn', 'data-socks', roomState.socks, 'socks-btn rounded-2xl p-2 text-left transition border');
+        styleGroup('.glasses-btn', 'data-glasses', roomState.glassesStyle, 'glasses-btn py-1.5 px-2 rounded-xl text-xs transition border');
+        styleGroup('.headwear-btn', 'data-headwear', roomState.headwear, 'headwear-btn py-1.5 px-1.5 rounded-xl text-xs transition border');
+        styleGroup('.cat-fur-btn', 'data-cat-fur', roomState.catFur, 'cat-fur-btn py-1.5 px-2 rounded-xl text-xs transition border');
+        styleGroup('.cat-acc-btn', 'data-cat-acc', roomState.catAccessory, 'cat-acc-btn py-1.5 px-2 rounded-xl text-xs transition border');
+        styleGroup('.bedding-btn', 'data-bedding', roomState.bedding, 'bedding-btn rounded-2xl p-2.5 text-left transition border');
+        styleGroup('.wall-btn', 'data-wall', roomState.wallStyle, 'wall-btn rounded-2xl p-2 text-left text-xs transition border');
+        styleGroup('.wood-btn', 'data-wood', roomState.woodTone, 'wood-btn py-1.5 px-2 rounded-xl text-xs transition border');
+        styleGroup('.rug-btn', 'data-rug', roomState.rugStyle, 'rug-btn py-1.5 px-2 rounded-xl text-xs transition border');
+        styleGroup('.fairy-col-btn', 'data-fairy-col', roomState.fairyColor, 'fairy-col-btn py-1.5 px-2 rounded-xl text-xs transition border');
+        styleGroup('.drink-btn', 'data-drink', roomState.drink, 'drink-btn py-1.5 px-2 rounded-xl text-xs transition border');
+
         const hMap = { loose: 'Распущенные', curly: 'Кудрявые', halfUp: 'Мальвинка', ponytail: 'Высокий хвост' };
         const mMap = { smile: 'Нежная улыбка', dreamy: 'Мечтательный', wink: 'Подмигивает' };
         const hEl = document.getElementById('hairStyleLabel');
@@ -6343,11 +8085,16 @@
         if (mEl) mEl.textContent = mMap[roomState.girlMood] || 'Нежная улыбка';
 
         const hp = document.getElementById('toggleHeadphones');
-        const gl = document.getElementById('toggleGlasses');
+        const fr = document.getElementById('toggleFreckles');
         const pn = document.getElementById('togglePendant');
         if (hp) hp.checked = roomState.headphones;
-        if (gl) gl.checked = roomState.glasses;
+        if (fr) fr.checked = roomState.freckles;
         if (pn) pn.checked = roomState.pendant;
+
+        const pSt = document.getElementById('studioProjectorState');
+        const dSt = document.getElementById('studioDiscoState');
+        if (pSt) pSt.textContent = roomState.projectorOn ? 'Вкл ✨' : 'Выкл';
+        if (dSt) dSt.textContent = roomState.discoBallOn ? 'Вкл ✨' : 'Выкл';
       }
     };
 
@@ -6411,24 +8158,65 @@
         setTimeout(() => { if (sp) sp.style.display = 'none'; }, 480);
       });
 
-      // Wardrobe Modal
-      document.getElementById('btnOpenWardrobe')?.addEventListener('click', () => wardrobeStore.open());
+      // Wardrobe & Room Design Studio Modal
+      document.getElementById('btnOpenWardrobe')?.addEventListener('click', () => wardrobeStore.open('character'));
       document.getElementById('btnCloseWardrobe')?.addEventListener('click', () => wardrobeStore.close());
       document.getElementById('wardrobeOverlay')?.addEventListener('click', (e) => {
         if (e.target.id === 'wardrobeOverlay') wardrobeStore.close();
       });
+      document.querySelectorAll('.studio-tab').forEach((b) => {
+        b.addEventListener('click', () => switchStudioTab(b.getAttribute('data-studio-tab')));
+      });
       document.querySelectorAll('.outfit-btn').forEach((b) => {
-        b.addEventListener('click', () => wardrobeStore.setOutfit(b.getAttribute('data-outfit')));
+        b.addEventListener('click', () => wardrobeStore.setProp('outfit', b.getAttribute('data-outfit'), 587.33));
       });
       document.querySelectorAll('.socks-btn').forEach((b) => {
-        b.addEventListener('click', () => wardrobeStore.setSocks(b.getAttribute('data-socks')));
+        b.addEventListener('click', () => wardrobeStore.setProp('socks', b.getAttribute('data-socks'), 622.25));
       });
+      document.querySelectorAll('.glasses-btn').forEach((b) => {
+        b.addEventListener('click', () => wardrobeStore.setProp('glassesStyle', b.getAttribute('data-glasses'), 659.25));
+      });
+      document.querySelectorAll('.headwear-btn').forEach((b) => {
+        b.addEventListener('click', () => wardrobeStore.setProp('headwear', b.getAttribute('data-headwear'), 698.46));
+      });
+      document.querySelectorAll('.cat-fur-btn').forEach((b) => {
+        b.addEventListener('click', () => wardrobeStore.setProp('catFur', b.getAttribute('data-cat-fur'), 523.25));
+      });
+      document.querySelectorAll('.cat-acc-btn').forEach((b) => {
+        b.addEventListener('click', () => wardrobeStore.setProp('catAccessory', b.getAttribute('data-cat-acc'), 659.25));
+      });
+      document.querySelectorAll('.bedding-btn').forEach((b) => {
+        b.addEventListener('click', () => wardrobeStore.setProp('bedding', b.getAttribute('data-bedding'), 587.33));
+      });
+      document.querySelectorAll('.wall-btn').forEach((b) => {
+        b.addEventListener('click', () => wardrobeStore.setProp('wallStyle', b.getAttribute('data-wall'), 523.25));
+      });
+      document.querySelectorAll('.wood-btn').forEach((b) => {
+        b.addEventListener('click', () => wardrobeStore.setProp('woodTone', b.getAttribute('data-wood'), 493.88));
+      });
+      document.querySelectorAll('.rug-btn').forEach((b) => {
+        b.addEventListener('click', () => wardrobeStore.setProp('rugStyle', b.getAttribute('data-rug'), 554.37));
+      });
+      document.querySelectorAll('.fairy-col-btn').forEach((b) => {
+        b.addEventListener('click', () => wardrobeStore.setProp('fairyColor', b.getAttribute('data-fairy-col'), 739.99));
+      });
+      document.querySelectorAll('.drink-btn').forEach((b) => {
+        b.addEventListener('click', () => wardrobeStore.setProp('drink', b.getAttribute('data-drink'), 659.25));
+      });
+      document.getElementById('btnToggleProjectorStudio')?.addEventListener('click', () => {
+        roomState.projectorOn = !roomState.projectorOn;
+        wardrobeStore.save();
+        wardrobeStore.syncUI();
+        vibeEngine.playSoftChime(roomState.projectorOn ? 659.25 : 440);
+      });
+      document.getElementById('btnToggleDiscoStudio')?.addEventListener('click', toggleDiscoBall);
+
       document.getElementById('toggleHeadphones')?.addEventListener('change', (e) => {
         roomState.headphones = e.target.checked;
         wardrobeStore.save();
       });
-      document.getElementById('toggleGlasses')?.addEventListener('change', (e) => {
-        roomState.glasses = e.target.checked;
+      document.getElementById('toggleFreckles')?.addEventListener('change', (e) => {
+        roomState.freckles = e.target.checked;
         wardrobeStore.save();
       });
       document.getElementById('togglePendant')?.addEventListener('change', (e) => {
@@ -6437,6 +8225,27 @@
       });
       document.getElementById('btnCycleHairStyle')?.addEventListener('click', () => wardrobeStore.cycleHair());
       document.getElementById('btnCycleGirlMood')?.addEventListener('click', () => wardrobeStore.cycleMood());
+
+      // Hug / Miss You button + Custom Polaroid Upload
+      document.getElementById('btnHugMissYou')?.addEventListener('click', () => hugStore.trigger());
+      document.getElementById('btnTogglePolaroidUpload')?.addEventListener('click', () => {
+        document.getElementById('polaroidUploadBox')?.classList.toggle('hidden');
+      });
+      document.getElementById('polaroidFileInput')?.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        const capInp = document.getElementById('polaroidCaptionInput');
+        if (file) {
+          polaroidsStore.addFromFile(file, capInp ? capInp.value : '');
+          if (capInp) capInp.value = '';
+          document.getElementById('polaroidUploadBox')?.classList.add('hidden');
+        }
+        e.target.value = '';
+      });
+      document.getElementById('btnDeleteCustomPolaroid')?.addEventListener('click', () => {
+        if (polaroidsStore.activeLightboxItem && polaroidsStore.activeLightboxItem.isCustom) {
+          polaroidsStore.removeCustom(polaroidsStore.activeLightboxItem.id);
+        }
+      });
 
       // Nightstand Drawer & English ЕГЭ
       document.getElementById('btnCloseDrawer')?.addEventListener('click', closeDrawerModal);
@@ -6458,6 +8267,8 @@
             const wish = EGE_LUCKY_WISHES[Math.floor(Math.random() * EGE_LUCKY_WISHES.length)];
             vibeEngine.playSoftChime(587.33);
             showToast(wish, '🍀', null, 6000);
+          } else if (kind === 'discoBall') {
+            toggleDiscoBall();
           } else if (kind === 'brianQuote') {
             showNextBrianQuote();
           } else if (kind === 'secretLetter') {
@@ -6580,14 +8391,18 @@
         }
       });
 
-      // Vibe Mixer Sliders
+      // Vibe Mixer Sliders (10 independent channels)
       [
-        ['mixBeat',  'beat'],
-        ['mixRain',  'rain'],
-        ['mixVinyl', 'vinyl'],
-        ['mixPurr',  'purr'],
-        ['mixNight', 'night'],
-        ['mixTrain', 'train']
+        ['mixBeat',      'beat'],
+        ['mixRain',      'rain'],
+        ['mixVinyl',     'vinyl'],
+        ['mixPurr',      'purr'],
+        ['mixNight',     'night'],
+        ['mixTrain',     'train'],
+        ['mixFireplace', 'fireplace'],
+        ['mixCity',      'city'],
+        ['mixBirds',     'birds'],
+        ['mixStudy',     'study']
       ].forEach(([id, ch]) => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -6595,19 +8410,26 @@
       });
 
       // Vibe Mixer Presets
+      const applyMixMap = (cfg) => {
+        ['beat', 'rain', 'vinyl', 'purr', 'night', 'train', 'fireplace', 'city', 'birds', 'study'].forEach((ch) => {
+          setMixerSlider(ch, cfg[ch] || 0);
+        });
+      };
       document.querySelectorAll('.mixer-preset').forEach((btn) => {
         btn.addEventListener('click', () => {
           const p = btn.getAttribute('data-preset');
           if (p === 'lofiEvening') {
-            setMixerSlider('beat', 72); setMixerSlider('rain', 35); setMixerSlider('vinyl', 30); setMixerSlider('purr', 0); setMixerSlider('night', 20); setMixerSlider('train', 0);
+            applyMixMap({ beat: 72, rain: 35, vinyl: 30, night: 20, fireplace: 25 });
           } else if (p === 'rainy') {
-            setMixerSlider('beat', 0); setMixerSlider('rain', 65); setMixerSlider('vinyl', 35); setMixerSlider('purr', 0); setMixerSlider('night', 25); setMixerSlider('train', 0);
+            applyMixMap({ rain: 65, vinyl: 35, night: 25, city: 20 });
           } else if (p === 'trainJourney') {
-            setMixerSlider('beat', 40); setMixerSlider('rain', 0); setMixerSlider('vinyl', 20); setMixerSlider('purr', 0); setMixerSlider('night', 20); setMixerSlider('train', 65);
+            applyMixMap({ beat: 40, vinyl: 20, night: 20, train: 65 });
+          } else if (p === 'studyEge') {
+            applyMixMap({ rain: 30, fireplace: 35, study: 55, night: 15 });
           } else if (p === 'cat') {
-            setMixerSlider('beat', 0); setMixerSlider('rain', 20); setMixerSlider('vinyl', 15); setMixerSlider('purr', 65); setMixerSlider('night', 20); setMixerSlider('train', 0);
+            applyMixMap({ rain: 20, vinyl: 15, purr: 65, night: 20, fireplace: 30 });
           } else {
-            setMixerSlider('beat', 0); setMixerSlider('rain', 0); setMixerSlider('vinyl', 0); setMixerSlider('purr', 0); setMixerSlider('night', 0); setMixerSlider('train', 0);
+            applyMixMap({});
           }
         });
       });
@@ -6622,6 +8444,8 @@
       setupCanvasPointerControls();
       wireUIEvents();
       notesStore.init();
+      brianPhotoStore.init();
+      hugStore.init();
       mjGloveStore.init();
       wallPostersStore.init();
       polaroidsStore.init();
@@ -6637,9 +8461,9 @@
       applyAutoTimeOfDayForDasha();
       checkCustomAppIcon();
       updateClock();
-      fetchChelyabinskWeather();
-      setInterval(() => { updateClock(); updateRelationshipCounters(); }, 30000);
-      setInterval(fetchChelyabinskWeather, 20 * 60 * 1000);
+      fetchBothCitiesWeather();
+      setInterval(() => { updateClock(); updateRelationshipCounters(); }, 5000);
+      setInterval(fetchBothCitiesWeather, 20 * 60 * 1000);
 
       lastFrameTime = performance.now();
       requestAnimationFrame(renderFrame);
